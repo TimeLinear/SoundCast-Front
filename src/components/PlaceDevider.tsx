@@ -1,15 +1,15 @@
 
 const PlaceDevider = () => {
 
-    const placeItemFont = {flexGrow:"1", fontFamily:"sans-serif", color:"white",
-        fontStyle:"italic", fontWeight:"bolder", fontSize:"40px"};
+    const placeItemStyle = {flexGrow:"1", fontFamily:"sans-serif", border:"4px solid #770ABF",
+        fontStyle:"italic", fontWeight:"bolder", fontSize:"35px", borderRadius:"10px"};
 
     return (
-        <div className='place-devider' style={{height:"74px", lineHeight:"74px", display:"flex", backgroundColor:"#1C003B"}}>
-            <div style={{...placeItemFont, borderRadius:""}}>
+        <div className='place-devider' style={{height:"74px", lineHeight:"67px", display:"flex", backgroundColor:"#1C003B"}}>
+            <div style={{...placeItemStyle, color:"white"}}>
                 Official Place
             </div>
-            <div style={placeItemFont}>
+            <div style={{...placeItemStyle, backgroundColor:"white", color:"black"}}>
                 Unofficial Place
             </div>
         </div>
