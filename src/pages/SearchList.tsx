@@ -1,64 +1,66 @@
 
 import { useState } from "react";
-import Item from "../type/items";
+import { Song } from "../type/SongType";
+import { Props } from "../type/SongType";
+import Player from "./PlayBar";
 
 function SearchList(){
 
     // 스타일
     const searchListBoxStyle = {width: "100%", height: "80px", display: "flex", alignItems : "center", justifyContent: "space-evenly", 
-                                borderRadius: "10px", background: "#1C003B", borderBottom: "1px solid #FFFFFF"};
+                                background: "#1C003B", borderTop: "1px solid #FFFFFF"};
     const searchListFontStyle = {fontFamily:"Inter", fontStyle:"normal", fontSize:"20px", fontWeight:"700", lineHeight:"24px", color :"#000000"};
     const itemBoxStyle = {display: "flex", alignItems: "center", justifyContent: "center", width: "120px", height: "38px", background: "#FFFFFF", borderRadius: "10px"};
     const iconBoxSizeStyle = { height: "35px", width: "35px"};
-
-    const testItems: Item[] = [
-        { id: 1, name: 'Item 1' },
-        { id: 2, name: 'Item 2' },
-        { id: 3, name: 'Item 3' },
-        { id: 4, name: 'Item 4' },
-        { id: 5, name: 'Item 4' },
-        { id: 6, name: 'Item 4' },
-        { id: 7, name: 'Item 4' },
-        { id: 8, name: 'Item 4' },
-        { id: 9, name: 'Item 4' },
-        { id: 10, name: 'Item 4' },
-        { id: 11, name: 'Item 4' },
-        { id: 12, name: 'Item 4' },
-        { id: 13, name: 'Item 4' },
-        { id: 14, name: 'Item 4' },
-        { id: 15, name: 'Item 4' },
-        { id: 16, name: 'Item 4' },
-        { id: 17, name: 'Item 5' }
+    
+    const songs: Song[] = [
+        {songNo: 1, songMemberNo : 0, songTitle : 'song1', songGenreNo : 1, songImageNo : 0, songFileNo : 1, songMoodNo : 1, songDetail: null, songLicense : null},
+        {songNo: 2, songMemberNo : 0, songTitle : 'song2', songGenreNo : 1, songImageNo : 0, songFileNo : 1, songMoodNo : 1, songDetail: null, songLicense : '라이선스2'},
+        {songNo: 3, songMemberNo : 0, songTitle : 'song3', songGenreNo : 1, songImageNo : 0, songFileNo : 1, songMoodNo : 1, songDetail: null, songLicense : null},
+        {songNo: 4, songMemberNo : 0, songTitle : 'song4', songGenreNo : 1, songImageNo : 0, songFileNo : 1, songMoodNo : 1, songDetail: null, songLicense : '라이선스4'},
+        {songNo: 5, songMemberNo : 0, songTitle : 'song5', songGenreNo : 1, songImageNo : 0, songFileNo : 1, songMoodNo : 1, songDetail: null, songLicense : '라이선스5'},
+        {songNo: 6, songMemberNo : 0, songTitle : 'song6', songGenreNo : 1, songImageNo : 0, songFileNo : 1, songMoodNo : 1, songDetail: null, songLicense : '라이선스6'},
+        {songNo: 7, songMemberNo : 0, songTitle : 'song7', songGenreNo : 1, songImageNo : 0, songFileNo : 1, songMoodNo : 1, songDetail: null, songLicense : '라이선스7'},
+        {songNo: 8, songMemberNo : 0, songTitle : 'song8', songGenreNo : 1, songImageNo : 0, songFileNo : 1, songMoodNo : 1, songDetail: null, songLicense : '라이선스8'},
       ];
     
     //선택한 요소
-    const [activeItemNo, setActiveItemNo] = useState<number | null>(null);
-
+    const [activeSongNo, setActiveSongNo] = useState<number | null>(null);
     const handleIconClick = (id: number) => {
-        setActiveItemNo(id === activeItemNo ? null : id);
+        setActiveSongNo(id === activeSongNo ? 0 : id);
     };
 
+    const props:Props = {
+        activeSongNo,
+        setActiveSongNo
+    }
+    
+ 
 
 
+    const [licenseItem, setLicenseItem] = useState<number | null>(null); 
+    const handleLicenseClick = (id:number) => {    
+        setLicenseItem(id === licenseItem ? null : id);
+    }
 
+    
     return (
         <>
             <div className='search-list-title' style={{height: "50px", padding:"0 10%", width:"80%"}}>
                 <p style={{...searchListFontStyle, fontSize:"24px"}}>다운로드 TOP 20</p>
             </div>
             <div className='search-list-content' style={{padding : "0 10%", width: "80%"}}>
-                
                 {
 
-                testItems.map( Item => (
+                songs.map( Song => (
                 //검색결과를 플레이리스트로 반환 (반복)
-               
-                <div className='search-list' key={Item.id} style={{...searchListBoxStyle}}>
+                <>
+                <div className='search-list' key={Song.songNo} style={{...searchListBoxStyle}}>
             
                     <div className='play-icon' style={{...iconBoxSizeStyle}} >
-                        <img src={Item.id === activeItemNo ? "images/pause-button-icon-white.png" : "images/play-icon.png"} 
+                        <img src={Song.songNo === activeSongNo ? "images/pause-button-icon-white.png" : "images/play-icon-white.png"} 
                             style={{height:"100%", width:"100%"}}
-                            onClick={()=>handleIconClick(Item.id)}/>
+                            onClick={()=>handleIconClick(Song.songNo)}/>
                     </div>
                     {/* 이미지 있는 경우 해당 이미지 보여주기, 없는 경우 default image */}
                     <div className='song-image' style={{width:"50px", height:"50px"}}>
@@ -75,7 +77,7 @@ function SearchList(){
 
                     {/* 재생중일 때 나타나는 헤드폰 아이콘 */}
                     <div className='headphone-icon' style={{...iconBoxSizeStyle}}>
-                        {activeItemNo === Item.id && (<img src="images/headphone-icon.png" style={{height:"100%", width:"100%"}}/>)}
+                        {activeSongNo === Song.songNo && (<img src="images/headphone-icon.png" style={{height:"100%", width:"100%"}}/>)}
                     </div>
 
                     <div className='genre-box' style={{...itemBoxStyle}}>
@@ -87,7 +89,9 @@ function SearchList(){
                     
                     {/* 라이센스가 있을 경우 나타나는 아이콘 */}
                     <div className='license-icon' style={{...iconBoxSizeStyle}}>
-                        <img src='images/license-icon.png' style={{height:"100%", width:"100%"}}/>
+                        {  Song.songLicense !== null && 
+                            (<img src='images/license-icon.png' style={{height:"100%", width:"100%"}}/>)
+                        }
                     </div>
                     
                     <div className='play-time-box' style={{display:"flex", alignItems:"center", height: "38px"}}>
@@ -106,16 +110,34 @@ function SearchList(){
                     <div className='share-icon' style={{...iconBoxSizeStyle}}>
                         <img src='images/share-icon.png' style={{height:"100%", width:"100%"}}/>
                     </div>
-                    <div className='open-icon' style={{...iconBoxSizeStyle}}>
-                        <img src="images/open-icon.png" style={{height:"100%", width:"100%"}}/>
+
+                    {/* 클릭했을 경우 아래 박스가 라이선스 표기 영역이 표시됨 */}
+                    <div className='open-icon' style={{...iconBoxSizeStyle}} >
+                        {  Song.songLicense !== null && 
+                            (<img src={licenseItem===Song.songNo ? "images/open-icon-now.png" : "images/open-icon.png"} 
+                                style={{height:"100%", width:"100%"}} 
+                                onClick={()=>{handleLicenseClick(Song.songNo)}}/>)
+                        }   
                     </div>
-
-
                 </div>
+                
+                {   licenseItem === Song.songNo && 
+                     (<div className="license-box" style={{...searchListBoxStyle, alignItems:"", border : 0, borderTopLeftRadius: 0, borderTopRightRadius: 0, borderBottomRightRadius: "10px", borderBottomLeftRadius: "10px"}}>
+                     <div className="license-text-box" style={{...searchListBoxStyle, width:"98%", height:"85%", background: "#FFFFFF", borderRadius: "10px"}}>
+                         <p style={{...searchListFontStyle, fontSize:"18px", width:"85%", height:"85%"}}>{Song.songLicense}</p>
+                         <div className='license-copy-icon' style={{...itemBoxStyle, background: "#1C003B", width:"10%", height:"65%"}} >
+                             <img src="images/copy-Icon-white.png"/>
+                         </div>
+                     </div>
+                     </div>)
+                }
+                </>
                 ) )
             }
             </div>
+            
 
+            <Player {...props} />
         </>
     );
 }

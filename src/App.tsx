@@ -4,7 +4,7 @@ import MainBanner from './pages/MainBanner';
 import SearchBar from './pages/SearchBar';
 import GenreSearch from './pages/GenreSearch';
 import SearchList from './pages/SearchList';
-import Player from './pages/PlayBar';
+
 
 function App() {
 
@@ -17,7 +17,7 @@ function App() {
       <GenreSearch/>
       <SearchBar/>
       <SearchList/>
-      <Player/>
+      
       
     </div>    
   );
