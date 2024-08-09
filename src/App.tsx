@@ -1,25 +1,25 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import PlaceDevider from './components/PlaceDevider';
+import MainBanner from './pages/MainBanner';
+import SearchBar from './pages/SearchBar';
+import GenreSearch from './pages/GenreSearch';
+import SearchList from './pages/SearchList';
+
 
 function App() {
+
+  
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      
+      <PlaceDevider/>
+      <MainBanner/>               
+      <GenreSearch/>
+      <SearchBar/>
+      <SearchList/>
+      
+      
+    </div>    
   );
 }
 
