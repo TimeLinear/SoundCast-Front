@@ -9,7 +9,7 @@ function App() {
   
   return (
     <div className="App">
-      <div className='header' style={{height:"110px", width:"1024px", boxSizing:"border-box", flexGrow:"1"}}></div>
+      <div className='header' style={{height:"110px", boxSizing:"border-box", minWidth:"600px"}}></div>
       <PlaceDevider/>
       <Routes>
           <Route path='/' element={<div>메인페이지</div>}/>
