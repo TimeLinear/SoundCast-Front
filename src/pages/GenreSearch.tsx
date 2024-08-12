@@ -40,16 +40,19 @@ function GenreSearch (){
 
     return(
       <>
-        <div className='search-genre' style={{...genreCommonStyle, boxSizing: "border-box", width:"100%", height:"65px", background:"#1C003B"}} >
+        <div className='search-genre' 
+          onMouseOut={handleMouseOut}
+          style={{...genreCommonStyle, boxSizing: "border-box", width:"100%", height:"65px", background:"#1C003B"}} >
           <div className='genre' style={{...genreCommonStyle, ...genreItemStyle, boxSizing: "border-box", background:"#BA9FCC"}}>
             <span style={{...genreItemFontStyle ,color:"#FFFFFF"}} >모든 장르</span>
           </div>
               {/* 여기서 부터 select 결과 출력 */}
           {
             genres.map( genre => (
-            <div className='genre' 
+            <div className='genre'
+                key={genre.genreNo}
                 onMouseOver={handleMouseOver}
-                onMouseOut={handleMouseOut}
+                
                 style={{...genreCommonStyle, ...genreItemStyle, boxSizing: "border-box"}}>
               <span style={{...genreItemFontStyle}}>{genre.genreName}</span>
             </div>

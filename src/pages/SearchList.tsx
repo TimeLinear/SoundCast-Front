@@ -1,8 +1,8 @@
-
-import { useState } from "react";
-import { Song } from "../type/SongType";
+import { useEffect, useState } from "react";
+import { initSong, Song } from "../type/SongType";
 import { Props } from "../type/SongType";
 import Player from "./PlayBar";
+import axios from "axios";
 
 function SearchList(){
 
@@ -25,22 +25,53 @@ function SearchList(){
       ];
     
     //선택한 요소
-    const [activeSongNo, setActiveSongNo] = useState<number | null>(null);
+    const [activeSongNo, setActiveSongNo] = useState<number|null>(null);
+    const [activeSong, setActiveSong] = useState<Song>(initSong);
+    
     const handleIconClick = (id: number) => {
         setActiveSongNo(id === activeSongNo ? 0 : id);
+        console.log(activeSongNo);         
     };
+
+    useEffect(()=>{
+        if(activeSongNo !== null){
+            axios.get(`http://localhost:8087/soundcast/selectSong/${activeSongNo}`)
+                .then((response)=>
+                    // setActiveSong(response.data)
+                    console.log(response.data))
+                .catch((error) => {
+                    if (error.response) {
+                        // 서버가 응답을 반환했으나, 상태 코드가 2xx가 아닌 경우
+                        console.log('Error Response:', error.response.data);
+                    } else if (error.request) {
+                        // 요청이 만들어졌으나, 서버로부터 응답을 받지 못한 경우
+                        console.log('Request Error:', error.request);
+                    } else {
+                        // 요청을 만드는 과정에서 오류가 발생한 경우
+                        console.log('Error Message:', error.message);
+                    }
+                    console.log('Error Config:', error.config);
+                })
+        }
+        console.log(activeSong);  
+    },[activeSongNo])
 
     const props:Props = {
         activeSongNo,
-        setActiveSongNo
+        setActiveSongNo,
+        activeSong
     }
-    
- 
+
 
 
     const [licenseItem, setLicenseItem] = useState<number | null>(null); 
     const handleLicenseClick = (id:number) => {    
         setLicenseItem(id === licenseItem ? null : id);
+    }
+    const licenseCopy = (license:string) => {
+        navigator.clipboard.writeText(license)
+            .then(()=>{alert("음원의 라이선스가 복사되었습니다!")})
+            .catch((err)=>{console.log(err)})
     }
 
     
@@ -125,8 +156,10 @@ function SearchList(){
                      (<div className="license-box" style={{...searchListBoxStyle, alignItems:"", border : 0, borderTopLeftRadius: 0, borderTopRightRadius: 0, borderBottomRightRadius: "10px", borderBottomLeftRadius: "10px"}}>
                      <div className="license-text-box" style={{...searchListBoxStyle, width:"98%", height:"85%", background: "#FFFFFF", borderRadius: "10px"}}>
                          <p style={{...searchListFontStyle, fontSize:"18px", width:"85%", height:"85%"}}>{Song.songLicense}</p>
-                         <div className='license-copy-icon' style={{...itemBoxStyle, background: "#1C003B", width:"10%", height:"65%"}} >
-                             <img src="images/copy-Icon-white.png"/>
+                         <div className='license-copy-icon' 
+                            onClick={()=> {if(Song.songLicense!==null){licenseCopy(Song.songLicense)}}}
+                            style={{...itemBoxStyle, background: "#1C003B", width:"10%", height:"65%"}} >
+                            <img src="images/copy-Icon-white.png"/>
                          </div>
                      </div>
                      </div>)
