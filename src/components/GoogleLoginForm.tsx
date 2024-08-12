@@ -1,107 +1,47 @@
 import { CredentialResponse, GoogleCredentialResponse, GoogleLogin, GoogleOAuthProvider, TokenResponse } from "@react-oauth/google";
 
-import axios from "axios";
-import { setCookie } from "../utils/Cookie";
+import axios from "../utils/CustomAxios";
+import { getCookie, setCookie, setSessionCookie } from "../utils/Cookie";
+import { useDispatch, useSelector } from "react-redux";
+import memberSlice, { login } from "../features/memberSlice";
+import { useNavigate } from "react-router-dom";
+import { RootState } from "../store/store";
+import { useState } from "react";
+import Signup from "./Signup";
 
 
-const GoogleLoginForm = ({setUser}:{setUser:(data:any)=>void}) => { 
+const GoogleLoginForm = () => { 
     
     const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID as string;
-    const clientSecret = process.env.REACT_APP_GOOGLE_OAUTH_CLIENT_SECRET as string;
-    const redirect_url = process.env.REACT_APP_GOOGLE_REDIRECT_URL as string;
-   
-    // const url = 'https://accounts.google.com/o/oauth2/v2/auth?client_id=' +
-    //         clientId +
-    //         '&redirect_uri=' +
-    //         redirect_url +
-    //         '&response_type=code' +
-    //         '&scope=email profile';
-      
+    const dispatch = useDispatch();
+   //유저정보 담는 store 생성
+    const member = useSelector((state:RootState)=>state.member );
+    const [showSignUpModal, setShowSignUpModal] = useState(false);
     
-     
-    // const getUserData = useGoogleLogin({
-    //     onSuccess:(tokenResponse) =>{
-    //         const ACCESS_TOKEN = tokenResponse.access_token;
-    //     }
-    // })
-    //console.log('google token', getUserData);
-
-    const token = (data:TokenResponse)=>{
-       return data.access_token;
-    }
-
     
-
 
     const googleOnSuccess =(data:CredentialResponse)=>{
         const Credential = data.credential;
-
+        console.log("크리덴셜"+Credential);
         axios
             .post("http://localhost:8087/soundcast/login/google",{
                 Credential
             })
             .then(res => {
-                console.log(res);
+               
                 const JwtToken = res.data.jwtToken;
-                setCookie("accessToken",JwtToken);
+                
+                setSessionCookie("accessToken",JwtToken);
+                dispatch(login(res.data.member));
+               
             })
             .catch(error => {
                 console.log(error);
             })
+
     }
 
-    // const googleOnSuccess = (data: GoogleCredentialResponse) => {
-    //     const credential = data.credential; // Google에서 받은 자격증명
     
-    //     // 서버에 POST 요청을 보내서 JWT 토큰을 받아옵니다.
-    //     axios.post("http://localhost:8087/soundcast/login/google", 
-    //         { credential },
-    //         {
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             }
-    //         }
-    //     )
-    //     .then(res => {
-    //         // JWT 토큰을 성공적으로 받아오면
-    //         const token = res.data.access_token; // 서버에서 받은 토큰
-    //         console.log('JWT Token:', token);
-    
-    //         // 이후에 다른 요청에서 이 토큰을 사용할 수 있습니다.
-    //         // 예를 들어, 다음 요청에 토큰을 포함시키기
-    //         axios.get("http://localhost:8087/soundcast/google", {
-    //             headers: {
-    //                 'Authorization': `Bearer ${token}` // JWT 토큰 포함
-    //             }
-    //         })
-    //         .then(response => {
-    //             console.log('Protected data:', response.data);
-    //         })
-    //         .catch(error => {
-    //             console.error('Error fetching protected data:', error);
-    //         });
-    //     })
-    //     .catch(err => {
-    //         console.error('Error during login:', err);
-    //     });
-    // };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     const googleOnFail = () =>{
        console.log("오류");
     }
@@ -115,6 +55,7 @@ const GoogleLoginForm = ({setUser}:{setUser:(data:any)=>void}) => {
                     onError={googleOnFail}
                 />
             </GoogleOAuthProvider>
+            
         </>
     );
 };

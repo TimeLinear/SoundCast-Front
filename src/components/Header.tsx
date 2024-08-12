@@ -1,13 +1,15 @@
 import { useState } from "react";
 import Modal from "./Modal";
-import { User } from "../type/user";
+
+import { Member } from "../type/memberType";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../store/store";
+import { logout } from "../features/memberSlice";
 
 
 function Header() {
-    const [user, setUser] = useState<User | null>(null);
-
-
-
+    const member = useSelector((state:RootState)=>state.member );
+    const dispatch = useDispatch();
     const [showModal, setShowModal]=useState(false);
 
     const loginHandler = () =>{
@@ -17,6 +19,12 @@ function Header() {
     const loginCloseHandler = () =>{
         setShowModal(false);
     }
+    
+    const logoutHandler = ()=>{
+        dispatch(logout());
+       
+    }
+
 
     const [showSignup, setShowSignup] = useState(false);
     const openSignup = () => setShowSignup(true);
@@ -41,24 +49,27 @@ function Header() {
                     </button>
 
                 </div>
+                {member.nickName === "" ? (
+                    <div className="Login">
+                        <button onClick={loginHandler}>
+                            
+                            <span>
+                                <img src=".\images\default\Login.png"/>
+                            </span>
+                            <span>Login</span>
+                        </button>
+                    </div>
+                    
 
-                <div className="Login">
-                    <button onClick={loginHandler}>
-                        
-                        <span>
-                            <img src=".\images\default\Login.png"/>
-                        </span>
-                        <span>Login</span>
-                    </button>
-                </div>
-              
-                {/* <div className="Logout">
-                    <button>
+                 ):(
+                    <>
+                 <div className="Logout">
+                    <button onClick={logoutHandler}>
                         <span>
                             <img src=".\images\default\logout.png"/>
                         </span>
                         <span>Logout</span>
-                    </button>
+                    </button >
                 </div>
 
                 <div className="Header-profile">
@@ -67,7 +78,8 @@ function Header() {
                     
                     
                 </div>
-                 */}
+                 </>
+                )}
 
 
 

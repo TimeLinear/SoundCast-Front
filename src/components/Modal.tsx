@@ -1,17 +1,28 @@
-import { MouseEvent, useState } from 'react';
+import { MouseEvent, useEffect, useState } from 'react';
 import '../pages/css/Modal.css';
 import GoogleLoginForm from './GoogleLoginForm';
-import { User } from '../type/user';
+
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
 const Modal = ({show, handleClose}:{show:boolean, handleClose:() => void}) => {
     const showHideClassName = show ? "modal display-block" : "modal display-none";
+    const member = useSelector((state:RootState) => state.member);
+   //member객체 추적해서 이벤트변경해주는함수 useEffect 
+    useEffect(() => {
+        handleClose();
+    }, [member]) 
+
+
+
+    
 
     const handleBackgroundClick = (event:MouseEvent) => {
         if (event.target === event.currentTarget) {
             handleClose();
         }
     };
-    const [user, setUser] = useState<User | null>(null);
+   
     return (
         <div className={showHideClassName} onClick={handleBackgroundClick}>
             <div className="modal-main">
@@ -21,9 +32,9 @@ const Modal = ({show, handleClose}:{show:boolean, handleClose:() => void}) => {
                         <h2 className='h2' style={{ color: 'black' }}>로그인</h2>
                         <p style={{ color: '#BBBBBB' }}>지금 바로 서비스를 이용해 보세요!</p>
                         <div className="login-buttons">
-                            <button className="login-btn kakao">카카오로 로그인</button>
+                            <GoogleLoginForm />
                             <button className="login-btn naver">네이버로 로그인</button>
-                            <GoogleLoginForm setUser={setUser}/>
+                            <button className="login-btn kakao">카카오로 로그인</button>
                         </div>
                 </div>
             </div>

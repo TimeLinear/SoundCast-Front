@@ -7,6 +7,11 @@ export const setCookie = (name: string, value: string) =>{
 
 }
 
+export const setSessionCookie =  (name: string, value: string) =>{
+    return cookies.set(name, value, { path:'/'})
+}
+
+
 export const getCookie = (name: string) =>{
     return cookies.get(name);
 }

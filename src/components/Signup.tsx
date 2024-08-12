@@ -1,8 +1,45 @@
+import { CredentialResponse } from '@react-oauth/google';
 import '../pages/css/Signup.css';
+import axios from '../utils/CustomAxios';
+import { setSessionCookie } from '../utils/Cookie';
+import { useDispatch } from 'react-redux';
+import { login } from '../features/memberSlice';
+import GoogleLoginForm from './GoogleLoginForm';
 
 const Signup = ({ showSign, Close } : {showSign:boolean, Close:()=>void}) => {
 
     const showHideClassName = showSign ? "modal display-block" : "modal display-none";
+    const dispatch=useDispatch();
+
+
+    // const googleOnSuccess =(data:CredentialResponse)=>{
+    //     const Credential = data.credential;
+    //     console.log("크리덴셜"+Credential);
+    //     axios
+    //         .post("http://localhost:8087/soundcast/enroll/google",{
+    //             Credential
+    //         })
+    //         .then(res => {
+    //                 const JwtToken = res.data.jwtToken;
+    //                 setSessionCookie("accessToken",JwtToken);
+    //                 dispatch(login(res.data.member));
+
+    //             })
+
+    //         .catch(error => {
+    //             console.log(error);
+    //         })
+
+    // }
+
+    // const googleOnFail = () =>{
+    //     console.log("오류");
+    //  }
+ 
+
+
+
+
 
     return (
         <div className={showHideClassName}>
@@ -20,9 +57,10 @@ const Signup = ({ showSign, Close } : {showSign:boolean, Close:()=>void}) => {
                         <div className='heighline'><p>체크하지 않으실 경우<br/> 이벤트,혜택 제공이 제외될 수 있습니다.</p></div>
                     </div>
                     <div className="signup-buttons">
+                        <GoogleLoginForm />
                         <button className="signup-btn kakao">카카오로 간편가입</button>
                         <button className="signup-btn naver">네이버로 간편가입</button>
-                        <button className="signup-btn google">구글로 간편가입</button>
+                        
                     </div>
                 </div>
             </div>
