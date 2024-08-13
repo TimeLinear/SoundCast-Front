@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
-import { initSong, Song } from "../type/SongType";
+import { initSongs, Song } from "../type/SongType";
 import { Props } from "../type/SongType";
 import Player from "./PlayBar";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { setSongList, setPlaySong } from "../features/songSlice";
+import { RootState } from "../store/store";
 
 function SearchList(){
 
@@ -12,57 +15,52 @@ function SearchList(){
     const searchListFontStyle = {fontFamily:"Inter", fontStyle:"normal", fontSize:"20px", fontWeight:"700", lineHeight:"24px", color :"#000000"};
     const itemBoxStyle = {display: "flex", alignItems: "center", justifyContent: "center", width: "120px", height: "38px", background: "#FFFFFF", borderRadius: "10px"};
     const iconBoxSizeStyle = { height: "35px", width: "35px"};
-    
-    const songs: Song[] = [
-        {songNo: 1, songMemberNo : 0, songTitle : 'song1', songGenreNo : 1, songImageNo : 0, songFileNo : 1, songMoodNo : 1, songDetail: null, songLicense : null},
-        {songNo: 2, songMemberNo : 0, songTitle : 'song2', songGenreNo : 1, songImageNo : 0, songFileNo : 1, songMoodNo : 1, songDetail: null, songLicense : '라이선스2'},
-        {songNo: 3, songMemberNo : 0, songTitle : 'song3', songGenreNo : 1, songImageNo : 0, songFileNo : 1, songMoodNo : 1, songDetail: null, songLicense : null},
-        {songNo: 4, songMemberNo : 0, songTitle : 'song4', songGenreNo : 1, songImageNo : 0, songFileNo : 1, songMoodNo : 1, songDetail: null, songLicense : '라이선스4'},
-        {songNo: 5, songMemberNo : 0, songTitle : 'song5', songGenreNo : 1, songImageNo : 0, songFileNo : 1, songMoodNo : 1, songDetail: null, songLicense : '라이선스5'},
-        {songNo: 6, songMemberNo : 0, songTitle : 'song6', songGenreNo : 1, songImageNo : 0, songFileNo : 1, songMoodNo : 1, songDetail: null, songLicense : '라이선스6'},
-        {songNo: 7, songMemberNo : 0, songTitle : 'song7', songGenreNo : 1, songImageNo : 0, songFileNo : 1, songMoodNo : 1, songDetail: null, songLicense : '라이선스7'},
-        {songNo: 8, songMemberNo : 0, songTitle : 'song8', songGenreNo : 1, songImageNo : 0, songFileNo : 1, songMoodNo : 1, songDetail: null, songLicense : '라이선스8'},
-      ];
-    
+ 
+    const song = useSelector((state:RootState)=>state.song);
+    const dispatch = useDispatch();
+    const songs = initSongs;
+
     //선택한 요소
     const [activeSongNo, setActiveSongNo] = useState<number|null>(null);
-    const [activeSong, setActiveSong] = useState<Song>(initSong);
-    
+       
     const handleIconClick = (id: number) => {
         setActiveSongNo(id === activeSongNo ? 0 : id);
-        console.log(activeSongNo);         
     };
-
     useEffect(()=>{
-        if(activeSongNo !== null){
-            axios.get(`http://localhost:8087/soundcast/selectSong/${activeSongNo}`)
-                .then((response)=>
-                    // setActiveSong(response.data)
-                    console.log(response.data))
-                .catch((error) => {
-                    if (error.response) {
-                        // 서버가 응답을 반환했으나, 상태 코드가 2xx가 아닌 경우
-                        console.log('Error Response:', error.response.data);
-                    } else if (error.request) {
-                        // 요청이 만들어졌으나, 서버로부터 응답을 받지 못한 경우
-                        console.log('Request Error:', error.request);
-                    } else {
-                        // 요청을 만드는 과정에서 오류가 발생한 경우
-                        console.log('Error Message:', error.message);
-                    }
-                    console.log('Error Config:', error.config);
-                })
+        if(activeSongNo!==null){
+            dispatch(setPlaySong(activeSongNo));
         }
-        console.log(activeSong);  
     },[activeSongNo])
+
+    
+    // useEffect(()=>{
+    //     if(activeSongNo !== null){
+    //         axios.get(`http://localhost:8087/soundcast/selectSong/${activeSongNo}`)
+    //             .then((response)=>
+    //                 dispatch(setPlaySong(response.data))
+                    
+    //             )
+    //             .catch((error) => {
+    //                 if (error.response) {
+    //                     // 서버가 응답을 반환했으나, 상태 코드가 2xx가 아닌 경우
+    //                     console.log('Error Response:', error.response.data);
+    //                 } else if (error.request) {
+    //                     // 요청이 만들어졌으나, 서버로부터 응답을 받지 못한 경우
+    //                     console.log('Request Error:', error.request);
+    //                 } else {
+    //                     // 요청을 만드는 과정에서 오류가 발생한 경우
+    //                     console.log('Error Message:', error.message);
+    //                 }
+    //                 console.log('Error Config:', error.config);
+    //             })
+    //     }
+        
+    // },[activeSongNo])
 
     const props:Props = {
         activeSongNo,
-        setActiveSongNo,
-        activeSong
+        setActiveSongNo
     }
-
-
 
     const [licenseItem, setLicenseItem] = useState<number | null>(null); 
     const handleLicenseClick = (id:number) => {    
@@ -99,10 +97,10 @@ function SearchList(){
                     </div>
                     <div className='song-content' style={{width:"300px", height:"50px"}}>
                         <div className='song-title' style={{height:"50%"}}>
-                            <span style={{...searchListFontStyle, color:"#FFFFFF"}}>Time is Eating</span>
+                            <span style={{...searchListFontStyle, color:"#FFFFFF"}}>{Song.songTitle}</span>
                         </div>
                         <div className='artist-name' style={{height:"50%"}}>
-                            <span style={{...searchListFontStyle, fontSize:"15px", lineHeight:"18px", color:"#FFFFFF"}}>아티스트명</span>
+                            <span style={{...searchListFontStyle, fontSize:"15px", lineHeight:"18px", color:"#FFFFFF"}}>{Song.songMemberNo}</span>
                         </div> 
                     </div>
 
@@ -112,10 +110,10 @@ function SearchList(){
                     </div>
 
                     <div className='genre-box' style={{...itemBoxStyle}}>
-                        <span style={{...searchListFontStyle}}>장르</span>
+                        <span style={{...searchListFontStyle}}>{Song.songGenreNo}</span>
                     </div>
                     <div className='mood-box' style={{...itemBoxStyle}}>
-                        <span style={{...searchListFontStyle}}>분위기</span>
+                        <span style={{...searchListFontStyle}}>{Song.songMoodNo}</span>
                     </div>
                     
                     {/* 라이센스가 있을 경우 나타나는 아이콘 */}

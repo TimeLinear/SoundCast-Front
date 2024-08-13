@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import {Genre} from "../type/SongType";
 import MoodSearch from "./MoodSearch";
+import { useDispatch } from "react-redux";
+import { setKeyword } from "../features/keywordSlice";
 
 function GenreSearch (){
   
@@ -31,6 +33,8 @@ function GenreSearch (){
     setIsHovered(false);
   }
 
+  const dispatch = useDispatch();
+
   useEffect(()=>{
      //db에 저장된 장르 검색하여 state에 저장 후 결과 출력
 
@@ -52,7 +56,7 @@ function GenreSearch (){
             <div className='genre'
                 key={genre.genreNo}
                 onMouseOver={handleMouseOver}
-                
+                onClick={()=>dispatch(setKeyword(genre.genreName))}
                 style={{...genreCommonStyle, ...genreItemStyle, boxSizing: "border-box"}}>
               <span style={{...genreItemFontStyle}}>{genre.genreName}</span>
             </div>
@@ -64,8 +68,5 @@ function GenreSearch (){
        
     );
 }
-
-
-
 
 export default GenreSearch;
