@@ -48,3 +48,35 @@ export type Mood = {
     moodNo : number,
     moodName : string
 }
+
+export const initGenres:Genre[] = [
+	{genreNo : 1 , genreName: '장르1'},
+    {genreNo : 2 , genreName: '장르2'},
+    {genreNo : 3 , genreName: '장르3'},
+    {genreNo : 4 , genreName: '장르4'},
+    {genreNo : 5 , genreName: '장르5'},
+    {genreNo : 6 , genreName: '장르6'},
+    {genreNo : 7 , genreName: '장르7'},
+    {genreNo : 8 , genreName: '장르8'},
+    {genreNo : 9 , genreName: '장르9'},
+    {genreNo : 10 , genreName: '장르10'}
+
+]
+
+export const initMoods:Mood[] = [
+	{moodNo : 1 , moodName: '분위기1'},
+    {moodNo : 2 , moodName: '분위기2'},
+	{moodNo : 3 , moodName: '분위기3'},
+    {moodNo : 4 , moodName: '분위기4'},
+    {moodNo : 5 , moodName: '분위기5'},
+    {moodNo : 6 , moodName: '분위기6'},   
+    {moodNo : 7 , moodName: '분위기7'},   
+    {moodNo : 8 , moodName: '분위기8'},   
+    {moodNo : 9 , moodName: '분위기9'},   
+    {moodNo : 10 , moodName: '분위기10'},   
+    {moodNo : 11 , moodName: '분위기11'},   
+    {moodNo : 12 , moodName: '분위기12'},   
+    {moodNo : 13 , moodName: '분위기13'},   
+    {moodNo : 14, moodName: '분위기14'}   
+
+]

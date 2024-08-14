@@ -56,7 +56,10 @@ function GenreSearch (){
             <div className='genre'
                 key={genre.genreNo}
                 onMouseOver={handleMouseOver}
-                onClick={()=>dispatch(setKeyword(genre.genreName))}
+                onClick={()=>
+                  dispatch(setKeyword(genre.genreName))
+                  
+                }
                 style={{...genreCommonStyle, ...genreItemStyle, boxSizing: "border-box"}}>
               <span style={{...genreItemFontStyle}}>{genre.genreName}</span>
             </div>

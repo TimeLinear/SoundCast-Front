@@ -10,6 +10,7 @@ import { RootState } from './store/store';
 import { useEffect, useState } from 'react';
 import { setSongList } from './features/songSlice';
 import axios from 'axios';
+import UpdateMySong from './pages/UpdateMySong';
 
 
 function App() {
@@ -27,7 +28,7 @@ function App() {
     
   },[]);
 
-  return (
+
     <div className="App">
       {/* 헤더 */}
       <PlaceDevider/>
@@ -51,8 +52,14 @@ function App() {
           }/>
       </Routes>
 
-      
     </div>    
+
+return (
+
+  <UpdateMySong/>
+
+
+
   );
 }
 
