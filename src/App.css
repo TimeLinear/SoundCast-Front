@@ -7,6 +7,6 @@
 }
 
 .App div {
-  outline: 1px solid rgba(0, 0, 0, 0.473);
+  /* outline: 1px solid rgba(0, 0, 0, 0.473); */
   box-sizing: border-box;
 }
