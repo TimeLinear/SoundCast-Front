@@ -29,38 +29,36 @@ function App() {
   },[]);
 
 
-    <div className="App">
-      {/* 헤더 */}
-      <PlaceDevider/>
+
+  return (
+      <div className="App">
+        <UpdateMySong/>
+        {/* 헤더 */}
+        <PlaceDevider/>
         
-      <Routes>    
-      {/* 검색어가 없을 경우 null일때  MainBanner를 표시 // 있으면 사라짐 >> 삼항 연산자?*/}
-        <Route path='/' element={
-          <>  
-            <MainBanner/>
-            <GenreSearch/>
-            <SearchBar/>
-            <SearchList/>
-          </>
-        }/>
-        <Route path='/search' element={
-          <>
-            <GenreSearch/>
-            <SearchBar/>
-            <SearchList />
-          </>
+          
+        <Routes>    
+        {/* 검색어가 없을 경우 null일때  MainBanner를 표시 // 있으면 사라짐 >> 삼항 연산자?*/}
+          <Route path='/' element={
+            <>  
+              <MainBanner/>
+              <GenreSearch/>
+              <SearchBar/>
+              <SearchList/>
+            </>
           }/>
-      </Routes>
+          <Route path='/search' element={
+            <>
+              <GenreSearch/>
+              <SearchBar/>
+              <SearchList />
+            </>
+            }/>
+        </Routes>
 
-    </div>    
+      </div>    
 
-return (
-
-  <UpdateMySong/>
-
-
-
-  );
+    );
 }
 
 export default App;

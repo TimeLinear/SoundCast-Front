@@ -17,7 +17,7 @@ function UpdateMySong(){
     const [color, setColor] = useState("#FFFFFF"); 
 
     const changeColor = () => {
-        
+        setColor("#DDDDDD")
     }
 
 
@@ -38,7 +38,7 @@ function UpdateMySong(){
    }
 
     return (
-        <div className="update-modal" style={{ margin: 0, height: "100vh", width:"100%", backgroundColor:"rgba(212, 212, 212, 0.1)", display: "flex", alignItems:"center", justifyContent: "center"}}>
+        <div className="update-modal" style={{position : "fixed", zIndex: 10, height: "100vh", width:"100%", backgroundColor:"rgba(0, 0, 0, 0.7)", display: "flex", alignItems:"center", justifyContent: "center"}}>
         <div className="update-my-song-modal"
             style={{width:"935px", height:"690px", borderRadius:"10px", display:"flex", border:"0.3px solid "}}>
             
@@ -156,7 +156,7 @@ function UpdateMySong(){
                                 genres.map( genre => (
                                 <div className='genre'
                                     key={genre.genreNo}
-                                    onClick={()=>{changeColor}}
+                                    onClick={changeColor}
                                     style={{width:"80px", height:"25px", marginRight:"5px", backgroundColor:color, borderRadius:"6px", display:"flex",alignItems:"center", justifyContent:"center"}}>
                                     <span style={{...updateSongFontStyle, fontSize:"12px"}}>{genre.genreName}</span>
                                 </div>
