@@ -10,18 +10,27 @@ export type Song = {
 	songTitle: string; // 음원명(유저가 입력)
 	songLicense : string|null; // 음원 출처(유저가 입력)
 	songDetail: string|null; // 음원 상세(유저가 입력)
+	
+	songGenreName? : string;
+	songMoodName?: string
+	songFileOriginName?:string
 };
 
 export const initSong:Song = {
 	songNo: 0, // 음원 번호
 	songMemberNo: 0, // 업로더 회원 번호
-	songMoodNo: 0, // 음원 분위기 번호
-	songGenreNo: 0, // 음원 장르 번호
+	songMoodNo: 5, // 음원 분위기 번호
+	songGenreNo: 3, // 음원 장르 번호
 	songImageNo: 0, // 음원 커버 이미지 번호
 	songFileNo: 0, // 음원 파일 번호
 	songTitle: 'title', // 음원명(유저가 입력)
 	songLicense : 'license', // 음원 출처(유저가 입력)
-	songDetail: 'detail' // 음원 상세(유저가 입력)
+	songDetail: 'detail', // 음원 상세(유저가 입력)
+
+	songGenreName : 'Rock',
+	songMoodName : 'Happy',
+	songFileOriginName : '우주여행.mp3'
+
 }
 
 export const initSongs:Song[] = [
@@ -64,14 +73,14 @@ export const initGenres:Genre[] = [
 ]
 
 export const initMoods:Mood[] = [
-	{moodNo : 1 , moodName: '분위기1'},
-    {moodNo : 2 , moodName: '분위기2'},
-	{moodNo : 3 , moodName: '분위기3'},
-    {moodNo : 4 , moodName: '분위기4'},
-    {moodNo : 5 , moodName: '분위기5'},
-    {moodNo : 6 , moodName: '분위기6'},   
-    {moodNo : 7 , moodName: '분위기7'},   
-    {moodNo : 8 , moodName: '분위기8'},   
+	{moodNo : 1 , moodName: 'Gloomy'},
+    {moodNo : 2 , moodName: 'Dreamer'},
+	{moodNo : 3 , moodName: 'Dark'},
+    {moodNo : 4 , moodName: 'Angry'},
+    {moodNo : 5 , moodName: 'Classical'},
+    {moodNo : 6 , moodName: 'Sound Track'},   
+    {moodNo : 7 , moodName: 'Pop'},   
+    {moodNo : 8 , moodName: 'R&B/Soul'},   
     {moodNo : 9 , moodName: '분위기9'},   
     {moodNo : 10 , moodName: '분위기10'},   
     {moodNo : 11 , moodName: '분위기11'},   
@@ -80,3 +89,4 @@ export const initMoods:Mood[] = [
     {moodNo : 14, moodName: '분위기14'}   
 
 ]
+

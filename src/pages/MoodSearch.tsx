@@ -1,4 +1,6 @@
-import { Mood } from "../type/SongType";
+import { useEffect, useState } from "react";
+import { initMoods, Mood } from "../type/SongType";
+import axios from "axios";
 
 function MoodSearch(props:{ handleMouseOver: () => void; handleMouseOut: () => void; }){
 
@@ -7,15 +9,16 @@ function MoodSearch(props:{ handleMouseOver: () => void; handleMouseOut: () => v
     const moodItemFontStyle = {fontFamily:"Inter", fontStyle:"normal", fontSize:"16px", lineHeight: "19px", fontWeight:"700", color:"#000000"};
     const moodCommonStyle = {display: "flex", justifyContent: "center", alignItems:"center"};
     const moodItemStyle = {width: "130px", height:"40px", marginRight:"10px"}
+
+    const [moods, setMoods] = useState<Mood[]>(initMoods)
+    
+    useEffect(()=>{
+     
+      axios.get("http://localhost:8087/soundcast/moods")
+        .then((response) => setMoods(response.data))
+        .catch((err) => console.log(err))
   
-    const moods:Mood[] = [
-      {moodNo : 1 , moodName: '분위기1'},
-      {moodNo : 2 , moodName: '분위기2'},
-      {moodNo : 3 , moodName: '분위기3'},
-      {moodNo : 4 , moodName: '분위기4'},
-      {moodNo : 5 , moodName: '분위기5'},
-      {moodNo : 6 , moodName: '분위기6'}   
-    ];
+    },[]);
   
     return (
       <div className="search-mood" 

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import {Genre} from "../type/SongType";
+import {Genre, initGenres} from "../type/SongType";
 import MoodSearch from "./MoodSearch";
 import { useDispatch } from "react-redux";
 import { setKeyword } from "../features/keywordSlice";
+import axios from "axios";
 
 function GenreSearch (){
   
@@ -11,19 +12,8 @@ function GenreSearch (){
   const genreCommonStyle = {display: "flex", justifyContent: "center", alignItems:"center"}
   const genreItemStyle = {width: "130px", height:"40px", marginRight:"10px", borderRadius: "10px", background:"#FFFFFF"}
    
-  const genre:Genre = {genreNo : 0 , genreName: '장르1'};
-  const genres:Genre[] = [
-    {genreNo : 1 , genreName: '장르1'},
-    {genreNo : 2 , genreName: '장르2'},
-    {genreNo : 3 , genreName: '장르3'},
-    {genreNo : 4 , genreName: '장르4'},
-    {genreNo : 5 , genreName: '장르5'},
-    {genreNo : 6 , genreName: '장르6'},
-    {genreNo : 7 , genreName: '장르7'},
-    {genreNo : 8 , genreName: '장르8'},
-    {genreNo : 9 , genreName: '장르9'},
-    {genreNo : 10 , genreName: '장르10'}
-  ];
+  const dispatch = useDispatch();
+  const [genres, setGenres] = useState<Genre[]>(initGenres);
 
   const [isHovered, setIsHovered] = useState(false);
   const handleMouseOver = () => {
@@ -33,11 +23,11 @@ function GenreSearch (){
     setIsHovered(false);
   }
 
-  const dispatch = useDispatch();
-
   useEffect(()=>{
-     //db에 저장된 장르 검색하여 state에 저장 후 결과 출력
-
+     
+    axios.get("http://localhost:8087/soundcast/genres")
+      .then((response) => setGenres(response.data))
+      .catch((err) => console.log(err))
 
   },[]);
 
