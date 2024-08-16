@@ -5,6 +5,7 @@ import PlaceDevider from './components/PlaceDevider';
 import { Route, Routes } from 'react-router-dom';
 import MusicDetail from './pages/MusicDetail';
 import Footer from './components/Footer';
+import Mypage from './pages/Mypage';
 
 function App() {
   
@@ -15,6 +16,7 @@ function App() {
       <Routes>
           <Route path='/' element={<div>메인페이지</div>}/>
           <Route path='/music/detail' element={<MusicDetail/>}/>
+          <Route path='/member/mypage' element={<Mypage/>}/>
       </Routes>
       <Footer/>
     </div>

@@ -1,18 +1,18 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
-import { useEffect, useState } from "react";
+import { CSSProperties, useEffect, useState } from "react";
 import { setPlaySong } from "../features/songSlice";
 import { Song } from "../type/SongType";
 
 const SongItem = ({ activeSongNo, setActiveSongNo, songs }: { activeSongNo: number | null, setActiveSongNo: (no: number) => void, songs: Song[] }) => {
 
-    const searchListBoxStyle = {
+    const searchListBoxStyle:CSSProperties = {
         width: "100%", height: "80px", display: "flex", alignItems: "center", justifyContent: "space-evenly",
         background: "#1C003B", borderTop: "1px solid #FFFFFF"
     };
-    const searchListFontStyle = { fontFamily: "Inter", fontStyle: "normal", fontSize: "20px", fontWeight: "700", lineHeight: "24px", color: "#000000" };
-    const itemBoxStyle = { display: "flex", alignItems: "center", justifyContent: "center", width: "120px", height: "38px", background: "#FFFFFF", borderRadius: "10px" };
-    const iconBoxSizeStyle = { height: "35px", width: "35px" };
+    const searchListFontStyle:CSSProperties = { fontFamily: "Inter", fontStyle: "normal", fontSize: "20px", fontWeight: "700", lineHeight: "24px", color: "#000000" };
+    const itemBoxStyle:CSSProperties = { display: "flex", alignItems: "center", justifyContent: "center", width: "120px", height: "38px", background: "#FFFFFF", borderRadius: "10px" };
+    const iconBoxSizeStyle:CSSProperties = { height: "35px", width: "35px"};
 
     const song = useSelector((state: RootState) => state.song);
     const dispatch = useDispatch();
@@ -54,7 +54,7 @@ const SongItem = ({ activeSongNo, setActiveSongNo, songs }: { activeSongNo: numb
                             <div className='song-image' style={{ width: "50px", height: "50px" }}>
                                 <img src='/images/music/song-image.png' style={{ height: "100%", width: "100%" }} />
                             </div>
-                            <div className='song-content' style={{ width: "300px", height: "50px", textAlign: "start", paddingLeft: "20px" }}>
+                            <div className='song-content' style={{ width: "260px", height: "50px", textAlign: "start", paddingLeft: "20px" }}>
                                 <div className='song-title' style={{ height: "50%" }}>
                                     <span style={{ ...searchListFontStyle, color: "#FFFFFF" }}>{Song.songTitle}</span>
                                 </div>
@@ -64,7 +64,7 @@ const SongItem = ({ activeSongNo, setActiveSongNo, songs }: { activeSongNo: numb
                             </div>
 
                             {/* 재생중일 때 나타나는 헤드폰 아이콘 */}
-                            <div className='headphone-icon' style={{ ...iconBoxSizeStyle }}>
+                            <div className='headphone-icon' style={{ ...iconBoxSizeStyle, margin:"0 30px"}}>
                                 {activeSongNo === Song.songNo && (<img src="/images/music/headphone-icon.png" style={{ height: "100%", width: "100%" }} />)}
                             </div>
 
@@ -83,7 +83,7 @@ const SongItem = ({ activeSongNo, setActiveSongNo, songs }: { activeSongNo: numb
                             </div>
 
                             <div className='play-time-box' style={{ display: "flex", alignItems: "center", height: "38px" }}>
-                                <div className='clock-icon' style={{ ...iconBoxSizeStyle, paddingRight: "7px" }}>
+                                <div className='clock-icon' style={{ ...iconBoxSizeStyle, marginRight:"10px"}}>
                                     <img src='/images/music/clock-icon.png' style={{ height: "100%", width: "100%" }} />
                                 </div>
                                 <div className='play-time'>
@@ -102,7 +102,7 @@ const SongItem = ({ activeSongNo, setActiveSongNo, songs }: { activeSongNo: numb
                             {/* 클릭했을 경우 라이센스를 표기하는 아래 박스가 표시됨 */}
                             <div className='open-icon' style={{ ...iconBoxSizeStyle }} >
                                 {Song.songLicense !== null &&
-                                    (<img src={licenseItem === Song.songNo ? "/images/open-icon-now.png" : "/images/open-icon.png"}
+                                    (<img src={licenseItem === Song.songNo ? "/images/music/open-icon-now.png" : "/images/music/open-icon.png"}
                                         style={{ height: "100%", width: "100%" }}
                                         onClick={() => { handleLicenseClick(Song.songNo) }} />)
                                 }
