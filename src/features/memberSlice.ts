@@ -20,15 +20,15 @@ let memberSlice = createSlice({
     initialState,
     reducers:{
         login : (state, action) =>{
-            const member:Member = action.payload;
-           
+            const member = action.payload;
+            console.log(member)
             return {
-                profile:member.profile,
-                nickName: member.nickName,
-                email: member.email,
-                banner: member.banner,
-                introduce: member.introduce,
-                follow: member.follow
+                profile:member.profileImage.profileImagePath,
+                nickName:member.memberNickname,
+                email:member.memberEmail,
+                banner:member.memberBanner.memberBannerPath,
+                introduce:member.memberIntroduce,
+                follow:member.follwer
                 
             }
 

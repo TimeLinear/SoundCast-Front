@@ -1,17 +1,26 @@
 import { useState } from "react";
-import Modal from "./Modal";
+
 
 import { Member } from "../type/memberType";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { logout } from "../features/memberSlice";
 
+import { useNavigate } from "react-router-dom";
+import LoginModal from "./LoginModal";
+import SignUpModal from "./SignUpModal";
+
+
 
 function Header() {
     const member = useSelector((state:RootState)=>state.member );
     const dispatch = useDispatch();
     const [showModal, setShowModal]=useState(false);
+    // const navi = useNavigate();
 
+
+
+    //회원 로그인창 핸들러
     const loginHandler = () =>{
         setShowModal(true);
     }
@@ -25,12 +34,14 @@ function Header() {
        
     }
 
+    // const myPageHandler = () => {
+    //     navi("/myPage");
+    // }
 
-    const [showSignup, setShowSignup] = useState(false);
-    const openSignup = () => setShowSignup(true);
-    const closeSignup = () => setShowSignup(false);
-
-
+    //회원가입 모달창
+    const [showSignUp, setShowSignUp] = useState(false);
+    const openSignUp = () => setShowSignUp(true);
+    const closeSignUp = () => setShowSignUp(false);
 
 
     return(
@@ -63,6 +74,21 @@ function Header() {
 
                  ):(
                     <>
+                 <div className="Header-profile">
+                                {member.profile && (
+                                    <img
+                                        src={member.profile}
+                                        alt="User Profile"
+                                        className="ProfileImage"
+                                        // onClick={myPageHandler}
+                                        style={{cursor:"pointer"}}
+                                    />
+                                )}
+                            </div>
+
+
+
+
                  <div className="Logout">
                     <button onClick={logoutHandler}>
                         <span>
@@ -72,22 +98,15 @@ function Header() {
                     </button >
                 </div>
 
-                <div className="Header-profile">
-                   
-                    <img src=".\images\member\profile\profile_default.png"/>
-                    
-                    
-                </div>
+                
                  </>
                 )}
 
 
 
-      <Modal show={showModal} handleClose={loginCloseHandler} />
+      <LoginModal show={showModal} handleClose={loginCloseHandler} onSignupRequest={openSignUp}  />
       
-     
-      {/* <Signup showSign={showSignup} Close={closeSignup} /> */}
-
+      <SignUpModal showSignUp={showSignUp} openSignUp={openSignUp} closeSignUp={closeSignUp} /> 
             </div>
         </>
 

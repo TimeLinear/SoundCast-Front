@@ -7,10 +7,10 @@ import memberSlice, { login } from "../features/memberSlice";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "../store/store";
 import { useState } from "react";
-import Signup from "./Signup";
+import { Cookies } from "react-cookie";
 
 
-const GoogleLoginForm = () => { 
+const GoogleLoginForm = ({onSignupRequest, handleClose}:{onSignupRequest:()=>void, handleClose:()=>void}) => { 
     
     const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID as string;
     const dispatch = useDispatch();
@@ -18,25 +18,37 @@ const GoogleLoginForm = () => {
     const member = useSelector((state:RootState)=>state.member );
     const [showSignUpModal, setShowSignUpModal] = useState(false);
     
-    
 
     const googleOnSuccess =(data:CredentialResponse)=>{
         const Credential = data.credential;
-        console.log("크리덴셜"+Credential);
+       
         axios
-            .post("http://localhost:8087/soundcast/login/google",{
+            .post("http://localhost:8087/soundcast/auth/login/google",{
                 Credential
             })
             .then(res => {
+                console.log(Credential);
+               if(!res.data.member){
+                new Cookies().set("Credential", res.data.Credential, {maxAge: 60 * 1, path:'/'})
                
-                const JwtToken = res.data.jwtToken;
-                
-                setSessionCookie("accessToken",JwtToken);
-                dispatch(login(res.data.member));
+                onSignupRequest();
+               }
                
+               const JwtToken = res.data.jwtToken;
+               console.log(JwtToken);
+               setSessionCookie("accessToken",JwtToken);
+               
+               console.log(res.data.member);
+               dispatch(login(res.data.member));
+
+
+               handleClose();
+
+
             })
             .catch(error => {
                 console.log(error);
+
             })
 
     }

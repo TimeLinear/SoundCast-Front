@@ -4,8 +4,9 @@ import GoogleLoginForm from './GoogleLoginForm';
 
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
+import KakaoLoginForm from './KakaoLoginForm';
 
-const Modal = ({show, handleClose}:{show:boolean, handleClose:() => void}) => {
+const LoginModal = ({show, handleClose, onSignupRequest}:{show:boolean, handleClose:() => void, onSignupRequest:()=>void} ) => {
     const showHideClassName = show ? "modal display-block" : "modal display-none";
     const member = useSelector((state:RootState) => state.member);
    //member객체 추적해서 이벤트변경해주는함수 useEffect 
@@ -15,14 +16,18 @@ const Modal = ({show, handleClose}:{show:boolean, handleClose:() => void}) => {
 
 
 
-    
-
     const handleBackgroundClick = (event:MouseEvent) => {
         if (event.target === event.currentTarget) {
             handleClose();
         }
     };
-   
+
+
+    const handleSignupRequest = () => {
+        onSignupRequest();
+        handleClose();
+    }
+
     return (
         <div className={showHideClassName} onClick={handleBackgroundClick}>
             <div className="modal-main">
@@ -32,9 +37,9 @@ const Modal = ({show, handleClose}:{show:boolean, handleClose:() => void}) => {
                         <h2 className='h2' style={{ color: 'black' }}>로그인</h2>
                         <p style={{ color: '#BBBBBB' }}>지금 바로 서비스를 이용해 보세요!</p>
                         <div className="login-buttons">
-                            <GoogleLoginForm />
+                            <GoogleLoginForm onSignupRequest={handleSignupRequest} handleClose={handleClose} />
                             <button className="login-btn naver">네이버로 로그인</button>
-                            <button className="login-btn kakao">카카오로 로그인</button>
+                            <KakaoLoginForm onSignupRequest={handleSignupRequest} handleClose={handleClose}/>
                         </div>
                 </div>
             </div>
@@ -42,4 +47,4 @@ const Modal = ({show, handleClose}:{show:boolean, handleClose:() => void}) => {
     );
 };
 
-export default Modal;
+export default LoginModal;
