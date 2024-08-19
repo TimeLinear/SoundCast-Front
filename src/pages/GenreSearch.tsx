@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import {Genre} from "../type/SongType";
 import MoodSearch from "./MoodSearch";
+import { useDispatch } from "react-redux";
+import { setKeyword } from "../features/keywordSlice";
 
 function GenreSearch (){
   
@@ -31,6 +33,8 @@ function GenreSearch (){
     setIsHovered(false);
   }
 
+  const dispatch = useDispatch();
+
   useEffect(()=>{
      //db에 저장된 장르 검색하여 state에 저장 후 결과 출력
 
@@ -40,16 +44,20 @@ function GenreSearch (){
 
     return(
       <>
-        <div className='search-genre' style={{...genreCommonStyle, boxSizing: "border-box", width:"100%", height:"65px", background:"#1C003B"}} >
+        <div className='search-genre' 
+          onMouseOut={handleMouseOut}
+          style={{...genreCommonStyle, boxSizing: "border-box", width:"100%", height:"65px", background:"#1C003B"}} >
           <div className='genre' style={{...genreCommonStyle, ...genreItemStyle, boxSizing: "border-box", background:"#BA9FCC"}}>
             <span style={{...genreItemFontStyle ,color:"#FFFFFF"}} >모든 장르</span>
           </div>
               {/* 여기서 부터 select 결과 출력 */}
           {
             genres.map( genre => (
-            <div className='genre' 
+            <div className='genre'
+                key={genre.genreNo}
                 onMouseOver={handleMouseOver}
                 onMouseOut={handleMouseOut}
+                onClick={()=>dispatch(setKeyword(genre.genreName))}
                 style={{...genreCommonStyle, ...genreItemStyle, boxSizing: "border-box"}}>
               <span style={{...genreItemFontStyle}}>{genre.genreName}</span>
             </div>
@@ -61,8 +69,5 @@ function GenreSearch (){
        
     );
 }
-
-
-
 
 export default GenreSearch;

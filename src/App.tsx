@@ -1,25 +1,22 @@
+import React, { useState } from 'react';
+import logo from './logo.svg';
 import './App.css';
 import PlaceDevider from './components/PlaceDevider';
-import MainBanner from './pages/MainBanner';
-import SearchBar from './pages/SearchBar';
-import GenreSearch from './pages/GenreSearch';
-import SearchList from './pages/SearchList';
-
+import { Route, Routes } from 'react-router-dom';
+import MusicDetail from './pages/MusicDetail';
+import Footer from './components/Footer';
 
 function App() {
-
-  
   return (
     <div className="App">
-      
+      <div className='header' style={{height:"110px", boxSizing:"border-box", minWidth:"600px"}}></div>
       <PlaceDevider/>
-      <MainBanner/>               
-      <GenreSearch/>
-      <SearchBar/>
-      <SearchList/>
-      
-      
-    </div>    
+      <Routes>
+          <Route path='/' element={<div>메인페이지</div>}/>
+          <Route path='/music/detail' element={<MusicDetail/>}/>
+      </Routes>
+      <Footer/>
+    </div>
   );
 }
 
