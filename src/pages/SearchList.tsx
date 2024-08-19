@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { initSongs, Song } from "../type/SongType";
+import { initSongList, Song } from "../type/SongType";
 import { Props } from "../type/SongType";
 import Player from "../components/PlayBar";
 import axios from "axios";
@@ -18,7 +18,7 @@ function SearchList(){
  
     const song = useSelector((state:RootState)=>state.song);
     const dispatch = useDispatch();
-    const songs = initSongs;
+    const songs = initSongList;
 
     //선택한 요소
     const [activeSongNo, setActiveSongNo] = useState<number|null>(null);
@@ -32,34 +32,11 @@ function SearchList(){
         }
     },[activeSongNo])
 
-    
-    // useEffect(()=>{
-    //     if(activeSongNo !== null){
-    //         axios.get(`http://localhost:8087/soundcast/selectSong/${activeSongNo}`)
-    //             .then((response)=>
-    //                 dispatch(setPlaySong(response.data))
-                    
-    //             )
-    //             .catch((error) => {
-    //                 if (error.response) {
-    //                     // 서버가 응답을 반환했으나, 상태 코드가 2xx가 아닌 경우
-    //                     console.log('Error Response:', error.response.data);
-    //                 } else if (error.request) {
-    //                     // 요청이 만들어졌으나, 서버로부터 응답을 받지 못한 경우
-    //                     console.log('Request Error:', error.request);
-    //                 } else {
-    //                     // 요청을 만드는 과정에서 오류가 발생한 경우
-    //                     console.log('Error Message:', error.message);
-    //                 }
-    //                 console.log('Error Config:', error.config);
-    //             })
-    //     }
-        
-    // },[activeSongNo])
 
     const props:Props = {
         activeSongNo,
-        setActiveSongNo
+        setActiveSongNo,
+        songs
     }
 
     const [licenseItem, setLicenseItem] = useState<number | null>(null); 

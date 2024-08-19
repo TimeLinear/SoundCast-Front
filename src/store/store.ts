@@ -1,11 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import songSlice from "../features/songSlice";
-import keywordSlice from "../features/keywordSlice";
+import searchSlice from "../features/searchSlice";
 
 const store = configureStore({
     reducer : {
         song : songSlice,
-        keyword : keywordSlice
+        search : searchSlice
     }
 })
 

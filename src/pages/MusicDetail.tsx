@@ -1,5 +1,5 @@
 import { CSSProperties, useState } from "react";
-import { initSongs, Props } from "../type/SongType";
+import { initSongList, Props } from "../type/SongType";
 import Player from "../components/PlayBar";
 import SongItem from "../components/SongItem";
 import MusicReportModal from "./MusicReportModal";
@@ -11,16 +11,17 @@ const MusicDetail = () => {
     // 신고 모달창 on/off
     const [showReportModal, setShowReportModal] = useState<boolean>(false);
 
-    const props: Props = {
+    const songs = initSongList;
+
+    const props:Props = {
         activeSongNo,
-        setActiveSongNo
+        setActiveSongNo,
+        songs
     };
 
     const onClickReportButton = () => {
         setShowReportModal(true);
     }
-
-    const songs = initSongs;
 
     const commonFlexStyle:CSSProperties = {
         display: "flex",

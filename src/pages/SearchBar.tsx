@@ -1,10 +1,11 @@
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Params, useNavigate } from "react-router-dom";
 import { RootState } from "../store/store";
-import { setKeyword } from "../features/keywordSlice";
+import { setKeyword } from "../features/searchSlice";
+import { setSongList } from "../features/songSlice";
 
-function SearchBar(){
+function SearchBar({searchKeyword}:{searchKeyword:string}){
   
   //스타일
   const searchBarStyle = {display: "flex", justifyContent: "center", alignItems:"center", width:"100%", height:"65px", background:"#1C003B"};
@@ -13,24 +14,21 @@ function SearchBar(){
   
   const navi = useNavigate();
   const dispatch = useDispatch();
-  const keyword = useSelector((state:RootState)=>state.keyword);  
+  const search = useSelector((state:RootState)=>state.search);  
 
   const searchSongs = () => {
       //searchList에 searchKeyword를 넣고 실행시킴. 
       
-      axios.get(`http://localhost:8087/soundcast/searchSong/${keyword}`)
+      axios.get(`http://localhost:8087/soundcast/searchSong/${search.placeNo}/${search.keyword}`)
       .then((response) => {
           //키워드로 db에 저장된 노래 불러와 리스트 전역에 저장
-          dispatch(response.data);
-        
+          dispatch(setSongList(response.data));
         })
       .catch((err)=>console.log(err))
-
-
-      console.log(keyword);
+      
+      
       navi('/search');
   }
-  
   
 
     return(
@@ -42,7 +40,7 @@ function SearchBar(){
             <div className='search-bar-input' style={{width:"85%", height:"90%"}}>
               <input
                 type="text"
-                value={keyword}
+                value={search.keyword}
                 onChange={(e)=>{dispatch(setKeyword(e.target.value))}}
                 onKeyDown={(e) => {if(e.key === 'Enter'){searchSongs()}}}
                 style={{...searchBarFontStyle, border:"0", width:"100%", height:"90%"}} placeholder='Sound CAST의 장르별 음원 검색' />
