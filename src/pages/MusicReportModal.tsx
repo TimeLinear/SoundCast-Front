@@ -1,7 +1,7 @@
-import { CSSProperties } from 'react';
+import { CSSProperties, useState } from 'react';
 import '../index.css'
 
-const MusicReportModal = () => {
+const MusicReportModal = ({setShowReportModal}:{setShowReportModal:(toggle:boolean) => void}) => {
     const commonFlexStyle: CSSProperties = {
         display: "flex",
     };
@@ -39,10 +39,12 @@ const MusicReportModal = () => {
     };
 
     const headerStyle: CSSProperties = {
-        textAlign: "start",
+        display: "flex",
+        justifyContent: "space-between",
         color: "white",
         font: "bolder 34px Inter",
-        paddingLeft: "5px",
+        padding: "0 5px",
+        marginBottom: "10px"
     };
 
     const contentContainerStyle: CSSProperties = {
@@ -70,19 +72,21 @@ const MusicReportModal = () => {
 
     return (
         <div style={containerStyle}>
-            <header style={headerStyle}>신고</header>
+            <header style={headerStyle}>
+                <span>신고</span><span style={{cursor:"pointer"}} onClick={() => setShowReportModal(false)}>&times;</span>
+            </header>
             <section style={contentContainerStyle}>
                 <div style={commonTextStyle}>신고사유</div>
                 <div style={{ ...commonColumnFlexStyle, flexGrow: "1", paddingLeft: "30px", alignItems: "flex-start" }}>
-                    <div style={{ marginTop: "20px" }}>
+                    <div style={{...commonFlexStyle, alignItems: "center" , marginTop: "20px" }}>
                         <input style={commonRadioInputStyle} type="radio" name="reportReason" id="report_reason1" defaultChecked />
                         <label style={commonLabelStyle} htmlFor="report_reason1">음원이 아닌 파일 업로드</label>
                     </div>
-                    <div style={{ marginTop: "20px" }}>
+                    <div style={{...commonFlexStyle, alignItems: "center" , marginTop: "20px" }}>
                         <input style={commonRadioInputStyle} type="radio" name="reportReason" id="report_reason2" />
                         <label style={commonLabelStyle} htmlFor="report_reason2">타인의 저작물 도용</label>
                     </div>
-                    <div style={{ marginTop: "20px" }}>
+                    <div style={{...commonFlexStyle, alignItems: "center" , marginTop: "20px" }}>
                         <input style={commonRadioInputStyle} type="radio" name="reportReason" id="report_reason3" />
                         <label style={commonLabelStyle} htmlFor="report_reason3">폭력적 혹은 혐오스러운 컨텐츠</label>
                     </div>

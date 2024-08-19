@@ -98,13 +98,13 @@ const MusicDetail = () => {
                         <div style={{ ...commonFlexStyle, flexShrink: 0 }}>
                             <div style={{ ...commonFlexStyle, flexDirection: "column", boxSizing: "border-box", width: "50%" }}>
                                 <div style={{ ...commonFlexStyle, justifyContent: "flex-start", marginBottom: "30px" }}>
-                                    <img style={{ width: "420px" }} src="/images/default/music_default.png" alt="음원 커버 기본 이미지" />
+                                    <img style={{ width: "420px" }} src="/images/default/song_default.png" alt="음원 커버 기본 이미지" />
                                 </div>
                                 <div style={{ ...commonFlexStyle, justifyContent: "flex-start", alignItems: "center", margin: "10px 0", padding: "0 5px", width: "420px" }}>
-                                    <img style={{ width: "70px", margin: "0 5px" }} src="/images/music/play_button.png" alt="재생 버튼" />
+                                    <img style={{ width: "70px", margin: "0 5px" }} src="/images/song/play_button.png" alt="재생 버튼" />
                                     <span style={{ ...commonTextStyle, margin: "0 10px", font: "bold 20px sans-serif" }}>1:58</span>
                                     <div style={{ flexGrow: "1" }}></div>
-                                    <img style={{ width: "25px", margin: "0 10px" }} src="/images/music/share_icon.png" alt="공유 버튼" />
+                                    <img style={{ width: "25px", margin: "0 10px" }} src="/images/song/share_icon.png" alt="공유 버튼" />
                                 </div>
                                 <div style={{ ...commonFlexStyle, justifyContent: "center", width: "420px", margin: "20px auto 20px 0" }}>
                                     <button style={downloadButtonStyle}>다운로드</button>
@@ -113,16 +113,17 @@ const MusicDetail = () => {
                             <div style={{ ...commonFlexStyle, boxSizing: "border-box", width: "50%", flexDirection: "column" }}>
                                 <div style={{ ...commonFlexStyle, width: "100%", justifyContent: "space-between", alignItems: "center", margin: "5px 0" }}>
                                     <h2 style={{ ...commonTextStyle, ...commonFontStyle, fontSize: "35px" }}>우주공원</h2>
-                                    <img style={{ width: "30px", height: "30px" }} src="/images/music/flash.png" alt="신고 버튼" onClick={onClickReportButton} />
+                                    <img style={{ width: "30px", height: "30px" }} src="/images/song/flash.png" alt="신고 버튼" onClick={onClickReportButton} />
                                 </div>
                                 <div style={{ textAlign: "start", margin: "15px 0" }}>
                                     <h3 style={{ ...commonTextStyle, fontSize: "30px" }}>박다온</h3>
                                 </div>
-                                <div style={{ ...commonFlexStyle, height: "100px" }}>
+                                <div style={{ ...commonFlexStyle, height: "30px" }}>
                                     <button style={buttonStyle}>Hip-Hop</button>
                                     <button style={buttonStyle}>Dreamy</button>
                                 </div>
-                                <div style={{ textAlign: "start", padding: "10px", height: "193px" }}>
+                                <hr style={{margin:"10px 0", width:"80%", opacity:"0.5"}}/>
+                                <div style={{ textAlign: "start", padding: "0 10px", height: "193px" }}>
                                     <pre style={{ ...commonTextStyle, font: "bolder 16px sans-serif", margin: 0 }}>음원 설명 &gt; 없으면 생략</pre>
                                 </div>
                                 <div style={{ textAlign: "start", ...commonFlexStyle, flexDirection: "column", height: "300px" }}>
@@ -134,13 +135,13 @@ const MusicDetail = () => {
                                                 Watch: http://youtu.be/yJg-Y5byMMw" disabled>
                                         </textarea>
                                         <button style={{ border: "1px solid white", backgroundColor: "white", borderRadius: "0 10px 10px 0", marginLeft: "-2px" }}>
-                                            <img src="/images/music/paste_icon.png" alt="복사 버튼" />
+                                            <img src="/images/song/paste_icon.png" alt="복사 버튼" />
                                         </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div style={{ ...commonFlexStyle, flexDirection: "column" }}>
+                        <div style={{ ...commonFlexStyle, flexDirection: "column", marginTop:"80px" }}>
                             <div style={{ textAlign: "start" }}>
                                 <label style={{ ...commonTextStyle, font: "bold 24px sans-serif" }}>이 아티스트의 다른 음원입니다.</label>
                             </div>
@@ -150,7 +151,7 @@ const MusicDetail = () => {
                 </div>
             </div>
 
-            {showReportModal && <MusicReportModal />}
+            {showReportModal && <MusicReportModal setShowReportModal={setShowReportModal}/>}
             <Player {...props} />
         </>
     );
