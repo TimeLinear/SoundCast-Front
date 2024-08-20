@@ -56,3 +56,237 @@
     cursor: not-allowed;
     opacity: 0.5;
 }
+/* 헤더 */
+.Header{
+  position: absolute;
+  width: 100vw;
+  height: 110px;
+  padding: 0 80px;
+  box-sizing: border-box;
+  background: #1C003B;
+
+}
+
+.Logo{
+position: absolute;
+padding-top: 5px;
+width: 124px;
+height: 92px;
+
+}
+
+
+
+/* 둘러보기 버튼 */
+.SiteMap{
+
+box-sizing: border-box;
+
+position: absolute;
+width: 130px;
+height: 40px;
+right: 220px;
+top: 35px;
+
+background: #1C003B;
+border: 3px solid #770ABF;
+box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+border-radius: 10px;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.SiteMap button{
+  background-color: transparent; /* 배경색 투명 */
+            color: inherit; /* 부모 요소의 텍스트 색상 상속 */
+            border: none; /* 경계선 없음 */
+            padding: 0; /* 패딩 없음 */
+            font: inherit; /* 부모 요소의 폰트 상속 */
+            cursor: pointer; /* 커서 포인터로 변경 */
+            outline: none; /* 포커스 시 생기는 윤곽선 제거 */
+  display: flex;
+  align-items: center;
+  justify-content: baseline;
+  padding-bottom: 3px;
+}
+
+
+.SiteMap button span:first-of-type{
+/* Sitemap */
+margin-left: 5px;
+font-family: 'Inter';
+font-style: normal;
+font-weight: bolder;
+font-size: 20px;
+text-align: center;
+
+color: #FFFFFF;
+text-shadow: 0px 0px 4px #D9D9D9;
+
+}
+
+
+.SiteMap button span:last-of-type{
+  /* Chevron down
+Keywords: expand
+*/
+width: 30px;
+height: 30px;
+right: 5px;
+top: 2px;
+
+}
+
+
+
+
+
+/* 로그인 버튼 */
+.Login{
+
+box-sizing: border-box;
+
+position: absolute;
+width: 130px;
+height: 40px;
+right: 80px;
+top: 35px;
+
+background: #1C003B;
+border: 3px solid #770ABF;
+box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+border-radius: 10px;
+
+display: flex;
+align-items: center;
+justify-content: center;
+flex-grow: 0;
+
+
+
+}
+
+.Login button{
+  background-color: transparent; /* 배경색 투명 */
+            color: inherit; /* 부모 요소의 텍스트 색상 상속 */
+            border: none; /* 경계선 없음 */
+            padding: 0; /* 패딩 없음 */
+            font: inherit; /* 부모 요소의 폰트 상속 */
+            cursor: pointer; /* 커서 포인터로 변경 */
+            outline: none; /* 포커스 시 생기는 윤곽선 제거 */
+  
+            display: flex;
+            align-items: center;
+            justify-content: baseline;
+           
+            /* box-sizing: border-box; */
+  /* display: flex; */
+}
+
+.Login span {
+  display: flex;
+  flex-grow: 0;
+
+}
+
+
+.Login button span:last-of-type{
+  /* Sitemap */
+  margin-right: 5px;
+  margin-left: 10px;
+  padding-bottom: 3px;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: bolder;
+  font-size: 20px;
+  text-align: center;
+  
+  color: #FFFFFF;
+  text-shadow: 0px 0px 4px #D9D9D9;
+  
+  }
+
+  /* 로그아웃 */
+.Logout{
+
+    box-sizing: border-box;
+    
+    position: absolute;
+    width: 130px;
+    height: 40px;
+    right: 80px;
+    top: 35px;
+    
+    background: #1C003B;
+    border: 3px solid #770ABF;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 0;
+    
+    
+    
+    }
+    
+.Logout button{
+      background-color: transparent; /* 배경색 투명 */
+            color: inherit; /* 부모 요소의 텍스트 색상 상속 */
+            border: none; /* 경계선 없음 */
+            padding: 0; /* 패딩 없음 */
+            font: inherit; /* 부모 요소의 폰트 상속 */
+            cursor: pointer; /* 커서 포인터로 변경 */
+            outline: none; /* 포커스 시 생기는 윤곽선 제거 */
+  
+            display: flex;
+            align-items: center;
+            justify-content: baseline;
+    }
+
+
+    
+.Logout span {
+  display: flex;
+  flex-grow: 0;
+
+}
+
+.Logout span:last-of-type{
+
+      margin-right: 5px;
+      margin-left: 10px;
+      padding-bottom: 3px;
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: bolder;
+      font-size: 20px;
+      text-align: center;
+      
+      color: #FFFFFF;
+      text-shadow: 0px 0px 4px #D9D9D9;
+
+    }
+
+/* 헤더 프로필 */
+.Header-profile {
+    position: absolute;
+    margin-right: 90px;
+    width: 40px;
+    height: 40px;
+    top:32px;
+    right: -60px;
+    
+    
+}
+
+.Header-profile img {
+  object-fit: cover;
+  width: 40px; /* 원하는 이미지 크기 설정 */
+  height: 40px; /* 비율 유지 */
+  border: 3px solid #770ABF;
+  border-radius: 100px;
+}
+
