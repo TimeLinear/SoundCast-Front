@@ -1,7 +1,7 @@
 import { CSSProperties, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setPlaceNo } from "../features/searchSlice";
+import { setKeyword, setPlaceNo } from "../features/searchSlice";
 
 const PlaceDevider = () => {
 
@@ -23,6 +23,7 @@ const PlaceDevider = () => {
             index === no ? selectedDevider : unselecttedDevider
         );
         setCssItems(newCssItems);
+        dispatch(setKeyword(''));
         navi("/");
     } 
 

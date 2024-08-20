@@ -8,7 +8,7 @@ function MainPage(){
   return ( 
       <>
         <MainBanner/>
-        <GenreSearch searchGenre={0} searchMood={0}/>
+        <GenreSearch searchGenre={-1} searchMood={-1}/>
         <SearchBar searchKeyword=""/>
         <SearchList/>
       </>
