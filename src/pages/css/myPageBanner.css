@@ -1,0 +1,28 @@
+.songButton, .commentButton{
+    background-color: white;
+}
+.songButton p, .commentButton p{
+    color: black;
+}
+
+.songButton.selectSac, .commentButton.selectSac{
+    background-color: black;
+}
+
+.songButton.selectSac p, .commentButton.selectSac p{
+    color: white;
+}
+
+.selectSac.rest {
+    border-top-left-radius: 7px;
+}
+
+.hoverImage:hover .modifyImage{
+    display: block;
+}
+
+.modifyImage {
+    display: none;
+    cursor: pointer;
+}
+
