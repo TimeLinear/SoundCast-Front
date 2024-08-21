@@ -1,9 +1,13 @@
 import { CSSProperties, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { setPlaceNo } from "../features/searchSlice";
 
 const PlaceDevider = () => {
 
-    const [placeNo, setPlaceNo] = useState(0);
-    
+    const navi = useNavigate();
+    const dispatch = useDispatch();
+   
     const [cssItems, setCssItems] = useState([
         {backgroundColor:"#1C003B", color:"white"},
         {backgroundColor:"white", color:"black"}]);
@@ -12,12 +16,13 @@ const PlaceDevider = () => {
     const unselecttedDevider = {backgroundColor:"white", color:"black"}
     
     const handlePlaceNo = (no:number) => {
-        setPlaceNo(no);
+        dispatch(setPlaceNo(no));
         
         const newCssItems = cssItems.map((item, index) => 
             index === no ? selectedDevider : unselecttedDevider
         );
         setCssItems(newCssItems);
+        navi("/");
     } 
 
     const placeItemStyle = {flexGrow:"1", fontFamily:"sans-serif", border:"4px solid #770ABF",

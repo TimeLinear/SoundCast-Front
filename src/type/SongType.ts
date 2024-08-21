@@ -1,3 +1,4 @@
+import { AxiosRequestConfig } from 'axios';
 import { Dispatch, SetStateAction } from 'react';
 
 export type Song = {
@@ -33,7 +34,7 @@ export const initSong:Song = {
 
 }
 
-export const initSongs:Song[] = [
+export const initSongList:Song[] = [
 	{songNo: 1, songMemberNo : 0, songTitle : 'song1', songGenreNo : 1, songImageNo : 0, songFileNo : 1, songMoodNo : 1, songDetail: null, songLicense : null},
 	{songNo: 2, songMemberNo : 0, songTitle : 'song2', songGenreNo : 1, songImageNo : 0, songFileNo : 1, songMoodNo : 1, songDetail: null, songLicense : '라이선스2'},
 	{songNo: 3, songMemberNo : 0, songTitle : 'song3', songGenreNo : 1, songImageNo : 0, songFileNo : 1, songMoodNo : 1, songDetail: null, songLicense : null},
@@ -46,7 +47,8 @@ export const initSongs:Song[] = [
 
 export type Props = {
 	activeSongNo : number|null,
-    setActiveSongNo : Dispatch<SetStateAction<number|null>>
+    setActiveSongNo : Dispatch<SetStateAction<number|null>>,
+	songs : Song[]
 };
 
 export type Genre = {
@@ -90,3 +92,16 @@ export const initMoods:Mood[] = [
 
 ]
 
+export interface Search{
+	keyword: string,
+	genre: number,
+	mood: number,
+	placeNo: number
+}
+
+export const initSearch:Search = {
+	keyword: "",
+	genre: 0,
+	mood: 0,
+	placeNo: 0
+}
