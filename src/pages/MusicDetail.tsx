@@ -2,7 +2,7 @@ import { CSSProperties, useState } from "react";
 import { initSongList, Props } from "../type/SongType";
 import Player from "../components/PlayBar";
 import SongItem from "../components/SongItem";
-// import MusicReportModal from "./MusicReportModal";
+import MusicReportModal from "./MusicReportModal";
 
 const MusicDetail = () => {
 
@@ -152,7 +152,7 @@ const MusicDetail = () => {
                 </div>
             </div>
 
-            {/* {showReportModal && <MusicReportModal setShowReportModal={setShowReportModal}/>} */}
+            {showReportModal && <MusicReportModal setShowReportModal={setShowReportModal}/>}
             <Player {...props} />
         </>
     );

@@ -1,11 +1,10 @@
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Params, useNavigate } from "react-router-dom";
 import { RootState } from "../store/store";
 import { setKeyword } from "../features/searchSlice";
 import { setSongList } from "../features/songSlice";
-import { ChangeEvent, useEffect, useState } from "react";
-
+import { ChangeEvent, useState } from "react";
 
 function SearchBar({searchKeyword}:{searchKeyword:string}){
   
@@ -52,7 +51,7 @@ function SearchBar({searchKeyword}:{searchKeyword:string}){
               type="text"
               value={inputkeyword}
               onChange={onInputChange}
-              onKeyDown={(e) => {if(e.key === 'Enter'){ searchSongs()}}}
+              onKeyDown={(e) => {if(e.key === 'Enter'){searchSongs()}}}
               style={{...searchBarFontStyle, border:"0", width:"100%", height:"90%"}} placeholder='Sound CAST의 장르별 음원 검색' />
           </div>
         </div>

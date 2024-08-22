@@ -9,7 +9,7 @@ function MainPage(){
       <>
         <MainBanner/>
         <GenreSearch searchGenre={-1} searchMood={-1}/>
-        <SearchBar searchKeyword={""}/>
+        <SearchBar searchKeyword=""/>
         <SearchList/>
       </>
   );

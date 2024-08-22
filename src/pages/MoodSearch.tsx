@@ -37,14 +37,15 @@ function MoodSearch(props:SearchProps){
     return (
       <div id="search-mood" 
         onMouseEnter={handleMouseOver}
-        onMouseLeave={handleMouseOut}
+        onMouseLeave={(e) => {handleMouseOut(e); onLeaveSearchs();}}
         style={{...moodCommonStyle, position : "absolute", zIndex: 10, boxSizing: "border-box", width:"100%",
           height:"75px", background: "rgba(217, 217, 217, 0.8)"}}>
         
         {/* 여기서 부터 select 결과 출력 */}
         {
           moods.map( mood => (
-            <div id='mood' style={{...moodCommonStyle}} onMouseOver={(e) => onHoverMood(e, mood.moodNo)} onMouseLeave={(e) => onLeaveMood(e)}>
+            <div id='mood' key={mood.moodNo}
+              style={{...moodCommonStyle}} onMouseEnter={(e) => onHoverMood(e, mood.moodNo)} onMouseLeave={(e) => onLeaveMood(e)}>
               <span style={searchMoodNo === mood.moodNo ? {...moodItemFontStyle, color:"#FFFFFF"} : moodItemFontStyle}>{mood.moodName}</span>
             </div>
           ))  

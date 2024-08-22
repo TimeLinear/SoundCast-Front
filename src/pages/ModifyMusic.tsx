@@ -239,7 +239,7 @@ const ModifyMusic = ({show, handleClose}:{show:boolean, handleClose:() => void})
     };
     
     // 파일 이미지 클릭 핸들러
-    const [songImage, setSongImage] = useState<string | null>("images/song/song-image-default.png");
+    const [songImage, setSongImage] = useState<string | null>(null);
     const handleFileChange = (event:React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
         if (file) {
@@ -321,7 +321,7 @@ const ModifyMusic = ({show, handleClose}:{show:boolean, handleClose:() => void})
                   height:"100%", 
                   objectFit:"cover"
                 }}
-                src={songImage === null ? "images/song/song-image-default.png" : songImage} 
+                src={songImage === null ? "/images/default/song_default.png" : songImage} 
                 alt="Preview" />
               <input 
                 type="file" 

@@ -102,6 +102,26 @@ const UploadMusic = ({
     marginBottom: '20px',
   };
 
+  const fileUploadStyle: React.CSSProperties = {
+    position: "relative",
+    width:"100%",
+    height:"100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color:"#FFFFFF",
+    border: "0.5px solid #F0F0F0",
+    borderRadius: "8px"    
+  }
+
+  const hoveredStyle: React.CSSProperties = {
+    background: "#F0F0F0",
+    color: "#333333",
+    fontWeight: 700,
+    cursor: "pointer",
+    borderRadius: "8px"    
+  }
+
   const filenameStyle: React.CSSProperties = {
     color: '#FFFFFF',
   };
@@ -231,13 +251,26 @@ const UploadMusic = ({
     setSelectedMood(mood);
   };
 
-  const [songFile, setSongFile] = useState('');
+  const [songFile, setSongFile] = useState<File>();
+  const [coverFile, setCoverFile] = useState('');
 
   const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const fileName = e.target.value;
-
-    setSongFile(fileName);
+    const file = e.target.files;
+      (file && file.length > 0) && setSongFile(file[0]);
   }
+
+  const onCoverChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files;
+    if(file && file.length > 0) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        reader.result && setCoverFile(reader.result.toString());
+      }
+      reader.readAsDataURL(file[0]);
+    }
+  }
+
+  const [ishovered, setIsHovered] = useState('unhovered');
 
   return (
     <div style={showHideClassName} onClick={handleBackgroundClick}>
@@ -254,19 +287,36 @@ const UploadMusic = ({
                   position: "relative",
                 }}
               >
-                <img
-                  src={songFile ? songFile : "/images/song/song-image.png"}
-                  style={{ opacity: "0.3", ...imagePreviewStyle }}
-                  alt="Preview"
-                />
-                {!songFile && (
+                <input
+                  type="file"
+                  id="cover-file-upload"
+                  accept="image/*"
+                  onChange={onCoverChange}
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    opacity: 0,
+                    cursor: "pointer"
+                  }}
+                  hidden/>
+                <label htmlFor="cover-file-upload" style={{cursor:"pointer"}}>
+                  <img
+                    src={coverFile ? coverFile : "/images/default/song_default.png"}
+                    style={coverFile ? imagePreviewStyle : {...imagePreviewStyle, opacity:"0.3"}}
+                    alt="Preview"
+                  />
+                </label>
+                {!coverFile && (
                   <img
                     src="/images/song/file-upload-icon-white.png"
                     style={{
-                      position: "absolute",
-                      left: "50%",
-                      top: "50%",
-                      transform: "translate(-50%, -50%)",
+                      position:"absolute",
+                      left:"50%",
+                      top:"50%",
+                      transform:"translate(-50%, -50%)",
                       width: "60px",
                       height: "60px",
                     }}
@@ -274,38 +324,42 @@ const UploadMusic = ({
                 )}
               </div>
 
-              <div className="music-filename">
-                <div
-                  style={{
-                    backgroundColor: "#AE9BF2",
-                    height: "50px",
-                    width: "250px",
-                    borderRadius: "10px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <input
-                    type="file"
-                    accept="image/*"
-                    id="songFile"
-                    onChange={onFileChange}
-                    hidden
-                  />
-                  <label
-                    htmlFor="songFile"
-                    style={{
-                      font: "bold 24px Inter",
-                      margin: "0",
-                      lineHeight: "150%",
-                      color: "white",
-                    }}
-                  >
-                    {songFile ? songFile : "음원 업로드"}
-                  </label>
-                </div>
-              </div>
+              <div className="music-file"
+          style={{
+            width:"250px",
+            height:"70px"
+          }}
+          >
+            <div className="file-upload"
+              onMouseOver={()=>{setIsHovered('hovered')}}
+              onMouseLeave={()=>{setIsHovered('unhovered')}}
+              style={ ishovered === 'hovered'? {...fileUploadStyle, ...hoveredStyle} : {...fileUploadStyle}}
+            >
+              <label htmlFor="song-file-upload"
+                className="file-upload-box"
+                style={{
+                  display: "block",
+                  cursor: "pointer"
+                }}>
+              <p className="song-file-name">{songFile ? songFile.name : "음원 업로드"}</p>
+              <input 
+                type="file"
+                id="song-file-upload"
+                accept="audio/*"
+                onChange={onFileChange}
+                className="song-file-input"
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  opacity: 0,
+                  cursor: "pointer"
+                }}/>
+              </label> 
+            </div>
+        </div>
             </div>
             <div style={rightSectionStyle}>
               <div style={modalHeaderStyle}>

@@ -1,0 +1,121 @@
+.singup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000; 
+}
+
+.display-block {
+  display: flex;
+}
+
+.display-none {
+  display: none;
+}
+
+.signup-main {
+  background: #1B0140;
+  border-radius: 10px;
+  padding: 20px;
+  width: 570px;
+  height: 640px;
+  text-align: center;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.signup-serve{
+  background: #F0ECFD;
+  border-radius: 10px;
+  width: 490px; 
+  height: 560px;
+  margin: auto;
+  position: relative;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 1px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: white;
+}
+
+.agree{
+  display: flex; 
+  align-items: center;
+  flex-direction: column;
+  background-color: #F0ECFD;
+  border-radius: 10px;
+  border: 1px solid black;
+  width: 90%;
+  padding: 10px;
+  margin: 10px auto; 
+}
+
+.allagree input[type='checkbox'] {
+  margin-right: 10px; 
+  transform: scale(1.5); 
+  
+}
+
+.allagree{
+  text-align: left;
+  padding-right: 70%;
+  margin-bottom: 5px;
+}
+
+.agree, li {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  text-align: left;
+  width: 90%;
+  margin-bottom: 10px;
+}
+
+
+.heighline{
+  border-left : thin solid grey;
+  height : 25px;
+  margin-right: 20%;
+}
+
+.heighline  p{
+  font-size: 12px;
+  margin: 0;
+  color: grey;
+  padding-left: 10px;
+  
+}
+
+.signup-buttons .signup-btn {
+  width: 90%;
+  padding: 10px;
+  margin: 10px 0;
+  margin: 10px auto; 
+  border: none;
+  cursor: pointer;
+  border-radius: 10px;
+  background: rgb(78, 209, 229);
+  color: white;
+}
+
+.header .profile .img {
+  
+  cursor: pointer; /* 커서를 포인터로 변경 */
+  transition: transform 0.2s ease; /* 눌림 효과를 위한 부드러운 트랜지션 추가 */
+}
+
+.header .profile .img:active {
+  transform: scale(0.95); /* 이미지를 살짝 축소하여 눌리는 효과 */
+}
