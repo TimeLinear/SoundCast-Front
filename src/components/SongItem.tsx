@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
-import { CSSProperties, useEffect, useState } from "react";
+import { CSSProperties, MouseEvent, useEffect, useState } from "react";
 import { setPlaySong } from "../features/songSlice";
 import { Song } from "../type/SongType";
 import Pagination from "./Pagination";
@@ -14,6 +14,17 @@ const SongItem = ({ activeSongNo, setActiveSongNo, songs }: { activeSongNo: numb
     const searchListFontStyle: CSSProperties = { fontFamily: "Inter", fontStyle: "normal", fontSize: "20px", fontWeight: "700", lineHeight: "24px", color: "#000000" };
     const itemBoxStyle: CSSProperties = { display: "flex", alignItems: "center", justifyContent: "center", width: "120px", height: "38px", background: "#FFFFFF", borderRadius: "10px" };
     const iconBoxSizeStyle: CSSProperties = { height: "35px", width: "35px" };
+
+    const [hoverState, setHoverState] = useState({key:0, class:""});
+
+    const mouseOverEventHandler = (e:MouseEvent) => {
+        setHoverState({
+            ...hoverState, key:Number((e.target as HTMLDivElement).dataset.key)})
+    };
+
+    const mouseEnterEventHandler = (e:MouseEvent) => {
+        setHoverState({...hoverState, class:(e.target as HTMLDivElement).classList[0]})
+    };
 
     const song = useSelector((state: RootState) => state.song);
     const dispatch = useDispatch();
@@ -64,9 +75,8 @@ const SongItem = ({ activeSongNo, setActiveSongNo, songs }: { activeSongNo: numb
                 {
                     currentItems.map(Song => (
                         //검색결과를 플레이리스트로 반환 (반복)
-                        <div key={Song.songNo}>
-                            <div className='search-list' style={{ ...searchListBoxStyle }}>
-
+                        <div key={Song.songNo} data-key={Song.songNo} onMouseOver={mouseOverEventHandler}>
+                            <div className='search-list' style={{ ...searchListBoxStyle }} >
                                 <div className='play-icon' style={{ ...iconBoxSizeStyle }} >
                                     <img src={Song.songNo === activeSongNo ? "/images/song/pause-button-icon-white.png" : "/images/song/play-icon-white.png"}
                                         style={{ height: "100%", width: "100%" }}
@@ -78,7 +88,9 @@ const SongItem = ({ activeSongNo, setActiveSongNo, songs }: { activeSongNo: numb
                                 </div>
                                 <div className='song-content' style={{ width: "260px", height: "50px", textAlign: "start", paddingLeft: "20px" }}>
                                     <div className='song-title' style={{ height: "50%" }}>
-                                        <span style={{ ...searchListFontStyle, color: "#FFFFFF" }}>{Song.songTitle}</span>
+                                        <span 
+                                            onMouseEnter={mouseEnterEventHandler}
+                                            style={hoverState.class === 'song-title' && hoverState.key === Song.songNo ? { ...searchListFontStyle, color: "#FFFFFF" }}>{Song.songTitle}</span>
                                     </div>
                                     <div className='artist-name' style={{ height: "50%" }}>
                                         <span style={{ ...searchListFontStyle, fontSize: "15px", lineHeight: "18px", color: "#FFFFFF" }}>{Song.songMemberNo}</span>
