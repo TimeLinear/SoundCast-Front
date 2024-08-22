@@ -15,15 +15,31 @@ const SongItem = ({ activeSongNo, setActiveSongNo, songs }: { activeSongNo: numb
     const itemBoxStyle: CSSProperties = { display: "flex", alignItems: "center", justifyContent: "center", width: "120px", height: "38px", background: "#FFFFFF", borderRadius: "10px" };
     const iconBoxSizeStyle: CSSProperties = { height: "35px", width: "35px" };
 
-    const [hoverState, setHoverState] = useState({key:0, class:""});
+    const [hoverState, setHoverState] = useState({ key: 0, class: "" });
 
-    const mouseOverEventHandler = (e:MouseEvent) => {
-        setHoverState({
-            ...hoverState, key:Number((e.target as HTMLDivElement).dataset.key)})
-    };
 
     const mouseEnterEventHandler = (e:MouseEvent) => {
-        setHoverState({...hoverState, class:(e.target as HTMLDivElement).classList[0]})
+        const keyNo = (e.target as HTMLDivElement).dataset.key;
+        const classname = (e.target as HTMLDivElement).className;
+        if(keyNo) {
+            // console.log("enter", keyNo);
+            setHoverState({ ...hoverState, key: Number(keyNo) })
+        } else {
+            // console.log("enter", classname);
+            setHoverState({ ...hoverState, class: (e.target as HTMLDivElement).className })
+        }
+    };
+
+    const mouseLeaveEventHandler = (e: MouseEvent) => {
+        const keyNo = (e.target as HTMLDivElement).dataset.key;
+        const classname = (e.target as HTMLDivElement).className;
+        if(keyNo) {
+            // console.log("leave", keyNo);
+            setHoverState({ ...hoverState, key: 0 })
+        } else {
+            // console.log("leave", classname);
+            setHoverState({ ...hoverState, class: '' })
+        }
     };
 
     const song = useSelector((state: RootState) => state.song);
@@ -69,14 +85,17 @@ const SongItem = ({ activeSongNo, setActiveSongNo, songs }: { activeSongNo: numb
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = songs.slice(indexOfFirstItem, indexOfLastItem);
 
+    // console.log(hoverState);
+
     return (
         <div>
             <div style={{ borderRadius: "10px", overflow: "hidden" }}>
                 {
                     currentItems.map(Song => (
                         //검색결과를 플레이리스트로 반환 (반복)
-                        <div key={Song.songNo} data-key={Song.songNo} onMouseOver={mouseOverEventHandler}>
-                            <div className='search-list' style={{ ...searchListBoxStyle }} >
+                        <div key={Song.songNo}>
+                            <div className='search-list' style={{ ...searchListBoxStyle }} data-key={Song.songNo}
+                                onMouseEnter={mouseEnterEventHandler} onMouseLeave={mouseLeaveEventHandler}>
                                 <div className='play-icon' style={{ ...iconBoxSizeStyle }} >
                                     <img src={Song.songNo === activeSongNo ? "/images/song/pause-button-icon-white.png" : "/images/song/play-icon-white.png"}
                                         style={{ height: "100%", width: "100%" }}
@@ -88,12 +107,19 @@ const SongItem = ({ activeSongNo, setActiveSongNo, songs }: { activeSongNo: numb
                                 </div>
                                 <div className='song-content' style={{ width: "260px", height: "50px", textAlign: "start", paddingLeft: "20px" }}>
                                     <div className='song-title' style={{ height: "50%" }}>
-                                        <span 
-                                            onMouseEnter={mouseEnterEventHandler}
-                                            style={hoverState.class === 'song-title' && hoverState.key === Song.songNo ? { ...searchListFontStyle, color: "#FFFFFF" }}>{Song.songTitle}</span>
+                                        <span className='song-title' onMouseEnter={mouseEnterEventHandler} onMouseLeave={mouseLeaveEventHandler}
+                                            style={hoverState.class === 'song-title' && hoverState.key === Song.songNo ? 
+                                                { ...searchListFontStyle, color: "magenta", cursor:"pointer" } : { ...searchListFontStyle, color: "#FFFFFF", cursor:"pointer" }}>
+                                            {Song.songTitle}
+                                        </span>
                                     </div>
                                     <div className='artist-name' style={{ height: "50%" }}>
-                                        <span style={{ ...searchListFontStyle, fontSize: "15px", lineHeight: "18px", color: "#FFFFFF" }}>{Song.songMemberNo}</span>
+                                        <span className="artist-name" onMouseEnter={mouseEnterEventHandler} onMouseLeave={mouseLeaveEventHandler}
+                                            style={hoverState.class === 'artist-name' && hoverState.key === Song.songNo ? 
+                                                { ...searchListFontStyle, fontSize: "15px", lineHeight: "18px", color: "magenta", cursor:"pointer" }
+                                                : { ...searchListFontStyle, fontSize: "15px", lineHeight: "18px", color: "white", cursor:"pointer" }}>
+                                            {Song.songMemberNo}
+                                        </span>
                                     </div>
                                 </div>
 
