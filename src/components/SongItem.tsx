@@ -56,18 +56,22 @@ const SongItem = ({ activeSongNo, setActiveSongNo, songs }: { activeSongNo: numb
 
     useEffect(()=>{
         dispatch(setGenre(genreNumber));
-        axios.get(`http://localhost:8087/soundcast/song/${search.placeNo}/${genreNumber}/${search.mood}`)
-            .then((response) => {
-                dispatch(setSongList(response.data))})
-            .catch((err) => console.log(err))
+        if(genreNumber !== 0){
+            axios.get(`http://localhost:8087/soundcast/song/${search.placeNo}/${genreNumber}/${search.mood}`)
+                .then((response) => {
+                    dispatch(setSongList(response.data))})
+                .catch((err) => console.log(err))
+        }
     }, [genreNumber])
 
     useEffect(()=>{
-        dispatch(setMood(moodNumber))
-        axios.get(`http://localhost:8087/soundcast/song/${search.placeNo}/${search.genre}/${moodNumber}`)
-            .then((response) => {
-                dispatch(setSongList(response.data))})
-            .catch((err) => console.log(err))
+        dispatch(setMood(moodNumber));
+        if(moodNumber !== 0){
+            axios.get(`http://localhost:8087/soundcast/song/${search.placeNo}/${search.genre}/${moodNumber}`)
+                .then((response) => {
+                    dispatch(setSongList(response.data))})
+                .catch((err) => console.log(err))
+        }
     },[moodNumber])
 
     // const searchSongs = (type:string, no:number)=> {

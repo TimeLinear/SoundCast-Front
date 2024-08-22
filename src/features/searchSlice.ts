@@ -7,15 +7,9 @@ const searchSlice = createSlice({
     initialState : initSearch,
     reducers : {
         setKeyword : (state, action:PayloadAction<string>) => {
-            console.log(state);
-            console.log(action);
-            console.log(action.payload);
-            const trimedkeyword = action.payload.trim();
+           const trimedkeyword = action.payload.trim();
             console.log(trimedkeyword);
-            if(action.payload){
-                const returnstate = {...state, keyword:action.payload}
-                console.log(returnstate);
-                return returnstate}
+           if(action.payload){return {...state, keyword:trimedkeyword}}
         },
         
         setPlaceNo : (state, action:PayloadAction<number>) => {

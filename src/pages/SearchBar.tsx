@@ -29,7 +29,7 @@ function SearchBar({searchKeyword}:{searchKeyword:string}){
   //------------수정한 부분(08/21)----------
   const searchSongs = () => {
       dispatch(setKeyword(inputkeyword));      
-
+      console.log(inputkeyword);
       axios.get(`http://localhost:8087/soundcast/song/search/${search.placeNo}/${search.genre}/${search.mood}/${inputkeyword}`)
         .then((response) => {
             //키워드로 db에 저장된 노래 불러와 리스트 전역에 저장
