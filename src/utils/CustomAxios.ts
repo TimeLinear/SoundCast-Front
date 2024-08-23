@@ -17,9 +17,9 @@ CustomAxios.interceptors.response.use(function(response){
     return response
 },
     function(error){
-        const{config, response:{status}} = error;
+        const{response:{status}} = error;
 
-        if(status == 403){
+        if(Number(status) === 403){
             console.log("403 error");
             removeCookie('accessToken');
             removeCookie('member');

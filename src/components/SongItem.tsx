@@ -22,14 +22,13 @@ const SongItem = ({ activeSongNo, setActiveSongNo, songs }: { activeSongNo: numb
 
 
     const mouseEnterEventHandler = (e:MouseEvent) => {
-        const songNo = (e.target as HTMLDivElement).dataset.songNo;
+        const songNo = (e.target as HTMLDivElement).dataset.songno;
         const classname = (e.target as HTMLDivElement).className;
-
+        
         setHoverState({ songNo: Number(songNo), class: classname })
     };
 
     const mouseLeaveEventHandler = (e: MouseEvent) => {
-        
         setHoverState({ songNo: 0, class: '' })
     };
 
@@ -77,7 +76,7 @@ const SongItem = ({ activeSongNo, setActiveSongNo, songs }: { activeSongNo: numb
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = songs.slice(indexOfFirstItem, indexOfLastItem);
 
-    console.log(hoverState);
+    // console.log(hoverState);
 
     return (
         <div>
@@ -102,7 +101,7 @@ const SongItem = ({ activeSongNo, setActiveSongNo, songs }: { activeSongNo: numb
                                             onMouseEnter={mouseEnterEventHandler} 
                                             onMouseLeave={mouseLeaveEventHandler}
                                             onClick={() => {navi(`/song/detail/${hoverState.songNo}`)}}
-                                            data-songNo={Song.songNo}
+                                            data-songno={Song.songNo}
                                             style={hoverState.class === 'song-title' && hoverState.songNo === Song.songNo ? 
                                                 { ...searchListFontStyle, color: "magenta", cursor:"pointer" } : { ...searchListFontStyle, color: "#FFFFFF", cursor:"pointer" }}>
                                             {Song.songTitle}
@@ -112,7 +111,7 @@ const SongItem = ({ activeSongNo, setActiveSongNo, songs }: { activeSongNo: numb
                                         <span className="artist-name" 
                                             onMouseEnter={mouseEnterEventHandler} 
                                             onMouseLeave={mouseLeaveEventHandler}
-                                            data-songNo={Song.songNo}
+                                            data-songno={Song.songNo}
                                             style={hoverState.class === 'artist-name' && hoverState.songNo === Song.songNo ? 
                                                 { ...searchListFontStyle, fontSize: "15px", lineHeight: "18px", color: "magenta", cursor:"pointer" }
                                                 : { ...searchListFontStyle, fontSize: "15px", lineHeight: "18px", color: "white", cursor:"pointer" }}>

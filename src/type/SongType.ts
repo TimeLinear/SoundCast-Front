@@ -6,14 +6,22 @@ export type Song = {
 	songMoodNo: number; // 음원 분위기 번호
 	songGenreNo: number; // 음원 장르 번호
 	songImageNo: number; // 음원 커버 이미지 번호
-	songFileNo: number; // 음원 파일 번호
 	songTitle: string; // 음원명(유저가 입력)
 	songLicense : string|null; // 음원 출처(유저가 입력)
 	songDetail: string|null; // 음원 상세(유저가 입력)
 	
 	songGenreName? : string;
 	songMoodName?: string
-	songFileOriginName?:string
+
+
+	songFile: {
+		songFileNo: number,
+		songPathName: string,
+		songFileChangeName: string,
+		songFileOriginName: string
+	}
+
+	memberNickname?: string; // 업로더 닉네임 
 };
 
 export const initSong:Song = {
@@ -22,14 +30,21 @@ export const initSong:Song = {
 	songMoodNo: 5, // 음원 분위기 번호
 	songGenreNo: 3, // 음원 장르 번호
 	songImageNo: 0, // 음원 커버 이미지 번호
-	songFileNo: 0, // 음원 파일 번호
+	// songFileNo: 0, // 음원 파일 번호
 	songTitle: 'title', // 음원명(유저가 입력)
 	songLicense : 'license', // 음원 출처(유저가 입력)
 	songDetail: 'detail', // 음원 상세(유저가 입력)
 
 	songGenreName : 'Rock',
 	songMoodName : 'Happy',
-	songFileOriginName : '우주여행.mp3'
+
+	songFile: {
+		songFileNo: 0, // 음원 파일 번호
+		songPathName: , // 여기부터 고쳐야함
+		songFileChangeName: string,
+		songFileOriginName: string
+	}
+	// songFileOriginName : '우주여행.mp3'
 
 }
 
