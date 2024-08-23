@@ -2,7 +2,6 @@ export type User = {
     profile :string
     nickName : string
     email: string
-    introduce : string
 }
 export type LoginResponse ={
     token_type: string;

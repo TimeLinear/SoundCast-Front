@@ -83,8 +83,8 @@ function SearchList(){
 
                 songs.map( Song => (
                 //검색결과를 플레이리스트로 반환 (반복)
-                <>
-                <div className='search-list' key={Song.songNo} style={{...searchListBoxStyle}}>
+                <div key={Song.songNo}>
+                <div className='search-list' style={{...searchListBoxStyle}}>
             
                     <div className='play-icon' style={{...iconBoxSizeStyle}} >
                         <img src={Song.songNo === activeSongNo ? "images/pause-button-icon-white.png" : "images/play-icon-white.png"} 
@@ -162,7 +162,7 @@ function SearchList(){
                      </div>
                      </div>)
                 }
-                </>
+                </div>
                 ) )
             }
             </div>

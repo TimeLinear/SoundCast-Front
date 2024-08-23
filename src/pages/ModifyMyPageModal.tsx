@@ -1,18 +1,64 @@
-import { useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import axios from "../utils/CustomAxios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
+import { login } from "../features/memberSlice";
 
 const ModifyMyPageModal = ({ show, Close }: { show: boolean; Close: () => void }) => {
-    const user = useSelector((state: RootState) => state.member);
+    const member = useSelector((state: RootState) => state.member);
+    console.log("수정 모달에서 출력 : ");
+    console.log(member);
+    const dispatch = useDispatch();
+    
+    const [backgroundImage, setBackgroundImage] = useState<string>();
+    const [profileImage, setProfileImage] = useState<string>();
+    const [inputState, setInputState] = useState<{
+        nickName:string,
+        email:string,
+        introduce:string
+    }>({
+        nickName:'',
+        email:'',
+        introduce:''
+    });
 
-    const [backgroundImage, setBackgroundImage] = useState<string>("");
-    const [profileImage, setProfileImage] = useState<string>("");
-    const [nickName, setNickname] = useState<string>(user.nickName || '');
-    const [email, setEmail] = useState<string>(user.email || '');
-    const [introduce, setIntroduce] = useState<string>(user.introduce || '');
+    useEffect(() => {
+        setInputState({
+            nickName:member.nickName,
+            email:member.email,
+            introduce:member.introduce
+        });
+    },[member])
+
+    const inputStateHandler = (e:ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const input = e.target;
+        setInputState((prev) => ({
+            ...prev,
+            [input.name]:input.value
+        }))
+    }
+
+    // const [nickName, setNickname] = useState<string>();
+    // const [email, setEmail] = useState<string>();
+    // const [introduce, setIntroduce] = useState<string>();
+    const [onModifying, setOnModifying] = useState<boolean>(false);
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+    // useEffect(() => {
+    //     if(show){
+    //         const banner = user.banner ? user.banner.replace("C:\\SoundCastWorkspace\\SoundCAST_resources\\", "http://localhost:8087/") : '';
+    //         const profile = user.profile ? user.profile.replace("C:\\SoundCastWorkspace\\SoundCAST_resources\\", "http://localhost:8087/") : '';
+    //         console.log("배너가 잘 나오는지? :",banner);
+    //         console.log("프로필사진이 잘 나오는지? : ", profile)
+
+    //         setBackgroundImage(banner );
+    //         setProfileImage(profile );
+    //         setNickname(user.nickName || '');
+    //         setEmail(user.email || '');
+    //         setIntroduce(user.introduce || '');
+    //     }
+    // },[show,user]);
 
     const handleBackgroundChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -50,23 +96,42 @@ const ModifyMyPageModal = ({ show, Close }: { show: boolean; Close: () => void }
 
         if (backgroundFile) formData.append('backgroundImage', backgroundFile);
         if (profileFile) formData.append('profileImage', profileFile);
-        formData.append('nickName', nickName);
-        formData.append('email', email);
-        formData.append('introduce', introduce);
+        inputState.nickName && formData.append('nickName', inputState.nickName);
+        inputState.email && formData.append('email', inputState.email);
+        inputState.introduce && formData.append('introduce', inputState.introduce);
+        member.memberNo && formData.append('memberNo', member.memberNo.toString());
 
-        try {
-            const response = await axios.post('http://localhost:8087/soundcast/member/modify', formData, {
+        // try {
+        //     const response = await axios.post('http://localhost:8087/soundcast/member/modify', formData, {
+        //         headers: {
+        //             'Content-Type': 'multipart/form-data'
+        //         },
+        //     });
+        //     console.log(response.data);
+        //     // Handle successful response
+        // } catch (error) {
+        //     console.error('Error updating profile:', error);
+        //     // Handle error response
+        // }
+
+        axios.post('http://localhost:8087/soundcast/member/modify', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
-                    
-                },
-            });
-            console.log(response.data);
-            // Handle successful response
-        } catch (error) {
-            console.error('Error updating profile:', error);
-            // Handle error response
-        }
+                }
+            })
+            .then(res => {
+                console.log(res.data);
+                console.log(res.data.memberNo);
+                dispatch(login({
+                    member : {
+                        ...member, 
+                        ...res.data
+                    }
+                }))
+            })
+            .catch(error => {
+                console.log(error);
+            })
     };
 
     const backGroundClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -74,6 +139,11 @@ const ModifyMyPageModal = ({ show, Close }: { show: boolean; Close: () => void }
             Close();
         }
     };
+
+
+    const serverImagePath = "http://localhost:8087/soundcast/resource/";
+    const requestStartWith = "/SoundCAST_resources/";
+
 
     return (
         <div className={show ? "modal display-block" : "modal display-none"} onClick={backGroundClick}>
@@ -85,7 +155,7 @@ const ModifyMyPageModal = ({ show, Close }: { show: boolean; Close: () => void }
                 <div className="total" style={{ width: "90%", height: "80%", margin: "auto" }}>
                     <div className="modifyBanner" style={{
                         width: "100%", height: "25%", backgroundColor: "#B8CCFE", margin: "0 auto", position: "relative",
-                        backgroundImage: backgroundImage ? `url(${backgroundImage})` : "none",
+                        backgroundImage: backgroundImage ? `url(${backgroundImage})` : `url(${serverImagePath + member.banner.slice(member.banner.indexOf(requestStartWith) + requestStartWith.length)})`,
                         backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat"
                     }}>
                         <div style={{ margin: "0", display: "flex", position: "absolute", right: "15px", bottom: "15px", cursor: "pointer" }}>
@@ -97,25 +167,39 @@ const ModifyMyPageModal = ({ show, Close }: { show: boolean; Close: () => void }
 
                     <div className="mf-total" style={{ display: "flex", width: "100%", height: "25%" }}>
                         <div className="mf-profile" style={{ width: "30%", height: "100%", paddingTop: "10px", cursor: "pointer" }} onClick={triggerFileInput}>
-                            <img src={profileImage || "images/modify-pro.png"} style={{ width: "80%", height: "85%" }} />
+                            <img src={profileImage ? profileImage : serverImagePath + member.profile.slice(member.banner.indexOf(requestStartWith) + requestStartWith.length)} style={{ width: "80%", height: "85%" }} />
                             <input type="file" accept="image/*" ref={fileInputRef} style={{ display: "none" }} onChange={handleProfileChange} />
                         </div>
 
                         <div className="nickAndeamil" style={{ width: "70%", display: "flex", flexDirection: "column", paddingTop: "10px" }}>
                             <div className="mf-nickName" style={{ width: "100%", marginBottom: "15px" }}>
                                 <p style={{ marginTop: "20px", margin: "0" }}>닉네임</p>
-                                <input type="text" value={nickName} onChange={(e) => setNickname(e.target.value)} style={{ backgroundColor: "white", borderRadius: "20px", height: "20px", border: "none", width: "100%", outline: "none" }} />
+                                <input 
+                                    type="text"
+                                    name="nickName"
+                                    value={inputState.nickName} 
+                                    onChange={inputStateHandler} 
+                                    style={{ backgroundColor: "white", borderRadius: "20px", height: "20px", border: "none", width: "100%", outline: "none" }} />
                             </div>
                             <div className="mf-email" style={{ width: "100%" }}>
                                 <p style={{ margin: "0" }}>이메일 주소</p>
-                                <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} style={{ backgroundColor: "white", borderRadius: "20px", height: "20px", width: "100%", border: "none", outline: "none" }} />
+                                <input 
+                                    type="text"
+                                    name="email"
+                                    value={inputState.email} 
+                                    onChange={inputStateHandler}
+                                    style={{ backgroundColor: "white", borderRadius: "20px", height: "20px", width: "100%", border: "none", outline: "none" }} />
                             </div>
                         </div>
                     </div>
 
                     <div style={{ height: "30%" }}>
                         <p style={{ marginBottom: "10px" }}>자기소개</p>
-                        <textarea value={introduce} onChange={(e) => setIntroduce(e.target.value)} style={{ width: "100%", height: "70%", backgroundColor: "white", borderRadius: "10px", outline: "none", border: "none", resize: "none" }} />
+                        <textarea 
+                            name="introduce"
+                            value={inputState.introduce}
+                            onChange={inputStateHandler}
+                            style={{ width: "100%", height: "70%", backgroundColor: "white", borderRadius: "10px", outline: "none", border: "none", resize: "none" }} />
                     </div>
 
                     <div className="button" style={{ height: "20%", display: "flex", alignItems: "center", justifyContent: "end" }}>

@@ -11,7 +11,7 @@ interface KakaoLoginFormProps{
     setUser : (data:any) => void;
 }
 
-export default function KakaoLoginForm(){
+export default function KakaoLoginForm({onSignupRequest, handleClose}:{onSignupRequest:()=>void, handleClose:()=>void}){
     const kakaoJavascriptKey = process.env.REACT_APP_KAKAO_API_KEY as string;
 
     const user = useSelector((state:RootState) => state.member);
@@ -44,16 +44,17 @@ export default function KakaoLoginForm(){
                 const JwtToken = res.data.jwtToken;
                 setSessionCookie("accessToken", JwtToken); // 필수 사항
                //선택사항 setCookie("user",JSON.stringify(res.data.user));
-                const loginMember:Member = {
-                    profile:res.data.member.profileImage.profileImagePath,
-                    nickName:res.data.member.memberNickname,
-                    email:res.data.member.memberEmail,
-                    banner:res.data.member.memberBanner.memberBannerPath,
-                    introduce:res.data.member.memberIntroduce,
-                    follow:res.data.member.follwer
-                }
-                dispatch(login(loginMember)); // 필수 사항
-                console.log(loginMember);
+                // const loginMember:Member = {
+                //     memberNo:res.data.member.memberNo,
+                //     profile:res.data.member.profileImage.profileImagePath,
+                //     nickName:res.data.member.memberNickname,
+                //     email:res.data.member.memberEmail,
+                //     banner:res.data.member.memberBanner.memberBannerPath,
+                //     introduce:res.data.member.memberIntroduce,
+                //     follow:res.data.member.follwer
+                // }
+                dispatch(login(res.data)); // 필수 사항
+                console.log(res.data);
             })
             .catch(error => {
                 console.log(error);
