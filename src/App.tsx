@@ -63,7 +63,7 @@ function App() {
       <Routes>
         <Route path='/' element={<MainPage />} />
         <Route path='/search' element={<SearchPage />} />
-        <Route path='/music/detail' element={<MusicDetail />} />
+        <Route path='/song/detail/:musicNo' element={<MusicDetail />} />
         <Route path='/member/mypage' element={<Mypage />} />
       </Routes>
       <Footer />

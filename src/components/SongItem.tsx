@@ -4,6 +4,7 @@ import { CSSProperties, MouseEvent, useEffect, useState } from "react";
 import { setPlaySong } from "../features/songSlice";
 import { Song } from "../type/SongType";
 import Pagination from "./Pagination";
+import { useNavigate } from "react-router-dom";
 
 const SongItem = ({ activeSongNo, setActiveSongNo, songs }: { activeSongNo: number | null, setActiveSongNo: (no: number) => void, songs: Song[] }) => {
 
@@ -11,39 +12,30 @@ const SongItem = ({ activeSongNo, setActiveSongNo, songs }: { activeSongNo: numb
         width: "100%", height: "80px", display: "flex", alignItems: "center", justifyContent: "space-evenly",
         background: "#1C003B", borderTop: "1px solid #FFFFFF"
     };
-    const searchListFontStyle: CSSProperties = { fontFamily: "Inter", fontStyle: "normal", fontSize: "20px", fontWeight: "700", lineHeight: "24px", color: "#000000" };
+    const searchListFontStyle: CSSProperties = { fontFamily: "Inter", fontStyle: "normal", fontSize: "20px", fontWeight: "700", lineHeight: "24px" };
     const itemBoxStyle: CSSProperties = { display: "flex", alignItems: "center", justifyContent: "center", width: "120px", height: "38px", background: "#FFFFFF", borderRadius: "10px" };
-    const iconBoxSizeStyle: CSSProperties = { height: "35px", width: "35px" };
+    const iconBoxSizeStyle: CSSProperties = { height: "35px", width: "35px", cursor:"pointer" };
 
-    const [hoverState, setHoverState] = useState({ key: 0, class: "" });
+    const selectedCategoryStyle:CSSProperties = { background:"#BA9FCC", color:"white", cursor:"pointer" };
+
+    const [hoverState, setHoverState] = useState({ songNo: 0, class: "" });
 
 
     const mouseEnterEventHandler = (e:MouseEvent) => {
-        const keyNo = (e.target as HTMLDivElement).dataset.key;
+        const songNo = (e.target as HTMLDivElement).dataset.songNo;
         const classname = (e.target as HTMLDivElement).className;
-        if(keyNo) {
-            // console.log("enter", keyNo);
-            setHoverState({ ...hoverState, key: Number(keyNo) })
-        } else {
-            // console.log("enter", classname);
-            setHoverState({ ...hoverState, class: (e.target as HTMLDivElement).className })
-        }
+
+        setHoverState({ songNo: Number(songNo), class: classname })
     };
 
     const mouseLeaveEventHandler = (e: MouseEvent) => {
-        const keyNo = (e.target as HTMLDivElement).dataset.key;
-        const classname = (e.target as HTMLDivElement).className;
-        if(keyNo) {
-            // console.log("leave", keyNo);
-            setHoverState({ ...hoverState, key: 0 })
-        } else {
-            // console.log("leave", classname);
-            setHoverState({ ...hoverState, class: '' })
-        }
+        
+        setHoverState({ songNo: 0, class: '' })
     };
 
     const song = useSelector((state: RootState) => state.song);
     const dispatch = useDispatch();
+    const navi = useNavigate();
 
     const handleIconClick = (id: number) => {
         setActiveSongNo(id === activeSongNo ? 0 : id);
@@ -85,7 +77,7 @@ const SongItem = ({ activeSongNo, setActiveSongNo, songs }: { activeSongNo: numb
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = songs.slice(indexOfFirstItem, indexOfLastItem);
 
-    // console.log(hoverState);
+    console.log(hoverState);
 
     return (
         <div>
@@ -94,8 +86,7 @@ const SongItem = ({ activeSongNo, setActiveSongNo, songs }: { activeSongNo: numb
                     currentItems.map(Song => (
                         //검색결과를 플레이리스트로 반환 (반복)
                         <div key={Song.songNo}>
-                            <div className='search-list' style={{ ...searchListBoxStyle }} data-key={Song.songNo}
-                                onMouseEnter={mouseEnterEventHandler} onMouseLeave={mouseLeaveEventHandler}>
+                            <div className='search-list' style={{ ...searchListBoxStyle }}>
                                 <div className='play-icon' style={{ ...iconBoxSizeStyle }} >
                                     <img src={Song.songNo === activeSongNo ? "/images/song/pause-button-icon-white.png" : "/images/song/play-icon-white.png"}
                                         style={{ height: "100%", width: "100%" }}
@@ -107,15 +98,22 @@ const SongItem = ({ activeSongNo, setActiveSongNo, songs }: { activeSongNo: numb
                                 </div>
                                 <div className='song-content' style={{ width: "260px", height: "50px", textAlign: "start", paddingLeft: "20px" }}>
                                     <div className='song-title' style={{ height: "50%" }}>
-                                        <span className='song-title' onMouseEnter={mouseEnterEventHandler} onMouseLeave={mouseLeaveEventHandler}
-                                            style={hoverState.class === 'song-title' && hoverState.key === Song.songNo ? 
+                                        <span className='song-title' 
+                                            onMouseEnter={mouseEnterEventHandler} 
+                                            onMouseLeave={mouseLeaveEventHandler}
+                                            onClick={() => {navi(`/song/detail/${hoverState.songNo}`)}}
+                                            data-songNo={Song.songNo}
+                                            style={hoverState.class === 'song-title' && hoverState.songNo === Song.songNo ? 
                                                 { ...searchListFontStyle, color: "magenta", cursor:"pointer" } : { ...searchListFontStyle, color: "#FFFFFF", cursor:"pointer" }}>
                                             {Song.songTitle}
                                         </span>
                                     </div>
                                     <div className='artist-name' style={{ height: "50%" }}>
-                                        <span className="artist-name" onMouseEnter={mouseEnterEventHandler} onMouseLeave={mouseLeaveEventHandler}
-                                            style={hoverState.class === 'artist-name' && hoverState.key === Song.songNo ? 
+                                        <span className="artist-name" 
+                                            onMouseEnter={mouseEnterEventHandler} 
+                                            onMouseLeave={mouseLeaveEventHandler}
+                                            data-songNo={Song.songNo}
+                                            style={hoverState.class === 'artist-name' && hoverState.songNo === Song.songNo ? 
                                                 { ...searchListFontStyle, fontSize: "15px", lineHeight: "18px", color: "magenta", cursor:"pointer" }
                                                 : { ...searchListFontStyle, fontSize: "15px", lineHeight: "18px", color: "white", cursor:"pointer" }}>
                                             {Song.songMemberNo}
@@ -125,34 +123,42 @@ const SongItem = ({ activeSongNo, setActiveSongNo, songs }: { activeSongNo: numb
 
                                 {/* 재생중일 때 나타나는 헤드폰 아이콘 */}
                                 <div className='headphone-icon' style={{ ...iconBoxSizeStyle, margin: "0 30px" }}>
-                                    {activeSongNo === Song.songNo && (<img src="/images/song/headphone-icon.png" style={{ height: "100%", width: "100%" }} />)}
+                                    {activeSongNo === Song.songNo && (<img src="/images/song/headphone-icon.png" style={{ height: "100%", width: "100%", cursor:"default" }} />)}
                                 </div>
 
-                                <div className='genre-box' style={{ ...itemBoxStyle }}>
+                                <div className='genre-box'
+                                    onMouseEnter={mouseEnterEventHandler} 
+                                    onMouseLeave={mouseLeaveEventHandler}
+                                    data-key={Song.songNo}
+                                    style={hoverState.class === 'genre-box' && hoverState.songNo === Song.songNo ? {...itemBoxStyle, ...selectedCategoryStyle} : {...itemBoxStyle}}>
                                     <span style={{ ...searchListFontStyle }}>{Song.songGenreNo}</span>
                                 </div>
-                                <div className='mood-box' style={{ ...itemBoxStyle }}>
+                                <div className='mood-box'
+                                    onMouseEnter={mouseEnterEventHandler} 
+                                    onMouseLeave={mouseLeaveEventHandler}
+                                    data-key={Song.songNo}
+                                    style={hoverState.class === 'mood-box' && hoverState.songNo === Song.songNo ? {...itemBoxStyle, ...selectedCategoryStyle} : {...itemBoxStyle}}>
                                     <span style={{ ...searchListFontStyle }}>{Song.songMoodNo}</span>
                                 </div>
 
                                 {/* 라이센스가 있을 경우 나타나는 아이콘 */}
-                                <div className='license-icon' style={{ ...iconBoxSizeStyle }}>
+                                <div className='license-icon' style={{ ...iconBoxSizeStyle, cursor:"default" }}>
                                     {Song.songLicense !== null &&
-                                        (<img src='/images/song/license-icon.png' style={{ height: "100%", width: "100%" }} />)
+                                        (<img src='/images/song/license-icon.png' style={{ height: "100%", width: "100%", cursor:"default" }} />)
                                     }
                                 </div>
 
                                 <div className='play-time-box' style={{ display: "flex", alignItems: "center", height: "38px" }}>
                                     <div className='clock-icon' style={{ ...iconBoxSizeStyle, marginRight: "10px" }}>
-                                        <img src='/images/song/clock-icon.png' style={{ height: "100%", width: "100%" }} />
+                                        <img src='/images/song/clock-icon.png' style={{ height: "100%", width: "100%", cursor:"default" }} />
                                     </div>
                                     <div className='play-time'>
-                                        <span style={{ ...searchListFontStyle, color: "#FFFFFF" }}>1:58</span>
+                                        <span style={{ ...searchListFontStyle, color: "white"}}>1:58</span>
                                     </div>
                                 </div>
 
                                 <div className='download-box' style={{ ...itemBoxStyle }}>
-                                    <span style={{ ...searchListFontStyle }}>다운로드</span>
+                                    <span style={{ ...searchListFontStyle, cursor:"pointer" }}>다운로드</span>
                                 </div>
 
                                 <div className='share-icon' style={{ ...iconBoxSizeStyle }}>
