@@ -6,6 +6,7 @@ import { Song } from "../type/SongType";
 import { setGenre, setMood } from "../features/searchSlice";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import useSearchFunction from "../hook/useSearchFunction";
 
 const SongItem = ({ activeSongNo, setActiveSongNo, songs }: { activeSongNo: number | null, setActiveSongNo: (no: number) => void, songs: Song[] }) => {
 
@@ -54,25 +55,24 @@ const SongItem = ({ activeSongNo, setActiveSongNo, songs }: { activeSongNo: numb
     const [genreNumber, setGenreNumber] = useState(search.genre);
     const [moodNumber, setMoodNumber] = useState(search.mood);
 
-    useEffect(()=>{
-        dispatch(setGenre(genreNumber));
-        if(genreNumber !== 0){
-            axios.get(`http://localhost:8087/soundcast/song/${search.placeNo}/${genreNumber}/${search.mood}`)
-                .then((response) => {
-                    dispatch(setSongList(response.data))})
-                .catch((err) => console.log(err))
-        }
-    }, [genreNumber])
+    //     useEffect(()=>{
+    //     dispatch(setGenre(genreNumber));
+        
+    // }, [genreNumber])
+    
+    // useEffect(()=>{
+    //     dispatch(setMood(moodNumber));
+    // }, [moodNumber])
 
-    useEffect(()=>{
-        dispatch(setMood(moodNumber));
-        if(moodNumber !== 0){
-            axios.get(`http://localhost:8087/soundcast/song/${search.placeNo}/${search.genre}/${moodNumber}`)
-                .then((response) => {
-                    dispatch(setSongList(response.data))})
-                .catch((err) => console.log(err))
-        }
-    },[moodNumber])
+    // useEffect(()=>{
+    //     dispatch(setMood(moodNumber));
+    //     if(moodNumber !== 0){
+    //         axios.get(`http://localhost:8087/soundcast/song/${search.placeNo}/${search.genre}/${moodNumber}`)
+    //             .then((response) => {
+    //                 dispatch(setSongList(response.data))})
+    //             .catch((err) => console.log(err))
+    //     }
+    // },[moodNumber])
 
     // const searchSongs = (type:string, no:number)=> {
     //     if(type === 'genre'){
@@ -96,6 +96,7 @@ const SongItem = ({ activeSongNo, setActiveSongNo, songs }: { activeSongNo: numb
     // }
     //--------------------------------
 
+   
 
     return (
         <>
@@ -119,7 +120,7 @@ const SongItem = ({ activeSongNo, setActiveSongNo, songs }: { activeSongNo: numb
                                     <span style={{ ...searchListFontStyle, color: "#FFFFFF" }}>{Song.songTitle}</span>
                                 </div>
                                 <div className='artist-name' style={{ height: "50%" }}>
-                                    <span style={{ ...searchListFontStyle, fontSize: "15px", lineHeight: "18px", color: "#FFFFFF" }}>{Song.songMemberNo}</span>
+                                    <span style={{ ...searchListFontStyle, fontSize: "15px", lineHeight: "18px", color: "#FFFFFF" }}>{Song.memberNickname}</span>
                                 </div>
                             </div>
 
@@ -128,16 +129,16 @@ const SongItem = ({ activeSongNo, setActiveSongNo, songs }: { activeSongNo: numb
                                 {activeSongNo === Song.songNo && (<img src="/images/song/headphone-icon.png" style={{ height: "100%", width: "100%" }} />)}
                             </div>
                 
-                {/* -----------------08/21 수정 */}
+                {/* -----------------08/21, 22 수정 */}
                             <div className='genre-box' style={{ ...itemBoxStyle }}
                                 onClick={()=>{setGenreNumber(Song.songGenreNo)}}>
-                                <span style={{ ...searchListFontStyle }}>{Song.songGenreNo}</span>
+                                <span style={{ ...searchListFontStyle }}>{Song.songGenreName}</span>
                             </div>
                             <div className='mood-box' style={{ ...itemBoxStyle }}
                                 onClick={()=>{setMoodNumber(Song.songMoodNo)}}>
-                                <span style={{ ...searchListFontStyle }}>{Song.songMoodNo}</span>
+                                <span style={{ ...searchListFontStyle }}>{Song.songMoodName}</span>
                             </div>
-                {/* 08/21 수정---------------- */}
+                {/*---------------- */}
 
                             {/* 라이센스가 있을 경우 나타나는 아이콘 */}
                             <div className='license-icon' style={{ ...iconBoxSizeStyle }}>
@@ -188,7 +189,7 @@ const SongItem = ({ activeSongNo, setActiveSongNo, songs }: { activeSongNo: numb
                             </div>)
                         }
                     </>)
-                )
+                    )
             }
         </>
     );

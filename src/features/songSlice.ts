@@ -6,19 +6,12 @@ const songSlice = createSlice({
     initialState : {list:initSongList, currentSong:initSong},
     reducers : {
         setSongList : (state, action:PayloadAction<typeof initSongList>)=>{
-            if(action.payload){
-                state.list = action.payload;
-            } else {
-                state.list = initSongList;
-            }
+            console.log(action.payload);
+            if(action.payload){return {...state, list:[...action.payload]}}
         },
-
         setPlaySong : (state, action:PayloadAction<number>) => {
             const selectedSong = state.list.find((value)=>value.songNo === action.payload);
-            
-            if(selectedSong){
-                state.currentSong = selectedSong;
-            } 
+            if(selectedSong){return {...state, currentSong:selectedSong}}
         }
 
     }

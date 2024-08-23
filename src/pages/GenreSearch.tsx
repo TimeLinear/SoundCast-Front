@@ -1,16 +1,20 @@
 import { CSSProperties, MouseEvent, useEffect, useState } from "react";
 import {Genre, initGenres} from "../type/SongType";
 import MoodSearch from "./MoodSearch";
-import { useDispatch } from "react-redux";
-import { setGenre, setKeyword } from "../features/searchSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { setGenre, setKeyword, setMood } from "../features/searchSlice";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { RootState } from "../store/store";
+import { setSongList } from "../features/songSlice";
 
 
 export interface SearchProps {
   handleMouseOver: (e:MouseEvent) => void,
   handleMouseOut: (e:MouseEvent) => void,
   onLeaveSearchs: () => void,
-  searchGenreNo: number
+  searchGenreNo: number,
+  searchSongs: ()=>void
 }
 
 function GenreSearch ({searchGenre, searchMood}:{searchGenre:number, searchMood:number}){
@@ -22,7 +26,9 @@ function GenreSearch ({searchGenre, searchMood}:{searchGenre:number, searchMood:
   const genreItemStyle:CSSProperties = {...genreCommonStyle, background:"#BA9FCC", color:"#FFFFFF"}
   
   const dispatch = useDispatch();
-
+  const navi = useNavigate();
+  const search = useSelector((state:RootState) => state.search);
+  
   const [genres, setGenres] = useState<Genre[]>(initGenres);
   const [searchGenreNo, setSearchGenreNo] = useState(-1);
 
@@ -52,12 +58,6 @@ function GenreSearch ({searchGenre, searchMood}:{searchGenre:number, searchMood:
     onLeaveSearchs();
   },[isHovered]);
 
-  const props:SearchProps = {
-    handleMouseOver,
-    handleMouseOut,
-    onLeaveSearchs,
-    searchGenreNo
-  }
   
    //------------수정한 부분(08/21)
    useEffect(()=>{
@@ -66,9 +66,38 @@ function GenreSearch ({searchGenre, searchMood}:{searchGenre:number, searchMood:
     .catch((err) => console.log(err))
 
   },[]);
-  //--------------------------
+  
+  useEffect(()=>{
+    dispatch(setGenre(searchGenreNo));
+  },[searchGenreNo])
  
+  const searchSongs = () => {
+    console.log(search.genre)
+    axios.get(`http://localhost:8087/soundcast/song/search`, 
+      {params : {...search, genre:searchGenreNo} })
+      .then((response) => {
+          //키워드로 db에 저장된 노래 불러와 리스트 전역에 저장
+          console.log(response.data);
+          dispatch(setSongList(response.data));
+        })
+      .catch((err)=>console.log(err));
 
+    navi("/search");
+    
+    dispatch(setKeyword(''));
+    dispatch(setGenre(0));
+    dispatch(setMood(0));
+  }
+  //--------------------------  
+   
+  const props:SearchProps = {
+    handleMouseOver,
+    handleMouseOut,
+    onLeaveSearchs,
+    searchGenreNo,
+    searchSongs
+  }
+  
   return(
     <>
       <div id='search-genre'
@@ -84,6 +113,7 @@ function GenreSearch ({searchGenre, searchMood}:{searchGenre:number, searchMood:
           <div id='genre'
               key={genre.genreNo}
               onMouseEnter={()=>setSearchGenreNo(genre.genreNo)}
+              onClick={searchSongs}
               style={searchGenreNo === genre.genreNo ? genreItemStyle : genreCommonStyle}>
             <span style={searchGenreNo === genre.genreNo ? {...genreItemFontStyle, color:"#FFFFFF"} : genreItemFontStyle}>{genre.genreName}</span>
           </div>

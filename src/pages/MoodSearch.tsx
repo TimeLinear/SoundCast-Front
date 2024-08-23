@@ -2,14 +2,18 @@ import { CSSProperties, MouseEvent, useEffect, useState } from "react";
 import { initMoods, Mood } from "../type/SongType";
 import { SearchProps } from "./GenreSearch";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { setGenre, setMood } from "../features/searchSlice";
 
 function MoodSearch(props:SearchProps){
 
-    const {handleMouseOver, handleMouseOut, searchGenreNo, onLeaveSearchs} = props
+    const {handleMouseOver, handleMouseOut, searchGenreNo, onLeaveSearchs, searchSongs} = props
 
     const moodItemFontStyle:CSSProperties = {fontFamily:"Inter", fontStyle:"normal", fontSize:"16px", lineHeight: "19px", fontWeight:"700", color:"#000000"};
     const moodCommonStyle:CSSProperties = {display: "flex", justifyContent: "center", alignItems:"center", width: "130px", height:"40px", marginRight:"10px", boxSizing: "border-box"};
-  
+
+    const dispatch = useDispatch();
+
      //------------수정한 부분(08/21)
     const [moods, setMoods] = useState<Mood[]>(initMoods);
     
@@ -19,9 +23,8 @@ function MoodSearch(props:SearchProps){
       .catch((err) => console.log(err))
  
     },[]);
+
     //--------------------------------
-
-
     const [searchMoodNo, setSearchMoodNo] = useState<number>(-1);
 
     const onHoverMood = (e:MouseEvent, moodNo:number) => {
@@ -33,6 +36,10 @@ function MoodSearch(props:SearchProps){
       e.stopPropagation();
       setSearchMoodNo(-1);
     }
+
+    useEffect(()=>{
+      dispatch(setMood(searchMoodNo));
+    },[searchMoodNo])
   
     return (
       <div id="search-mood" 
@@ -45,7 +52,9 @@ function MoodSearch(props:SearchProps){
         {
           moods.map( mood => (
             <div id='mood' key={mood.moodNo}
-              style={{...moodCommonStyle}} onMouseEnter={(e) => onHoverMood(e, mood.moodNo)} onMouseLeave={(e) => onLeaveMood(e)}>
+              style={{...moodCommonStyle}} 
+              onClick={searchSongs}
+              onMouseEnter={(e) => onHoverMood(e, mood.moodNo)} onMouseLeave={(e) => onLeaveMood(e)}>
               <span style={searchMoodNo === mood.moodNo ? {...moodItemFontStyle, color:"#FFFFFF"} : moodItemFontStyle}>{mood.moodName}</span>
             </div>
           ))  

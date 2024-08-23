@@ -58,7 +58,7 @@
 }
 /* 헤더 */
 .Header{
-  position: absolute;
+  /* position: absolute; */
   width: 100vw;
   height: 110px;
   padding: 0 80px;

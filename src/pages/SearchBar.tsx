@@ -1,10 +1,11 @@
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { Params, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { RootState } from "../store/store";
 import { setKeyword } from "../features/searchSlice";
 import { setSongList } from "../features/songSlice";
 import { ChangeEvent, useState } from "react";
+import useSearchFunction from "../hook/useSearchFunction";
 
 function SearchBar({searchKeyword}:{searchKeyword:string}){
   
@@ -25,18 +26,22 @@ function SearchBar({searchKeyword}:{searchKeyword:string}){
     setInputKeyword(inputStr);
   }
 
-  //------------수정한 부분(08/21)----------
+  //------------수정한 부분(08/21)-------------
   const searchSongs = () => {
       dispatch(setKeyword(inputkeyword));      
       console.log(inputkeyword);
-      axios.get(`http://localhost:8087/soundcast/song/search/${search.placeNo}/${search.genre}/${search.mood}/${inputkeyword}`)
+
+      // search 객체를 보내서 백엔드 측에서 jackson 라이브러리를 통해 다시 HashMap으로 만드는 작업 시도
+      axios.get(`http://localhost:8087/soundcast/song/search`, {params : search})
         .then((response) => {
             //키워드로 db에 저장된 노래 불러와 리스트 전역에 저장
+            console.log(response.data);
             dispatch(setSongList(response.data));
           })
         .catch((err)=>console.log(err));
 
       navi("/search");
+      dispatch(setKeyword(''));
   }
   //-----------------------------------------
 

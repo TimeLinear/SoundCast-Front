@@ -40,7 +40,7 @@ function Player(props:Props){
                     <span style={{...playerFontStyle, fontSize:"22px", lineHeight:"24px"}}>{songs.currentSong.songTitle}</span>
                 </div>
                 <div className='artist-name' style={{height:"50%"}}>
-                    <span style={{...playerFontStyle}}>{songs.currentSong.songMemberNo}</span>
+                    <span style={{...playerFontStyle}}>{songs.currentSong.memberNickname}</span>
                 </div> 
             </div>
 
