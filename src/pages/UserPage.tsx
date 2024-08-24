@@ -41,7 +41,7 @@ const UserPage = () => {
         setShowFollingModal(false);
     }
 
-
+  
 
     
     //팔로우 임시
@@ -99,6 +99,8 @@ const UserPage = () => {
     const [filteredMembers, setFilteredMembers] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+      //댓글쪽
+    const [deletingCommentNo, setDeletingCommentNo] = useState(0);
     //백엔드 
     useEffect(() =>{
        axios
@@ -143,7 +145,7 @@ const UserPage = () => {
  
             // });
             
-        }, [member,NumbMemberNo,isFollowing,isShow,isSubmitting]);
+        }, [member,NumbMemberNo,isFollowing,isShow,isSubmitting,deletingCommentNo]);
 
 
     const divStyle:  React.CSSProperties = selectMember.memberNo === member.memberNo ? { display: "none" } : {display:"flex", position: "absolute", top: "50px", left: "80px"};
@@ -246,7 +248,7 @@ const UserPage = () => {
                 {isShow === 'song' ? (
                     <MemberSongs/>  
                 ) : (
-                    <MemberComments selectMember={selectMember} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting}/>                  
+                    <MemberComments selectMember={selectMember} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} deletingCommentNo={deletingCommentNo} setDeletingCommentNo={setDeletingCommentNo}/>                  
                 )}
             </div>
             {/* <FollowingModal show={showFollingModal} Close={followingCloseHandler} /> */}

@@ -43,15 +43,15 @@ let memberSlice = createSlice({
             const data = action.payload;
             console.log(data);
             return {
-                memberNo:data.member.memberNo,
-                profile:data.member.profileImage.profileImagePath,
-                nickName:data.member.memberNickname,
-                email:data.member.memberEmail,
-                banner:data.member.memberBanner.memberBannerPath,
-                introduce:data.member.memberIntroduce,
+                memberNo:data.memberNo,
+                profile:data.profileImage.profileImagePath,
+                nickName:data.memberNickname,
+                email:data.memberEmail,
+                banner:data.memberBanner.memberBannerPath,
+                introduce:data.memberIntroduce,
                 follow:{
-                    follower:data.member.follower,
-                    following:data.member.following
+                    follower:data.follower,
+                    following:data.following
                 },
                 
                 comment: data.commentList?.map((comment: any) => ({

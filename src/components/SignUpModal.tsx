@@ -68,14 +68,13 @@ const SignUpModal = ({showSignUp, openSignUp, closeSignUp } : {showSignUp:boolea
             axios
                 .post("http://localhost:8087/soundcast/auth/enroll/google", {
                     Credential
-    
                 })
                 .then(res =>{
     
                     console.log("google enroll res: "+ res.data.jwtToken);
                     const JwtToken = res.data.jwtToken;
                     setSessionCookie("accessToken",JwtToken);
-                    
+                    console.log(res);
                     dispatch(login(res.data.member));
                     closeSignUp();
                    

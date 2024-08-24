@@ -39,6 +39,7 @@ export default function KakaoLoginForm({onSignupRequest, handleClose}:{onSignupR
                 accessToken:ACCESS_TOKEN
             })
             .then(res => { 
+                console.log(res);
                 if(!res.data.member){
                     new Cookies().set("ACCESS_TOKEN", ACCESS_TOKEN, {maxAge: 60 * 3, path:'/'});
                     

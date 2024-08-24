@@ -10,12 +10,13 @@ import { getCookie } from './utils/Cookie';
 import axios from './utils/CustomAxios';
 import { login } from './features/memberSlice';
 import PlaceDevider from './components/PlaceDevider';
-import MyPageBanner from './pages/MyPageBanner';
+
 
 import UserPage from './pages/UserPage';
 import SearchList from './pages/SearchList';
 import { Route, Routes } from 'react-router-dom';
 import Footer from './components/Footer';
+import MyPageBanner from './pages/MyPageBanner';
 
 
 export let Context = createContext({}); //Context == state 보관소

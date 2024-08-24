@@ -1,13 +1,35 @@
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Pagination from "../components/Pagination";
 import "./css/myPageBanner.css";
+import FollowingModal from "../components/FollowingModal";
+import ModifyMyPageModal from "../components/ModifyMyPageModal"; 
 
 const MyPageBanner = () => {
-    const user = useSelector((state: RootState) => state.member);
+    const member = useSelector((state: RootState) => state.member);
 
     const [isShow, setIsShow] = useState('song');
+
+    const [showFollingModal, setShowFollingModal] = useState(false);
+    const [showModifyModal,setShowModifyModal] = useState(false);
+
+
+    const followingHandler = () => {
+        setShowFollingModal(true);
+    }
+
+    const followingCloseHandler = () => {
+        setShowFollingModal(false);
+    }
+
+    const modifyHandler = () => {
+        setShowModifyModal(true);
+    }
+
+    const modifyCloseHandler = () => {
+        setShowModifyModal(false);
+    }
 
     
 
@@ -37,7 +59,7 @@ const MyPageBanner = () => {
     ]
 
     const commentItems = [
-        {nickName:"박구건",comment:"ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"},
+        {nickName:"박구건",comment:"국회는 헌법개정안이 공고된 날로부터 60일 이내에 의결하여야 하며, 국회의 의결은 재적의원 3분의 2 이상의 찬성을 얻어야 한다.광물 기타 중요한 지하자원·수산자원·수력과 경제상 이용할 수 있는 자연력은 법률이 정하는 바에 의하여 일정한 기간 그 채취·개발 또는 이용을 특허할 수 있다."},
         {nickName:"박구건",comment:"comment?"},
         {nickName:"박구건",comment:"comment?"},
         {nickName:"박구건",comment:"comment?"},
@@ -45,7 +67,6 @@ const MyPageBanner = () => {
         {nickName:"박구건",comment:"comment?"},
         {nickName:"박구건",comment:"comment?"},
         {nickName:"박구건",comment:"comment?"},
-
     ]
 
     /* 페이지네이션 시작 */
@@ -71,29 +92,46 @@ currentPage의 state값에 따라서 동적으로 화면상에 표기할 current
     // 현재 페이지에서 표시해야할 리스트 아이템들 [{no: "11", profileImg: "/images/mimikyu.png", artist: "Gun" , email: "parkyo@gmail.com"}]
 
     /* 페이지네이션 끝 */
+    console.log("-----------------------------------------")
+    console.log(member.banner);
+    console.log(member.email);
+    console.log(member.introduce);
+    console.log(member.nickName);
+    console.log(member.profile);
+    console.log("-----------------------------------------")
 
+    useEffect(() => {
 
+    }, [member]);
 
+    const serverImagePath = "http://localhost:8087/soundcast/resource/";
+    const requestStartWith = "/SoundCAST_resources/";
 
+    // console.log(serverImagePath + user.banner.slice(user.banner.indexOf('/images/') + 8));
     return (
         <>
             <div className='banner-box' style={{ width: "100%", height: "270px", position: "relative", display: "flex", alignItems: "center" }}>
-                <img src="images/myPage-Banner.png" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                <img src={user.profile} alt="User Profile" className="ProfileImage" style={{ objectFit: "cover", width: "170px", height: "170px", borderRadius: "100px", position: "absolute", top: "60%", left: "250px", border: "2px solid #770ABF" }} />
+                <img src={serverImagePath + member.banner.slice(member.banner.indexOf(requestStartWith) + requestStartWith.length)} 
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                <img src={serverImagePath + member.profile.slice(member.banner.indexOf(requestStartWith) + requestStartWith.length)}
+                    alt="User Profile" className="ProfileImage" 
+                    style={{ objectFit: "cover", width: "170px", height: "170px", borderRadius: "100px", position: "absolute", top: "60%", left: "250px", border: "2px solid #770ABF" }} />
             </div>
             <div className="UserIntroduce" style={{ width: "630px", height: "200px", marginLeft: "250px", marginTop: "80px" }}>
-                <span style={{ fontWeight: "bolder", fontSize: "28px" }}>{user.nickName}<span style={{ fontSize: "15px", fontWeight: "normal", marginLeft: "10px" }}>{user.email}</span></span>
+                <span style={{ fontWeight: "bolder", fontSize: "28px" }}>{member.nickName}<span style={{ fontSize: "15px", fontWeight: "normal", marginLeft: "10px" }}>{member.email}</span></span>
                 <img src="images/profilemodify-image.png" style={{ marginLeft: "90px" }}></img>
-                <span style={{ marginLeft: "10px", fontWeight: "bold" ,cursor:"pointer" }}>내 정보 수정</span>
+                <span style={{ marginLeft: "10px", fontWeight: "bold" ,cursor:"pointer" }} onClick={modifyHandler} >내 정보 수정</span>
                 <div style={{ display: "flex" }}>
-                    <p style={{ margin: "0 10px 0 0", fontWeight: "bold" }}>팔로워</p><p style={{ margin: 0 }}>0</p>
-                    <p style={{ margin: "0 10px 0 20px", fontWeight: "bold" }}>팔로잉</p><p style={{ margin: 0 }}>0</p>
+                    <p style={{ margin: "0 10px 0 0", fontWeight: "bold" }}>팔로워</p><p style={{ margin: 0 }}>0{/*user.follow.follower*/}</p>
+                    <p style={{ margin: "0 10px 0 20px", fontWeight: "bold",cursor:"pointer" }} onClick={followingHandler} >팔로잉</p><p style={{ margin: 0 }}>10{/*user.follow.following.length*/}</p>
                 </div>
                 <div className="introduce">
-                    <span>누첸넉갯으사외다 마애아손야내의 재으자그인일기 를뒤기 읩아근어가 난데기어텩이어 우드오다져.</span>
+                    <span>{member.introduce}</span>
                 </div>
+                <ModifyMyPageModal show={showModifyModal} Close={modifyCloseHandler} />
+                <FollowingModal show={showFollingModal} Close={followingCloseHandler} />
             </div>
- 
+
             <div className="button-and-content" style={{boxSizing:"border-box", alignSelf:"center", width:"1280px", display:"flex", justifyContent:"center", flexDirection:"column", margin:"0 auto"}}>
                 <div>
                     <div className="songandcomment" style={{ width: "150px", height: "40px", display: "flex"}}>
@@ -118,7 +156,7 @@ currentPage의 state값에 따라서 동적으로 화면상에 표기할 current
                     <div className={`rest ${isShow === 'comment' ? 'selectSac' : ''}`} style={{minWidth:"1280px", height: "50px", backgroundColor: "black", display: "flex", alignItems: "center", borderTopRightRadius: "7px" }}>
                         {
                             isShow === "song" ? (
-                                <div className="uploadButton" style={{ marginLeft: "92%", height: "55%", width: "7%", backgroundColor: "lightgrey", borderRadius: "5px", display: "flex", alignItems: "center" }}>
+                                <div className="uploadButton" style={{ marginLeft: "90%", height: "55%", width: "7%", backgroundColor: "lightgrey", borderRadius: "5px", display: "flex", alignItems: "center" }}>
                                     <img src="images/upload-image.png" style={{ marginLeft: "7px", width: "20%", marginTop: "3px" }} />
                                     <span style={{ marginLeft: "8px", fontWeight: "bolder", fontSize: "17px", cursor: "pointer" }}>업로드</span>
                                 </div>
@@ -136,8 +174,8 @@ currentPage의 state값에 따라서 동적으로 화면상에 표기할 current
                 {isShow === 'song' ? (
                     <div className="mysong" style={{ border: "1px solid lightgrey", display: "flex", flexWrap: "wrap"}}>
 
-                        {currentItems.map((item, index) => (
-                            <div key={index} style={{ margin: "20px 2.39%", width: "194px", height: "220px", display: "flex", flexDirection: "column" }}>
+                        {currentItems.map((item) => (
+                            <div style={{ margin: "20px 2.39%", width: "194px", height: "220px", display: "flex", flexDirection: "column" }}>
 
                                 <div className="hoverImage" style={{ width: "100%", height: "154px", boxSizing: "border-box", flexGrow: "1", position:"relative" }}>
                                     <img className="modifyImage" src="/images/mypage-hover.png" style={{position:"absolute",width:"30px",height:"30px",top:"10px",left:"10px"}} />
@@ -157,15 +195,16 @@ currentPage의 state값에 따라서 동적으로 화면상에 표기할 current
                             <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
                         </div>
                     </div>
+                    
                 ) : (
                     
                     <div style={{ backgroundColor:"#CECCCC", }}>
                         
                         {commentItems.map((commnetitem,index)=>(
                             
-                            <div className="writeComment" key={index} style={{ width:"100%",display:"flex",alignItems:"center",marginTop:"10px"}}>
+                            <div className="writeComment" style={{ width:"100%",display:"flex",alignItems:"center",marginTop:"10px"}}>
                                 <input type="checkbox" style={{marginLeft:"10px",zoom:"1.3" }} />
-                                <img src={user.profile} style={{width:"45px", height:"45px", borderRadius:"100px", marginLeft:"10px", flexShrink:"0"}}/>
+                                <img src="/images/reactLogo.png" style={{width:"45px", height:"45px", borderRadius:"100px", marginLeft:"10px", flexShrink:"0"}}/>
                                 <div className="more-article" style={{marginLeft:"22px", paddingRight:"22px"}}>
                                     <div style={{fontWeight:"bold"}}>{commnetitem.nickName}</div>
                                     <div className="more-article-text" style={{wordBreak:"break-all"}} >{commnetitem.comment}</div>

@@ -37,7 +37,7 @@ function Header() {
                     return;
                   }
                   
-                  dispatch(login(res.data));
+                  dispatch(login(res.data.member));
                 })
                 .catch(error => {
                   console.log(error);
