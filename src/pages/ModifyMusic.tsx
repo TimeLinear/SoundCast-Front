@@ -252,7 +252,7 @@ const ModifyMusic = ({show, handleClose}:{show:boolean, handleClose:() => void})
       }
 
     // 음원 파일 클릭 핸들러
-    const [songFileOriginName, setSongFileOriginName] = useState<string|undefined>(song.songFileOriginName);
+    const [songFileOriginName, setSongFileOriginName] = useState<string|undefined>(song.songFile.songFileOriginName);
     const handleSongFileChange = (event:React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
         if(file) {
@@ -274,7 +274,7 @@ const ModifyMusic = ({show, handleClose}:{show:boolean, handleClose:() => void})
         songGenreNo : selectedGenre,
         songMoodNo : selectedMood,
         //songImageNo, songImageNo의 songImageName을 업데이트 해야함.
-        songFileOriginName
+        songFile: { ...song.songFile, songFileOriginName : song.songFile.songFileOriginName }
 
       }
       

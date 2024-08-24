@@ -3,20 +3,27 @@ import { initSongList, Props } from "../type/SongType";
 import Player from "../components/PlayBar";
 import SongItem from "../components/SongItem";
 import MusicReportModal from "./MusicReportModal";
+import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store";
 
 const MusicDetail = () => {
+
+    const {musicNo} = useParams();
 
     const [activeSongNo, setActiveSongNo] = useState<number | null>(null);
 
     // 신고 모달창 on/off
     const [showReportModal, setShowReportModal] = useState<boolean>(false);
 
-    const songs = initSongList;
+    const song = useSelector((state:RootState) => state.song);
+
+    const currSong = song.currentSong;
 
     const props:Props = {
         activeSongNo,
         setActiveSongNo,
-        songs
+        song
     };
 
     const onClickReportButton = () => {
@@ -88,18 +95,22 @@ const MusicDetail = () => {
         borderRadius: "10px",
     };
 
+    const serverResourcePath = "http://localhost:8087/soundcast/resource/"
+
     return (
         <>
             <div style={{...containerStyle}}>
                 <div style={musicDetailContainer}>
                     <div style={{ width: "1152px", minWidth: "590px" }}>
                         <div style={{ ...commonFlexStyle, justifyContent: "flex-start", marginBottom: "30px" }}>
-                            <h1 style={OfficialTitleStyle}>Official</h1>
+                            <h1 style={OfficialTitleStyle}>{currSong.songPlaceNo === 0 ? "Official" : "Unofficial"}</h1>
                         </div>
                         <div style={{ ...commonFlexStyle, flexShrink: 0 }}>
                             <div style={{ ...commonFlexStyle, flexDirection: "column", boxSizing: "border-box", width: "50%" }}>
                                 <div style={{ ...commonFlexStyle, justifyContent: "flex-start", marginBottom: "30px" }}>
-                                    <img style={{ width: "420px" }} src="/images/default/song_default.png" alt="음원 커버 기본 이미지" />
+                                    <img style={{ width: "420px" }} 
+                                        src={currSong.songImage.songImageName ? 
+                                            currSong.songImage.songImagePathName + currSong.songImage.songImageName : "/images/default/song_default.png"} alt="음원 커버 이미지" />
                                 </div>
                                 <div style={{ ...commonFlexStyle, justifyContent: "flex-start", alignItems: "center", margin: "10px 0", padding: "0 5px", width: "420px" }}>
                                     <img style={{ width: "70px", margin: "0 5px" }} src="/images/song/play_button.png" alt="재생 버튼" />
@@ -113,11 +124,11 @@ const MusicDetail = () => {
                             </div>
                             <div style={{ ...commonFlexStyle, boxSizing: "border-box", width: "50%", flexDirection: "column" }}>
                                 <div style={{ ...commonFlexStyle, width: "100%", justifyContent: "space-between", alignItems: "center", margin: "5px 0" }}>
-                                    <h2 style={{ ...commonTextStyle, ...commonFontStyle, fontSize: "35px" }}>우주공원</h2>
+                                    <h2 style={{ ...commonTextStyle, ...commonFontStyle, fontSize: "35px" }}>{currSong.songTitle}</h2>
                                     <img style={{ width: "30px", height: "30px" }} src="/images/song/flash.png" alt="신고 버튼" onClick={onClickReportButton} />
                                 </div>
                                 <div style={{ textAlign: "start", margin: "15px 0" }}>
-                                    <h3 style={{ ...commonTextStyle, fontSize: "30px" }}>박다온</h3>
+                                    <h3 style={{ ...commonTextStyle, fontSize: "30px" }}>{currSong.memberNickname}</h3>
                                 </div>
                                 <div style={{ ...commonFlexStyle, height: "30px" }}>
                                     <button style={buttonStyle}>Hip-Hop</button>
@@ -125,15 +136,12 @@ const MusicDetail = () => {
                                 </div>
                                 <hr style={{margin:"10px 0", width:"80%", opacity:"0.5"}}/>
                                 <div style={{ textAlign: "start", padding: "0 10px", height: "193px" }}>
-                                    <pre style={{ ...commonTextStyle, font: "bolder 16px sans-serif", margin: 0 }}>음원 설명 &gt; 없으면 생략</pre>
+                                    <pre style={{ ...commonTextStyle, font: "bolder 16px sans-serif", margin: 0 }}>{currSong.songDetail}</pre>
                                 </div>
                                 <div style={{ textAlign: "start", ...commonFlexStyle, flexDirection: "column", height: "300px" }}>
                                     <h3 style={{ font: "bolder 20px sans-serif", color: "white" }}>이 음원을 사용할 경우 아래 라이선스를 표기해주세요.</h3>
                                     <div style={{ ...commonFlexStyle, height: "100%" }}>
-                                        <textarea style={licenseTextareaStyle} value="Song: Warriyo - Mortals (feat. Laura Brehm) [NCS Release]
-                                                Music provided by NoCopyrightSounds
-                                                Free Download/Stream: http://ncs.io/mortals
-                                                Watch: http://youtu.be/yJg-Y5byMMw" disabled>
+                                        <textarea style={licenseTextareaStyle} value={currSong.songLicense ? currSong.songLicense : ''} disabled>
                                         </textarea>
                                         <button style={{ border: "1px solid white", backgroundColor: "white", borderRadius: "0 10px 10px 0", marginLeft: "-2px" }}>
                                             <img src="/images/song/paste_icon.png" alt="복사 버튼" />
@@ -146,7 +154,7 @@ const MusicDetail = () => {
                             <div style={{ textAlign: "start" }}>
                                 <label style={{ ...commonTextStyle, font: "bold 24px sans-serif" }}>이 아티스트의 다른 음원입니다.</label>
                             </div>
-                            <SongItem activeSongNo={activeSongNo} setActiveSongNo={setActiveSongNo} songs={songs} />
+                            <SongItem activeSongNo={activeSongNo} setActiveSongNo={setActiveSongNo} song={song} />
                         </div>
                     </div>
                 </div>

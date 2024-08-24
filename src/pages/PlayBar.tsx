@@ -9,7 +9,7 @@ function Player(props:Props){
     const {activeSongNo, setActiveSongNo} = props;
 
     //매개변수로 받은 activeItemNo로 음원 객체를 가져옴. player에 내용 반영
-    const song:Song = {songNo: 4, songMemberNo : 0, songTitle : 'song4', songGenreNo : 1, songImageNo : 0, songFileNo : 1, songMoodNo : 1, songDetail: null, songLicense : '라이선스4'}
+    const song:Song = props.song.list[activeSongNo ? activeSongNo + 1 : 1];
 
     return (
 
