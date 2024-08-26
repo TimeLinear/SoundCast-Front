@@ -127,7 +127,7 @@ const FollowingModal = ({ show, Close }: { show: boolean, Close: () => void }) =
                     {/* 팔로잉 목록 */}
                     <div className="following list" style={{ marginLeft: "15px", marginTop: "10px", width: "575px", height: "68%", backgroundColor: "white", borderRadius: "15px" }}>
                         {followerItems.map((followerItems, index) => (
-                            <div style={{ display: "flex", alignItems: "center",position:"relative" }}>
+                            <div style={{ display: "flex", alignItems: "center",position:"relative" }} key={index}>
                                 <img src={followerItems.profileImage} style={{ marginLeft: "10px", width: "60px", height: "60px", borderRadius: "100px" }} />
                                 <div style={{ fontWeight: "bold", marginLeft: "10px", fontSize: "20px" }}>{followerItems.nickName}</div>
                                 <div style={{ display: "flex", alignItems: "center"}}>

@@ -1,13 +1,8 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { Comment, FollowList, Member } from "../type/memberType";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { Comment, FollowList, Followings, Member } from "../type/memberType";
 import { removeCookie, setCookie } from "../utils/Cookie";
 
 
-const followInit:FollowList={
-    follower : 0,
-    following : []
-
-}
 
 const commentInit:Comment={
     commentNo : 0,
@@ -18,8 +13,16 @@ const commentInit:Comment={
         nickName : ''
     }
 }
+const followingInit:Followings={
+    nickName : '',
+    profile:''
+}
 
+const followInit:FollowList={
+    follower : 0,
+    following : [followingInit]
 
+}
 const initialState:Member= {
     memberNo: 0,
     profile : '',
@@ -41,6 +44,7 @@ let memberSlice = createSlice({
     reducers:{
         login : (state, action) =>{
             const data = action.payload;
+            console.log("헤더서 로그인해서 보낸 데이터");
             console.log(data);
             return {
                 memberNo:data.memberNo,
@@ -51,32 +55,43 @@ let memberSlice = createSlice({
                 introduce:data.memberIntroduce,
                 follow:{
                     follower:data.follower,
-                    following:data.following
+                    following:data.following?.map((following: any) => ({
+                        nickName:following.memberNickname,
+                        profile:following.profileImage.profileImagePath
+                    })) ||[]
                 },
                 
                 comment: data.commentList?.map((comment: any) => ({
-                    commentNo : comment.commentNo,
-                    writerNo: comment.commentWriterMemberNo,
-                    content: comment.commentText,
+                    commentNo : comment.comment.commentNo,
+                    writerNo: comment.comment.commentWriterMemberNo,
+                    content: comment.comment.commentText,
                     writerInfo: {
                         profile: comment.profileImage.profileImagePath,
                         nickName: comment.memberNickname
                     }
                 })) || []
          } 
+        
     },
         logout : (state) =>{
             removeCookie('accessToken');
             
             return initialState;
 
-        }
+        },
+        setComments(state, action: PayloadAction<Comment[]>) {
+            state.comment = action.payload;
+          },
+
+        updateComments(state, action: PayloadAction<Comment[]>) {
+            state.comment = action.payload;
+          }
     }
 })
 
 
 
-export const{login,logout} = memberSlice.actions;
+export const{login,logout,setComments,updateComments} = memberSlice.actions;
 export default memberSlice.reducer;
 export {initialState};
 export {followInit};

@@ -14,7 +14,10 @@ const MemberComments = ({selectMember, isSubmitting, setIsSubmitting ,deletingCo
     const writerNo = member.memberNo;
     const {memberNo} = useParams();
     const [comment, setComment] = useState('');
+    const serverImagePath = "http://localhost:8087/soundcast/resource/";
     
+
+
     const textareaRef = useRef<HTMLTextAreaElement | null>(null);
     const totalComment = selectMember.comment.length; 
 
@@ -41,9 +44,10 @@ const MemberComments = ({selectMember, isSubmitting, setIsSubmitting ,deletingCo
         setDeletingCommentNo(commentNo);
        
         axios
-        .delete(`http://localhost:8087/soundcast/member/comment/delete/${commentNo}`,{
-            params : {
-                writerNo
+        .delete(`http://localhost:8087/soundcast/member/comment/delete`,{
+            data: {
+                commentNo: commentNo,
+                writerNo: writerNo
             }
         })
         .then(response =>{
@@ -89,7 +93,7 @@ const MemberComments = ({selectMember, isSubmitting, setIsSubmitting ,deletingCo
     return(
         <>
         <div style={{ minWidth: "1300px", height: "50px", backgroundColor: "#1C003B", display: "flex", alignItems: "center", borderTopRightRadius: "7px", justifyContent: "space-between", width: "100%" }}>
-                                <span style={{ color: "white", font: "bold 20px Inter", marginLeft: "25px" }}>댓글 {selectMember.comment.length}개</span>
+            <span style={{ color: "white", font: "bold 20px Inter", marginLeft: "25px" }}>댓글 {selectMember.comment.length}개</span>
 
         </div>
             
@@ -114,7 +118,7 @@ const MemberComments = ({selectMember, isSubmitting, setIsSubmitting ,deletingCo
                             
                             <div className="writedComment" key={reply.commentNo}  style={{ width: "100%", display: "flex", alignItems: "center", marginTop: "10px" }}>
                                
-                                <img src={reply.writerInfo.profile} style={{ width: "45px", height: "45px", borderRadius: "100px", marginLeft: "10px", flexShrink: "0" }} />
+                                <img src={serverImagePath+reply.writerInfo.profile} style={{ width: "45px", height: "45px", borderRadius: "100px", marginLeft: "10px", flexShrink: "0" }} />
                                 <div className="more-article" style={{ marginLeft: "22px", paddingRight: "22px" }}>
                                     <div style={{ fontWeight: "bold" }}>{reply.writerInfo.nickName}</div>
                                     <div className="more-article-text" style={{ wordBreak: "break-all" }}>

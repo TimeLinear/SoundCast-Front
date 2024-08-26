@@ -155,7 +155,7 @@ const ModifyMyPageModal = ({ show, Close }: { show: boolean; Close: () => void }
                 <div className="total" style={{ width: "90%", height: "80%", margin: "auto" }}>
                     <div className="modifyBanner" style={{
                         width: "100%", height: "25%", backgroundColor: "#B8CCFE", margin: "0 auto", position: "relative",
-                        backgroundImage: backgroundImage ? `url(${backgroundImage})` : `url(${serverImagePath + member.banner.slice(member.banner.indexOf(requestStartWith) + requestStartWith.length)})`,
+                        backgroundImage: backgroundImage ? `url(${backgroundImage})` : `url(${serverImagePath + member.banner})`,
                         backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat"
                     }}>
                         <div style={{ margin: "0", display: "flex", position: "absolute", right: "15px", bottom: "15px", cursor: "pointer" }}>
@@ -167,7 +167,7 @@ const ModifyMyPageModal = ({ show, Close }: { show: boolean; Close: () => void }
 
                     <div className="mf-total" style={{ display: "flex", width: "100%", height: "25%" }}>
                         <div className="mf-profile" style={{ width: "30%", height: "100%", paddingTop: "10px", cursor: "pointer" }} onClick={triggerFileInput}>
-                            <img src={profileImage ? profileImage : serverImagePath + member.profile.slice(member.banner.indexOf(requestStartWith) + requestStartWith.length)} style={{ width: "80%", height: "85%" }} />
+                            <img src={profileImage ? profileImage : serverImagePath + member.profile} style={{ width: "80%", height: "85%" }} />
                             <input type="file" accept="image/*" ref={fileInputRef} style={{ display: "none" }} onChange={handleProfileChange} />
                         </div>
 

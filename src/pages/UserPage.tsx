@@ -22,6 +22,8 @@ const UserPage = () => {
     const [isShow, setIsShow] = useState('song');
     const {memberNo} = useParams();
     const NumbMemberNo = Number(memberNo);
+    const serverImagePath = "http://localhost:8087/soundcast/resource/";
+    
     const dispatch = useDispatch();
     
     const [activeSongNo, setActiveSongNo] = useState<number|null>(null);
@@ -149,20 +151,21 @@ const UserPage = () => {
 
 
     const divStyle:  React.CSSProperties = selectMember.memberNo === member.memberNo ? { display: "none" } : {display:"flex", position: "absolute", top: "50px", left: "80px"};
-
+    
+    console.log("멤버배너");
+    console.log(selectMember.banner);
     
     
     return ( 
      
         <>
             <div className='banner-box' style={{ width: "100%", height: "270px", position: "relative", display: "flex", alignItems: "center" }}>
-                {selectMember.banner === "1" ? (<img src="/images/default/default-banner.png" style={{ width: "100%", height: "100%", objectFit: "cover" }} />) 
-                :  (<img src={selectMember.banner} style={{ width: "100%", height: "100%", objectFit: "cover" }} />)
-                }
+                <img src={selectMember.banner ? serverImagePath+selectMember.banner : serverImagePath+"images/member/banner/default-banner.png"} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+
             </div>
             
             <div className='userinfo' style={{ boxSizing:"border-box", alignSelf: "center", width: "1280px", display: "flex", position:"relative", justifyContent: "center", flexDirection: "column", margin: "0 auto" }}>
-                <img src={selectMember.profile} alt="selectMember Profile" className="ProfileImage" style={{ objectFit: "cover", width: "170px", height: "170px", borderRadius: "100px", position: "absolute", top: "-100px", border: "2px solid #770ABF" }} />
+                <img src={serverImagePath+selectMember.profile} alt="selectMember Profile" className="ProfileImage" style={{ objectFit: "cover", width: "170px", height: "170px", borderRadius: "100px", position: "absolute", top: "-100px", border: "2px solid #770ABF" }} />
                 
             
                 <div style={divStyle}>
