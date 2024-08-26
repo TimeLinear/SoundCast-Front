@@ -1,11 +1,8 @@
 import { useState } from "react";
-
-
 import { Member } from "../type/memberType";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { logout } from "../features/memberSlice";
-
 import { useNavigate } from "react-router-dom";
 import LoginModal from "./LoginModal";
 import SignUpModal from "./SignUpModal";

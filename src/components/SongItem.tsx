@@ -5,8 +5,9 @@ import { setPlaySong } from "../features/songSlice";
 import { Song } from "../type/SongType";
 import Pagination from "./Pagination";
 import { useNavigate } from "react-router-dom";
+import { current } from "@reduxjs/toolkit";
 
-const SongItem = ({ activeSongNo, setActiveSongNo, songs }: { activeSongNo: number | null, setActiveSongNo: (no: number) => void, songs: Song[] }) => {
+const SongItem = ({ activeSongNo, setActiveSongNo, song }: { activeSongNo: number | null, setActiveSongNo: (no: number) => void, song:{list:Song[], currentSong:Song} }) => {
 
     const searchListBoxStyle: CSSProperties = {
         width: "100%", height: "80px", display: "flex", alignItems: "center", justifyContent: "space-evenly",
@@ -32,7 +33,6 @@ const SongItem = ({ activeSongNo, setActiveSongNo, songs }: { activeSongNo: numb
         setHoverState({ songNo: 0, class: '' })
     };
 
-    const song = useSelector((state: RootState) => state.song);
     const dispatch = useDispatch();
     const navi = useNavigate();
 
@@ -66,7 +66,7 @@ const SongItem = ({ activeSongNo, setActiveSongNo, songs }: { activeSongNo: numb
     const itemsPerPage = 10;
 
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const totalPages: number = Math.ceil(songs.length / itemsPerPage);
+    const totalPages: number = Math.ceil(song.list.length / itemsPerPage);
 
     const handlePageChange = (pageNumber: number) => {
         setCurrentPage(pageNumber);
@@ -74,7 +74,7 @@ const SongItem = ({ activeSongNo, setActiveSongNo, songs }: { activeSongNo: numb
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = songs.slice(indexOfFirstItem, indexOfLastItem);
+    const currentItems = song.list.slice(indexOfFirstItem, indexOfLastItem);
 
     // console.log(hoverState);
 

@@ -13,7 +13,7 @@ function SearchList(){
     const searchListFontStyle:CSSProperties = { fontFamily: "Inter", fontStyle: "normal", fontSize: "20px", fontWeight: "700", lineHeight: "24px", color: "#000000" };
     const search = useSelector((state:RootState)=>state.search);
     const dispatch = useDispatch();
-    const songs = initSongList;    
+    const song = useSelector((state:RootState) => state.song);    
 
     //선택한 요소
     const [activeSongNo, setActiveSongNo] = useState<number|null>(null);
@@ -27,7 +27,7 @@ function SearchList(){
     const props:Props = {
         activeSongNo,
         setActiveSongNo,
-        songs
+        song
     }
    
     return (

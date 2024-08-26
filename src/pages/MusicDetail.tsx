@@ -3,6 +3,8 @@ import { initSongList, Props } from "../type/SongType";
 import Player from "../components/PlayBar";
 import SongItem from "../components/SongItem";
 import MusicReportModal from "./MusicReportModal";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store";
 
 const MusicDetail = () => {
 
@@ -11,12 +13,12 @@ const MusicDetail = () => {
     // 신고 모달창 on/off
     const [showReportModal, setShowReportModal] = useState<boolean>(false);
 
-    const songs = initSongList;
+    const song = useSelector((state:RootState) => state.song);
 
     const props:Props = {
         activeSongNo,
         setActiveSongNo,
-        songs
+        song
     };
 
     const onClickReportButton = () => {
@@ -146,7 +148,7 @@ const MusicDetail = () => {
                             <div style={{ textAlign: "start" }}>
                                 <label style={{ ...commonTextStyle, font: "bold 24px sans-serif" }}>이 아티스트의 다른 음원입니다.</label>
                             </div>
-                            <SongItem activeSongNo={activeSongNo} setActiveSongNo={setActiveSongNo} songs={songs} />
+                            <SongItem activeSongNo={activeSongNo} setActiveSongNo={setActiveSongNo} song={song} />
                         </div>
                     </div>
                 </div>
