@@ -274,7 +274,13 @@ const ModifyMusic = ({show, handleClose}:{show:boolean, handleClose:() => void})
         songGenreNo : selectedGenre,
         songMoodNo : selectedMood,
         //songImageNo, songImageNo의 songImageName을 업데이트 해야함.
-        songFile: { ...song.songFile, songFileOriginName : song.songFile.songFileOriginName }
+        songFile : {
+          songFileNo: 0,
+          songFilePathNo: 2,
+          songFilePathName: "songs/file/unofficial/",
+          songFileChangeName: "soundcast-2024083012000000000.png",
+          songFileOriginName: "song0.png"
+        }
 
       }
       

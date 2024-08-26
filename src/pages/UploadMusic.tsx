@@ -210,6 +210,8 @@ const UploadMusic = ({
 
   const showHideClassName = show ? { ...modalStyle, ...displayBlockStyle } : { ...modalStyle, ...displayNoneStyle };
 
+  const formData = new FormData();
+
   const handleBackgroundClick = (event: MouseEvent) => {
     if (event.target === event.currentTarget) {
       handleClose();
@@ -256,7 +258,7 @@ const UploadMusic = ({
 
   const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files;
-      (file && file.length > 0) && setSongFile(file[0]);
+    (file && file.length > 0) && (() => { setSongFile(file[0]); formData.append("songFile", file[0]); })();
   }
 
   const onCoverChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -267,6 +269,8 @@ const UploadMusic = ({
         reader.result && setCoverFile(reader.result.toString());
       }
       reader.readAsDataURL(file[0]);
+
+      formData.append("songImage", file[0]);
     }
   }
 

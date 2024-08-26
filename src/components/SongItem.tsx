@@ -5,8 +5,9 @@ import { setPlaySong } from "../features/songSlice";
 import { Song } from "../type/SongType";
 import Pagination from "./Pagination";
 import { useNavigate } from "react-router-dom";
+import { current } from "@reduxjs/toolkit";
 
-const SongItem = ({ activeSongNo, setActiveSongNo, song }: { activeSongNo: number | null, setActiveSongNo: (no: number) => void, song: {list:Song[], currentSong:Song} }) => {
+const SongItem = ({ activeSongNo, setActiveSongNo, song }: { activeSongNo: number | null, setActiveSongNo: (no: number) => void, song:{list:Song[], currentSong:Song} }) => {
 
     const searchListBoxStyle: CSSProperties = {
         width: "100%", height: "80px", display: "flex", alignItems: "center", justifyContent: "space-evenly",
