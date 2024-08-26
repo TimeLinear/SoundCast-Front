@@ -53,7 +53,7 @@ export default function KakaoLoginForm({onSignupRequest, handleClose}:{onSignupR
                 //     introduce:res.data.member.memberIntroduce,
                 //     follow:res.data.member.follwer
                 // }
-                dispatch(login(res.data)); // 필수 사항
+                dispatch(login(res.data.member)); // 필수 사항
                 console.log(res.data);
             })
             .catch(error => {

@@ -123,7 +123,7 @@ currentPage의 state값에 따라서 동적으로 화면상에 표기할 current
                 <span style={{ marginLeft: "10px", fontWeight: "bold" ,cursor:"pointer" }} onClick={modifyHandler} >내 정보 수정</span>
                 <div style={{ display: "flex" }}>
                     <p style={{ margin: "0 10px 0 0", fontWeight: "bold" }}>팔로워</p><p style={{ margin: 0 }}>0{/*user.follow.follower*/}</p>
-                    <p style={{ margin: "0 10px 0 20px", fontWeight: "bold",cursor:"pointer" }} onClick={followingHandler} >팔로잉</p><p style={{ margin: 0 }}>10{/*user.follow.following.length*/}</p>
+                    <p style={{ margin: "0 10px 0 20px", fontWeight: "bold",cursor:"pointer" }} onClick={followingHandler} >팔로잉</p><p style={{ margin: 0 }}>{member.follow.following.length}{/*user.follow.following.length*/}</p>
                 </div>
                 <div className="introduce">
                     <span>{member.introduce}</span>

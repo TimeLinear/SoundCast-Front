@@ -6,12 +6,17 @@ export type Member = {
     banner: string
     introduce: string
     follow: FollowList
+
 }
 
 export type FollowList = {
     follower : number
-    following : Member[]
-   
+    following : Followings[]
+}
+
+export type Followings = {
+    nickName : string
+    profile : string
 }
 
 

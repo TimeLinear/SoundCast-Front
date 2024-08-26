@@ -39,7 +39,7 @@ const GoogleLoginForm = ({onSignupRequest, handleClose}:{onSignupRequest:()=>voi
                setSessionCookie("accessToken",JwtToken);
                
                
-               dispatch(login(res.data));
+               dispatch(login(res.data.member));
 
 
                handleClose();

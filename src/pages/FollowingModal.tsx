@@ -1,8 +1,10 @@
 import { act, useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
 
+
 const FollowingModal = ({ show, Close }: { show: boolean, Close: () => void }) => {
+    const member = useSelector((state: RootState) => state.member);
 
     const dispatch = useDispatch();
 
@@ -13,12 +15,53 @@ const FollowingModal = ({ show, Close }: { show: boolean, Close: () => void }) =
             Close();
         }
     };
-    const followerItems = [
-        { profileImage: "images/reactLogo.png", nickName: "김길동" },
-        { profileImage: "images/reactLogo.png", nickName: "김길동" },
-        { profileImage: "images/reactLogo.png", nickName: "김길동" },
-        { profileImage: "images/reactLogo.png", nickName: "홍길동" }
-    ]
+
+    
+    // const followerItems = [
+    //     { profileImage: "images/reactLogo.png", nickName: "김서준" },
+    //     { profileImage: "images/reactLogo.png", nickName: "김명수" },
+    //     { profileImage: "images/reactLogo.png", nickName: "김호동" }
+        
+    // ];
+
+    const followingItems = member.follow.following;
+    
+    console.log(member.follow.following);
+    
+    const [text,setText] = useState('');
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setText(event.target.value);
+    }
+  
+    const handleKeydown = (event : React.KeyboardEvent) => {
+        if(event.key === "enter"){
+            setSearchTerm(text); 
+        }
+    }
+
+    const filteredFollowing = searchTerm.trim() 
+        ? followingItems.filter(item =>
+            item.nickName.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+        : followingItems;
+
+    // const searchfollowing = (searchText: string) => {
+    //     if (searchText.trim() === '') {
+    //         setFilteredFollowing(followingItems);  // 검색어가 없으면 전체 목록 표시
+    //     } else {
+    //         const filtered = followingItems.filter(item =>
+    //             item.nickName.toLowerCase().includes(searchText.toLowerCase())
+    //         );
+    //         setFilteredFollowing(filtered);
+    //     }
+    // }
+
+    // useEffect(() => {
+    //     setFilteredFollowing(followingItems);  // 컴포넌트가 로드될 때 전체 목록 표시
+    // }, [followingItems]);
+
 
     // ------------------------------------------------------------------------
 
@@ -111,7 +154,7 @@ const FollowingModal = ({ show, Close }: { show: boolean, Close: () => void }) =
                             }
                         <div className="search" style={{ marginLeft: "15px", width: "350px", height: "40px", display: "flex", backgroundColor: "white", borderRadius: "20px" }}>
                             <img src="images/fw-search-icon.png" style={{ marginLeft: "15px", marginTop: "10px", width: "20px", height: "20px" }}></img>
-                            <input type="text" style={{ marginLeft: "15px", fontWeight: "bold",border:"none",outline:"none" }} placeholder="Search following"></input>
+                            <input type="text" style={{ marginLeft: "15px", fontWeight: "bold",border:"none",outline:"none" }} placeholder="Search following" onChange={onChange} onKeyDown={handleKeydown}></input>
                         </div>
                         <div className={`selectList ${dropShow ? 'selected3' : ''}`} style={{ marginLeft: "7px", width: "220px", height: "40px", backgroundColor: "white", borderRadius: "20px", display: "flex", alignItems: "center", justifyContent: "center",cursor:"pointer"}}
                             onClick={dropChange} ref={buttonRef}>
@@ -125,17 +168,19 @@ const FollowingModal = ({ show, Close }: { show: boolean, Close: () => void }) =
 
 
                     {/* 팔로잉 목록 */}
-                    <div className="following list" style={{ marginLeft: "15px", marginTop: "10px", width: "575px", height: "68%", backgroundColor: "white", borderRadius: "15px" }}>
-                        {followerItems.map((followerItems, index) => (
-                            <div style={{ display: "flex", alignItems: "center",position:"relative" }}>
-                                <img src={followerItems.profileImage} style={{ marginLeft: "10px", width: "60px", height: "60px", borderRadius: "100px" }} />
-                                <div style={{ fontWeight: "bold", marginLeft: "10px", fontSize: "20px" }}>{followerItems.nickName}</div>
+                    <div className="following list" style={{ marginLeft: "15px", marginTop: "10px", width: "575px", height: "360px", backgroundColor: "white", borderRadius: "15px",overflow:"auto"}}>
+                        {filteredFollowing .map((followingItem, index) => (
+                            
+                            <div style={{ display: "flex", alignItems: "center",position:"relative"}} key={index}>
+                                <img src={followingItem.profile} style={{ marginLeft: "10px", width: "60px", height: "60px", borderRadius: "100px" }} />
+                                <div style={{ fontWeight: "bold", marginLeft: "10px", fontSize: "20px" }}>{followingItem.nickName}</div>
                                 <div style={{ display: "flex", alignItems: "center"}}>
                                     <div style={{ position: "absolute", marginRight: "15px", right: "0", borderRadius: "10px", width: "90px", height: "30px", backgroundColor: "#D9D9D9", display: "flex", justifyContent: "center", alignItems: "center"}}>
                                         <span style={{ fontWeight: "bold",cursor:"pointer" }}>Delete</span>
                                     </div>
                                 </div>    
                             </div>
+                            
                         ))}
                         
                     </div>
