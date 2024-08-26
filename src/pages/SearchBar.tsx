@@ -2,10 +2,9 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "../store/store";
-import { setKeyword } from "../features/searchSlice";
+import { setGenre, setKeyword, setMood } from "../features/searchSlice";
 import { setSongList } from "../features/songSlice";
 import { ChangeEvent, useState } from "react";
-import useSearchFunction from "../hook/useSearchFunction";
 
 function SearchBar({searchKeyword}:{searchKeyword:string}){
   
@@ -41,7 +40,8 @@ function SearchBar({searchKeyword}:{searchKeyword:string}){
         .catch((err)=>console.log(err));
 
       navi("/search");
-      dispatch(setKeyword(''));
+      
+      setInputKeyword('');
   }
   //-----------------------------------------
 

@@ -276,7 +276,8 @@ const ModifyMusic = ({show, handleClose}:{show:boolean, handleClose:() => void})
         //songImageNo, songImageNo의 songImageName을 업데이트 해야함.
         songFile:{
           songFileNo : 1,
-          songPathName : '/images',
+          songFilePathNo:1, 
+          songFilePathName : '/images',
           songFileOriginName : '우주여행.mp3',
           songFileChangeName : 'random'
         }

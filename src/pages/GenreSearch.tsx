@@ -64,7 +64,6 @@ function GenreSearch ({searchGenre, searchMood}:{searchGenre:number, searchMood:
     axios.get("http://localhost:8087/soundcast/song/genres")
     .then((response) => setGenres(response.data))
     .catch((err) => console.log(err))
-
   },[]);
   
   useEffect(()=>{
@@ -83,10 +82,6 @@ function GenreSearch ({searchGenre, searchMood}:{searchGenre:number, searchMood:
       .catch((err)=>console.log(err));
 
     navi("/search");
-    
-    dispatch(setKeyword(''));
-    dispatch(setGenre(0));
-    dispatch(setMood(0));
   }
   //--------------------------  
    
@@ -112,7 +107,7 @@ function GenreSearch ({searchGenre, searchMood}:{searchGenre:number, searchMood:
           genres.map( genre => (
           <div id='genre'
               key={genre.genreNo}
-              onMouseEnter={()=>setSearchGenreNo(genre.genreNo)}
+              onMouseEnter={()=>{console.log(genre.genreNo); setSearchGenreNo(genre.genreNo)}}
               onClick={searchSongs}
               style={searchGenreNo === genre.genreNo ? genreItemStyle : genreCommonStyle}>
             <span style={searchGenreNo === genre.genreNo ? {...genreItemFontStyle, color:"#FFFFFF"} : genreItemFontStyle}>{genre.genreName}</span>

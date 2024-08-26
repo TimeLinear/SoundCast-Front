@@ -21,7 +21,7 @@ const searchSlice = createSlice({
         },
 
         setGenre : (state, action:PayloadAction<number>) => {
-            if(action.payload) { return {...state, mood:action.payload} }
+            if(action.payload) { return {...state, genre:action.payload} }
         }
     }  
 })
