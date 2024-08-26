@@ -1,15 +1,12 @@
 import { CSSProperties, useState } from "react";
-import { initSongList, Props } from "../type/SongType";
+import { Props } from "../type/SongType";
 import Player from "../components/PlayBar";
 import SongItem from "../components/SongItem";
 import MusicReportModal from "./MusicReportModal";
-import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 
 const MusicDetail = () => {
-
-    const {musicNo} = useParams();
 
     const [activeSongNo, setActiveSongNo] = useState<number | null>(null);
 
@@ -97,6 +94,8 @@ const MusicDetail = () => {
 
     const serverResourcePath = "http://localhost:8087/soundcast/resource/"
 
+    // useEffect로 axios 사용하여 해당 음원의 작곡자가 올린 음원 가져오기
+
     return (
         <>
             <div style={{...containerStyle}}>
@@ -109,8 +108,9 @@ const MusicDetail = () => {
                             <div style={{ ...commonFlexStyle, flexDirection: "column", boxSizing: "border-box", width: "50%" }}>
                                 <div style={{ ...commonFlexStyle, justifyContent: "flex-start", marginBottom: "30px" }}>
                                     <img style={{ width: "420px" }} 
-                                        src={currSong.songImage.songImageName ? 
-                                            currSong.songImage.songImagePathName + currSong.songImage.songImageName : "/images/default/song_default.png"} alt="음원 커버 이미지" />
+                                        src={serverResourcePath + currSong.songImage.songImageName ? 
+                                            currSong.songImage.songImagePathName + currSong.songImage.songImageName 
+                                            : "images/song/cover/song_default.png"} alt="음원 커버 이미지" />
                                 </div>
                                 <div style={{ ...commonFlexStyle, justifyContent: "flex-start", alignItems: "center", margin: "10px 0", padding: "0 5px", width: "420px" }}>
                                     <img style={{ width: "70px", margin: "0 5px" }} src="/images/song/play_button.png" alt="재생 버튼" />
@@ -131,8 +131,8 @@ const MusicDetail = () => {
                                     <h3 style={{ ...commonTextStyle, fontSize: "30px" }}>{currSong.memberNickname}</h3>
                                 </div>
                                 <div style={{ ...commonFlexStyle, height: "30px" }}>
-                                    <button style={buttonStyle}>Hip-Hop</button>
-                                    <button style={buttonStyle}>Dreamy</button>
+                                    <button style={buttonStyle}>{currSong.songGenreName}</button>
+                                    <button style={buttonStyle}>{currSong.songMoodName}</button>
                                 </div>
                                 <hr style={{margin:"10px 0", width:"80%", opacity:"0.5"}}/>
                                 <div style={{ textAlign: "start", padding: "0 10px", height: "193px" }}>

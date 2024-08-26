@@ -1,11 +1,14 @@
-import { ChangeEvent, MouseEvent, SetStateAction, useState } from "react";
+import { ChangeEvent, MouseEvent, SetStateAction, useRef, useState } from "react";
+import { Member } from "../type/memberType";
 
 const UploadMusic = ({
   show,
-  handleClose
+  handleClose,
+  member
 }: {
   show: boolean,
   handleClose: () => void
+  member:Member
 }) => {
 
   // ==== 스타일 ====
@@ -258,7 +261,7 @@ const UploadMusic = ({
 
   const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files;
-    (file && file.length > 0) && (() => { setSongFile(file[0]); formData.append("songFile", file[0]); })();
+    (file && file.length > 0) && setSongFile(file[0]);
   }
 
   const onCoverChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -269,12 +272,16 @@ const UploadMusic = ({
         reader.result && setCoverFile(reader.result.toString());
       }
       reader.readAsDataURL(file[0]);
-
-      formData.append("songImage", file[0]);
     }
   }
 
   const [ishovered, setIsHovered] = useState('unhovered');
+
+  const formRef = useRef(null);
+
+  const onModifySubmit = () => {
+    
+  }
 
   return (
     <div style={showHideClassName} onClick={handleBackgroundClick}>
@@ -294,6 +301,7 @@ const UploadMusic = ({
                 <input
                   type="file"
                   id="cover-file-upload"
+                  name="songImageFile"
                   accept="image/*"
                   onChange={onCoverChange}
                   style={{
@@ -349,6 +357,7 @@ const UploadMusic = ({
               <input 
                 type="file"
                 id="song-file-upload"
+                name="songFile"
                 accept="audio/*"
                 onChange={onFileChange}
                 className="song-file-input"
@@ -378,6 +387,7 @@ const UploadMusic = ({
                   <label style={labelStyle}>*제목</label>
                   <input
                     type="text"
+                    name="songTitle"
                     placeholder="곡 제목을 입력해주세요"
                     style={textInputStyle}
                   />
@@ -386,8 +396,8 @@ const UploadMusic = ({
                   <label style={labelStyle}>*제작자</label>
                   <input
                     type="text"
-                    placeholder="곡 제작자를 입력해주세요"
                     style={textInputStyle}
+                    value={member.nickName}
                   />
                 </div>
 
@@ -395,6 +405,7 @@ const UploadMusic = ({
                   <label style={labelStyle}>곡 설명</label>
                   <input
                     type="text"
+                    name="songDetail"
                     placeholder="곡 설명을 입력해주세요"
                     style={textInputStyle}
                   />
@@ -402,6 +413,7 @@ const UploadMusic = ({
                 <div style={formGroupStyle}>
                   <label style={labelStyle}>라이센스</label>
                   <textarea
+                    name="songLicense"
                     placeholder="라이센스를 입력해주세요"
                     rows={5}
                     style={licenseInputStyle}
@@ -462,7 +474,7 @@ const UploadMusic = ({
                     />
                   </div>
                 </div>
-                <button style={submitButtonStyle}>수정</button>
+                <button style={submitButtonStyle} onClick={onModifySubmit}>수정</button>
               </div>
             </div>
           </div>
