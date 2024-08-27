@@ -32,7 +32,7 @@ export type Song = {
 };
 
 export const initSong:Song = {
-	songNo: 0, // 음원 번호
+	songNo: 1, // 음원 번호
 	songMemberNo: 0, // 업로더 회원 번호
 	songMoodNo: 5, // 음원 분위기 번호
 	songGenreNo: 3, // 음원 장르 번호
@@ -57,7 +57,7 @@ export const initSong:Song = {
 		songFilePathNo: 2,
 		songFilePathName: 'songs/file/unofficial/', // 여기부터 고쳐야함
 		songFileChangeName: 'soundcast-2024083012000011111.png',
-		songFileOriginName: ''
+		songFileOriginName: '우주여행.mp3'
 	}
 	// songFileOriginName : '우주여행.mp3'
 

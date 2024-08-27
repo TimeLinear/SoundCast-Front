@@ -253,22 +253,35 @@ const ModifyMusic = ({show, handleClose}:{show:boolean, handleClose:() => void})
 
     // 음원 파일 클릭 핸들러
     const [songFileOriginName, setSongFileOriginName] = useState<string|undefined>(song.songFile.songFileOriginName);
+    const [songFile, setSongFile] = useState<File>();
+    const requestBody = new FormData();
+    
     const handleSongFileChange = (event:React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
         if(file) {
           setSongFileOriginName(file.name);
+          setSongFile(file);
+
           const reader = new FileReader();
-          reader.onloadend = () => {
-            // setSongFileOriginName(reader.result as string);
+          reader.readAsArrayBuffer(file);
+          
+          reader.onload = () => {
+            if(reader.result){
+              requestBody.append("file", file);
+            }
           }
-          reader.readAsDataURL(file);
+          
         }
     }
+
+
+
 
     const updateSong = ()=> {
       
       const renewSong:Song = {
         ...song,
+        songTitle,
         songDetail,
         songLicense,
         songGenreNo : selectedGenre,
@@ -280,17 +293,20 @@ const ModifyMusic = ({show, handleClose}:{show:boolean, handleClose:() => void})
           songFilePathName : '/images',
           songFileOriginName : '우주여행.mp3',
           songFileChangeName : 'random'
-        }
-
-      }
-      
+        },      
+      }      
       setSong(renewSong);
-
+      
+      const songInfo = new Blob([JSON.stringify(renewSong)], {type : 'application/json'})
+      requestBody.append("songinfo", songInfo);
       //back으로 update된 song 전송 하는 코드 추가 
+      console.log(renewSong)
+      console.log(requestBody);
 
-      axios.put(`http://localhost:8087/soundcast/updateSong/${song.songNo}`, song)
+      axios.put(`http://localhost:8087/soundcast/song/update/${song.songNo}`, requestBody)
         .then((response) => alert("수정되었습니다.") )
         .catch(err => console.log(err))
+
 
     }
 
@@ -369,7 +385,7 @@ const ModifyMusic = ({show, handleClose}:{show:boolean, handleClose:() => void})
               <input 
                 type="file"
                 id="song-file-upload"
-                accept="mp3/*"
+                accept="audio/*"
                 onChange={handleSongFileChange}
                 className="song-file-input"
                 style={{
