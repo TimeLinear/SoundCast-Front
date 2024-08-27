@@ -1,6 +1,8 @@
 import { useState } from "react";
 import ModifyMusic from "./ModifyMusic";
 import UploadMusic from "./UploadMusic";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store";
 
 const Mypage = () => {
     const[showModifyMusicModal, setModifyMusicModal] = useState(false);
@@ -11,6 +13,7 @@ const Mypage = () => {
     const openUploadMusic = () => setUploadMusicModal(true);
     const closeUploadMusic = () =>setUploadMusicModal(false);
 
+    const member = useSelector((state:RootState) => state.member);
 
     return(
         <>
@@ -22,7 +25,7 @@ const Mypage = () => {
         </div>
         
         <ModifyMusic show={showModifyMusicModal} handleClose={closeModifyMusic}/>
-        <UploadMusic show={showUploadMusicModal} handleClose={closeUploadMusic}/>
+        <UploadMusic show={showUploadMusicModal} handleClose={closeUploadMusic} member={member}/>
         </>
     );
         

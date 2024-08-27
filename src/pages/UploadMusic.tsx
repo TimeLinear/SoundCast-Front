@@ -1,4 +1,4 @@
-import { ChangeEvent, MouseEvent, SetStateAction, useRef, useState } from "react";
+import { ChangeEvent, FormEvent, MouseEvent, SetStateAction, useRef, useState } from "react";
 import { Member } from "../type/memberType";
 
 const UploadMusic = ({
@@ -8,7 +8,7 @@ const UploadMusic = ({
 }: {
   show: boolean,
   handleClose: () => void
-  member:Member
+  member: Member
 }) => {
 
   // ==== 스타일 ====
@@ -107,14 +107,14 @@ const UploadMusic = ({
 
   const fileUploadStyle: React.CSSProperties = {
     position: "relative",
-    width:"100%",
-    height:"100%",
+    width: "100%",
+    height: "100%",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    color:"#FFFFFF",
+    color: "#FFFFFF",
     border: "0.5px solid #F0F0F0",
-    borderRadius: "8px"    
+    borderRadius: "8px"
   }
 
   const hoveredStyle: React.CSSProperties = {
@@ -122,7 +122,7 @@ const UploadMusic = ({
     color: "#333333",
     fontWeight: 700,
     cursor: "pointer",
-    borderRadius: "8px"    
+    borderRadius: "8px"
   }
 
   const filenameStyle: React.CSSProperties = {
@@ -213,8 +213,6 @@ const UploadMusic = ({
 
   const showHideClassName = show ? { ...modalStyle, ...displayBlockStyle } : { ...modalStyle, ...displayNoneStyle };
 
-  const formData = new FormData();
-
   const handleBackgroundClick = (event: MouseEvent) => {
     if (event.target === event.currentTarget) {
       handleClose();
@@ -266,7 +264,7 @@ const UploadMusic = ({
 
   const onCoverChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files;
-    if(file && file.length > 0) {
+    if (file && file.length > 0) {
       const reader = new FileReader();
       reader.onloadend = () => {
         reader.result && setCoverFile(reader.result.toString());
@@ -279,8 +277,10 @@ const UploadMusic = ({
 
   const formRef = useRef(null);
 
-  const onModifySubmit = () => {
-    
+  const onUploadSubmit = (e: FormEvent) => {
+    if (e.target) {
+      const formData = new FormData(e.target as HTMLFormElement);
+    }
   }
 
   return (
@@ -288,181 +288,183 @@ const UploadMusic = ({
       <div style={modalOverlayStyle}>
         <div style={modalContentStyle} onClick={(e) => e.stopPropagation()}>
           <div style={modalBodyStyle}>
-            <div style={leftSectionStyle}>
-              <div
-                className="image-preview"
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  position: "relative",
-                }}
-              >
-                <input
-                  type="file"
-                  id="cover-file-upload"
-                  name="songImageFile"
-                  accept="image/*"
-                  onChange={onCoverChange}
+            <form onSubmit={onUploadSubmit} method="post">
+              <div style={leftSectionStyle}>
+                <div
+                  className="image-preview"
                   style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "100%",
-                    opacity: 0,
-                    cursor: "pointer"
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    position: "relative",
                   }}
-                  hidden/>
-                <label htmlFor="cover-file-upload" style={{cursor:"pointer"}}>
-                  <img
-                    src={coverFile ? coverFile : "/images/default/song_default.png"}
-                    style={coverFile ? imagePreviewStyle : {...imagePreviewStyle, opacity:"0.3"}}
-                    alt="Preview"
-                  />
-                </label>
-                {!coverFile && (
-                  <img
-                    src="/images/song/file-upload-icon-white.png"
+                >
+                  <input
+                    type="file"
+                    id="cover-file-upload"
+                    name="songImageFile"
+                    accept="image/*"
+                    onChange={onCoverChange}
                     style={{
-                      position:"absolute",
-                      left:"50%",
-                      top:"50%",
-                      transform:"translate(-50%, -50%)",
-                      width: "60px",
-                      height: "60px",
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: "100%",
+                      opacity: 0,
+                      cursor: "pointer"
                     }}
-                  />
-                )}
-              </div>
-
-              <div className="music-file"
-          style={{
-            width:"250px",
-            height:"70px"
-          }}
-          >
-            <div className="file-upload"
-              onMouseOver={()=>{setIsHovered('hovered')}}
-              onMouseLeave={()=>{setIsHovered('unhovered')}}
-              style={ ishovered === 'hovered'? {...fileUploadStyle, ...hoveredStyle} : {...fileUploadStyle}}
-            >
-              <label htmlFor="song-file-upload"
-                className="file-upload-box"
-                style={{
-                  display: "block",
-                  cursor: "pointer"
-                }}>
-              <p className="song-file-name">{songFile ? songFile.name : "음원 업로드"}</p>
-              <input 
-                type="file"
-                id="song-file-upload"
-                name="songFile"
-                accept="audio/*"
-                onChange={onFileChange}
-                className="song-file-input"
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "100%",
-                  opacity: 0,
-                  cursor: "pointer"
-                }}/>
-              </label> 
-            </div>
-        </div>
-            </div>
-            <div style={rightSectionStyle}>
-              <div style={modalHeaderStyle}>
-                <p style={modalHeaderTextStyle}>내 음원 업로드하기</p>
-                <button style={modalCloseStyle} onClick={handleClose}>
-                  ✕
-                </button>
-              </div>
-
-              <div className="form-container" style={{ overflowY: "auto", textAlign: "start" }}>
-                <div style={formGroupStyle}>
-                  <label style={labelStyle}>*제목</label>
-                  <input
-                    type="text"
-                    name="songTitle"
-                    placeholder="곡 제목을 입력해주세요"
-                    style={textInputStyle}
-                  />
-                </div>
-                <div style={formGroupStyle}>
-                  <label style={labelStyle}>*제작자</label>
-                  <input
-                    type="text"
-                    style={textInputStyle}
-                    value={member.nickName}
-                  />
+                    hidden />
+                  <label htmlFor="cover-file-upload" style={{ cursor: "pointer" }}>
+                    <img
+                      src={coverFile ? coverFile : "/images/default/song_default.png"}
+                      style={coverFile ? imagePreviewStyle : { ...imagePreviewStyle, opacity: "0.3" }}
+                      alt="Preview"
+                    />
+                  </label>
+                  {!coverFile && (
+                    <img
+                      src="/images/song/file-upload-icon-white.png"
+                      style={{
+                        position: "absolute",
+                        left: "50%",
+                        top: "50%",
+                        transform: "translate(-50%, -50%)",
+                        width: "60px",
+                        height: "60px",
+                      }}
+                    />
+                  )}
                 </div>
 
-                <div style={formGroupStyle}>
-                  <label style={labelStyle}>곡 설명</label>
-                  <input
-                    type="text"
-                    name="songDetail"
-                    placeholder="곡 설명을 입력해주세요"
-                    style={textInputStyle}
-                  />
-                </div>
-                <div style={formGroupStyle}>
-                  <label style={labelStyle}>라이센스</label>
-                  <textarea
-                    name="songLicense"
-                    placeholder="라이센스를 입력해주세요"
-                    rows={5}
-                    style={licenseInputStyle}
-                  />
-                </div>
-
-                <div style={formGroupStyle}>
-                  <label style={labelStyle}>*장르를 선택해 주세요.</label>
-                  <div style={genreOptionsStyle}>
-                    {genres.map((genre) => (
-                      <button
-                        key={genre}
-                        style={
-                          selectedGenre === genre
-                            ? { ...genreOptionStyle, ...genreOptionSelectedStyle }
-                            : genreOptionStyle
-                        }
-                        onClick={() => genreClickHandler(genre)}
-                      >
-                        {genre}
-                      </button>
-                    ))}
+                <div className="music-file"
+                  style={{
+                    width: "250px",
+                    height: "70px"
+                  }}
+                >
+                  <div className="file-upload"
+                    onMouseOver={() => { setIsHovered('hovered') }}
+                    onMouseLeave={() => { setIsHovered('unhovered') }}
+                    style={ishovered === 'hovered' ? { ...fileUploadStyle, ...hoveredStyle } : { ...fileUploadStyle }}
+                  >
+                    <label htmlFor="song-file-upload"
+                      className="file-upload-box"
+                      style={{
+                        display: "block",
+                        cursor: "pointer"
+                      }}>
+                      <p className="song-file-name">{songFile ? songFile.name : "음원 업로드"}</p>
+                      <input
+                        type="file"
+                        id="song-file-upload"
+                        name="songFile"
+                        accept="audio/*"
+                        onChange={onFileChange}
+                        className="song-file-input"
+                        style={{
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          width: "100%",
+                          height: "100%",
+                          opacity: 0,
+                          cursor: "pointer"
+                        }} />
+                    </label>
                   </div>
                 </div>
+              </div>
 
-                <div style={formGroupStyle}>
-                  <label style={labelStyle}>*분위기를 선택해 주세요.</label>
-                  <div style={genreOptionsStyle}>
-                    {moods.map((mood) => (
-                      <button
-                        key={mood}
-                        style={
-                          selectedMood === mood
-                            ? { ...genreOptionStyle, ...genreOptionSelectedStyle }
-                            : genreOptionStyle
-                        }
-                        onClick={() => moodClickHandler(mood)}
-                      >
-                        {mood}
-                      </button>
-                    ))}
+              <div style={rightSectionStyle}>
+                <div style={modalHeaderStyle}>
+                  <p style={modalHeaderTextStyle}>내 음원 업로드하기</p>
+                  <button style={modalCloseStyle} onClick={handleClose}>
+                    ✕
+                  </button>
+                </div>
+
+                <div className="form-container" style={{ overflowY: "auto", textAlign: "start" }}>
+                  <div style={formGroupStyle}>
+                    <label style={labelStyle}>*제목</label>
+                    <input
+                      type="text"
+                      name="songTitle"
+                      placeholder="곡 제목을 입력해주세요"
+                      style={textInputStyle}
+                    />
                   </div>
                   <div style={formGroupStyle}>
-                    <label style={labelStyle}>업로드 이용약관</label>
+                    <label style={labelStyle}>*제작자</label>
+                    <input
+                      type="text"
+                      style={textInputStyle}
+                      value={member.nickName}
+                    />
+                  </div>
+
+                  <div style={formGroupStyle}>
+                    <label style={labelStyle}>곡 설명</label>
+                    <input
+                      type="text"
+                      name="songDetail"
+                      placeholder="곡 설명을 입력해주세요"
+                      style={textInputStyle}
+                    />
+                  </div>
+                  <div style={formGroupStyle}>
+                    <label style={labelStyle}>라이센스</label>
                     <textarea
+                      name="songLicense"
+                      placeholder="라이센스를 입력해주세요"
                       rows={5}
-                      style={agreementStyle}
-                      readOnly
-                      value={`제1조 [목적]
+                      style={licenseInputStyle}
+                    />
+                  </div>
+
+                  <div style={formGroupStyle}>
+                    <label style={labelStyle}>*장르를 선택해 주세요.</label>
+                    <div style={genreOptionsStyle}>
+                      {genres.map((genre) => (
+                        <button
+                          key={genre}
+                          style={
+                            selectedGenre === genre
+                              ? { ...genreOptionStyle, ...genreOptionSelectedStyle }
+                              : genreOptionStyle
+                          }
+                          onClick={() => genreClickHandler(genre)}
+                        >
+                          {genre}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div style={formGroupStyle}>
+                    <label style={labelStyle}>*분위기를 선택해 주세요.</label>
+                    <div style={genreOptionsStyle}>
+                      {moods.map((mood) => (
+                        <button
+                          key={mood}
+                          style={
+                            selectedMood === mood
+                              ? { ...genreOptionStyle, ...genreOptionSelectedStyle }
+                              : genreOptionStyle
+                          }
+                          onClick={() => moodClickHandler(mood)}
+                        >
+                          {mood}
+                        </button>
+                      ))}
+                    </div>
+                    <div style={formGroupStyle}>
+                      <label style={labelStyle}>업로드 이용약관</label>
+                      <textarea
+                        rows={5}
+                        style={agreementStyle}
+                        readOnly
+                        value={`제1조 [목적]
 이 약관은 ㈜사운드캐스트(이하 “회사”)와 “이용자” 간에 “회사”가 제공하는 콘텐츠 서비스인 사운드 캐스트 및 제반 서비스를 이용함에 있어 “회사”와 “이용자” 간의 권리, 의무에 관한 사항과 기타 필요한 사항을 규정하는 것을 목적으로 합니다.
                         
 제2조 (정의)
@@ -471,12 +473,13 @@ const UploadMusic = ({
 ③ “음원”이란 회사에서 제공하는, 회원이 개인적으로 사용할 수 있는 라이브러리 음원을 의미합니다.
 ④ “영상이모티콘”이란 회사에서 제작, 제공하는 영상편집 소스(MP4, GIF)파일을 의미합니다.
 ⑤ “콘텐츠”란 “회사”에서 제공하는 모든 음원 및 영상이모티콘을 의미합니다.`}
-                    />
+                      />
+                    </div>
                   </div>
+                  <button style={submitButtonStyle}>수정</button>
                 </div>
-                <button style={submitButtonStyle} onClick={onModifySubmit}>수정</button>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       </div>

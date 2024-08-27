@@ -29,7 +29,9 @@ export type Song = {
 		songFileOriginName: string
 	}
 
-	memberNickname?: string; // 업로더 닉네임 
+	memberNickname?: string; // 업로더 닉네임
+
+	
 };
 
 export const initSong:Song = {
@@ -37,8 +39,6 @@ export const initSong:Song = {
 	songMemberNo: 0, // 업로더 회원 번호
 	songMoodNo: 5, // 음원 분위기 번호
 	songGenreNo: 3, // 음원 장르 번호
-	// songImageNo: 0, // 음원 커버 이미지 번호
-	// songFileNo: 0, // 음원 파일 번호
 	songTitle: '', // 음원명(유저가 입력)
 	songLicense : '', // 음원 출처(유저가 입력)
 	songDetail: '', // 음원 상세(유저가 입력)
