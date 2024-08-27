@@ -1,5 +1,5 @@
 import { CredentialResponse } from '@react-oauth/google';
-import '../pages/css/Signup.css';
+import '../pages/css/SignUp.css';
 import axios from '../utils/CustomAxios';
 import { getCookie, setSessionCookie } from '../utils/Cookie';
 import { useDispatch, useSelector } from 'react-redux';
@@ -68,14 +68,13 @@ const SignUpModal = ({showSignUp, openSignUp, closeSignUp } : {showSignUp:boolea
             axios
                 .post("http://localhost:8087/soundcast/auth/enroll/google", {
                     Credential
-    
                 })
                 .then(res =>{
     
                     console.log("google enroll res: "+ res.data.jwtToken);
                     const JwtToken = res.data.jwtToken;
                     setSessionCookie("accessToken",JwtToken);
-                    
+                    console.log(res);
                     dispatch(login(res.data.member));
                     closeSignUp();
                    

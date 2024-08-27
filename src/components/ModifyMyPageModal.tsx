@@ -149,25 +149,25 @@ const ModifyMyPageModal = ({ show, Close }: { show: boolean; Close: () => void }
         <div className={show ? "modal display-block" : "modal display-none"} onClick={backGroundClick}>
             <div className="mf-modal" style={{ backgroundColor: "#F0ECFD", borderRadius: "10px", width: "820px", height: "700px", margin: "0", position: "relative" }}>
                 <button className="close-button" style={{ color: "black" }} onClick={Close}>X</button>
-                <p style={{ fontSize: "30px", fontWeight: "bolder", marginBottom: "0px", marginLeft: "20px" }}>내 정보 수정</p>
+                <p style={{ fontSize: "30px", fontWeight: "bolder", marginBottom: "0px", marginLeft: "20px", cursor:"pointer" }}>내 정보 수정</p>
                 <hr style={{ width: "95%", border: "1px solid black" }} />
 
                 <div className="total" style={{ width: "90%", height: "80%", margin: "auto" }}>
                     <div className="modifyBanner" style={{
                         width: "100%", height: "25%", backgroundColor: "#B8CCFE", margin: "0 auto", position: "relative",
-                        backgroundImage: backgroundImage ? `url(${backgroundImage})` : `url(${serverImagePath + member.banner.slice(member.banner.indexOf(requestStartWith) + requestStartWith.length)})`,
+                        backgroundImage: backgroundImage ? `url(${backgroundImage})` : `url(${serverImagePath + member.banner})`,
                         backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat"
                     }}>
                         <div style={{ margin: "0", display: "flex", position: "absolute", right: "15px", bottom: "15px", cursor: "pointer" }}>
                             <img src="images/modify-banner.png" style={{ width: "auto" }} />
-                            <p style={{ color: "white", margin: "0" }}>배경화면 수정</p>
+                            <p style={{ color: "white", margin: "0", cursor:"pointer" }}>배경화면 수정</p>
                             <input type="file" accept="image/*" style={{ opacity: 0, position: "absolute", left: 0, right: 0, top: 0, bottom: 0, cursor: "pointer" }} onChange={handleBackgroundChange} />
                         </div>
                     </div>
 
                     <div className="mf-total" style={{ display: "flex", width: "100%", height: "25%" }}>
                         <div className="mf-profile" style={{ width: "30%", height: "100%", paddingTop: "10px", cursor: "pointer" }} onClick={triggerFileInput}>
-                            <img src={profileImage ? profileImage : serverImagePath + member.profile.slice(member.banner.indexOf(requestStartWith) + requestStartWith.length)} style={{ width: "80%", height: "85%" }} />
+                            <img src={profileImage ? profileImage : serverImagePath + member.profile} style={{ width: "80%", height: "85%" }} />
                             <input type="file" accept="image/*" ref={fileInputRef} style={{ display: "none" }} onChange={handleProfileChange} />
                         </div>
 

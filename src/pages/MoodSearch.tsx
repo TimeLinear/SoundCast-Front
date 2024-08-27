@@ -29,8 +29,7 @@ function MoodSearch(props:{ handleMouseOver: () => void; handleMouseOut: () => v
         {/* 여기서 부터 select 결과 출력 */}
         {
           moods.map( mood => (
-            <div className='genre' key={mood.moodNo}
-              style={{...moodCommonStyle, ...moodItemStyle, boxSizing: "border-box"}}>
+            <div className='genre' style={{...moodCommonStyle, ...moodItemStyle, boxSizing: "border-box"}}>
               <span style={{...moodItemFontStyle}}>{mood.moodName}</span>
             </div>
           ))  

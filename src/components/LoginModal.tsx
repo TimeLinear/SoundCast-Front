@@ -33,7 +33,7 @@ const LoginModal = ({show, handleClose, onSignupRequest}:{show:boolean, handleCl
             <div className="modal-main">
                 <button className="close-button" onClick={handleClose}>X</button>
                 <div className='modal-serve'>
-                    <img src="images\LoginLogo.png" alt="Soundcast Logo" className="logo" />
+                    <img src=".\images\LoginLogo.png" alt="Soundcast Logo" className="logo" />
                         <h2 className='h2' style={{ color: 'black' }}>로그인</h2>
                         <p style={{ color: '#BBBBBB' }}>지금 바로 서비스를 이용해 보세요!</p>
                         <div className="login-buttons">

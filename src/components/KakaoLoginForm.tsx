@@ -1,11 +1,12 @@
 import KakaoLogin from "react-kakao-login";
-import { LoginResponse } from "../type/user";
+import { LoginResponse } from "../type/memberType";
 import axios from "../utils/CustomAxios";
 import { setCookie, setSessionCookie } from "../utils/Cookie";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { login } from "../features/memberSlice";
 import { Member } from "../type/memberType";
+import { Cookies } from "react-cookie";
 
 interface KakaoLoginFormProps{
     setUser : (data:any) => void;
@@ -14,7 +15,7 @@ interface KakaoLoginFormProps{
 export default function KakaoLoginForm({onSignupRequest, handleClose}:{onSignupRequest:()=>void, handleClose:()=>void}){
     const kakaoJavascriptKey = process.env.REACT_APP_KAKAO_API_KEY as string;
 
-    const user = useSelector((state:RootState) => state.member);
+    const member = useSelector((state:RootState) => state.member);
     const dispatch = useDispatch();
     
     const kakaoOnSucess = (data:{response:LoginResponse}) => {
@@ -37,24 +38,25 @@ export default function KakaoLoginForm({onSignupRequest, handleClose}:{onSignupR
             .post("http://localhost:8087/soundcast/auth/login/kakao",{
                 accessToken:ACCESS_TOKEN
             })
-            .then(res => {
+            .then(res => { 
+                console.log(res);
+                if(!res.data.member){
+                    new Cookies().set("ACCESS_TOKEN", ACCESS_TOKEN, {maxAge: 60 * 3, path:'/'});
+                    
+                    onSignupRequest();
+                   }
+
+
                 console.log("-------------------------")
                 console.log(ACCESS_TOKEN);
-                console.log(res);
+                console.log("kakao res: "+res.data);
                 const JwtToken = res.data.jwtToken;
                 setSessionCookie("accessToken", JwtToken); // 필수 사항
-               //선택사항 setCookie("user",JSON.stringify(res.data.user));
-                // const loginMember:Member = {
-                //     memberNo:res.data.member.memberNo,
-                //     profile:res.data.member.profileImage.profileImagePath,
-                //     nickName:res.data.member.memberNickname,
-                //     email:res.data.member.memberEmail,
-                //     banner:res.data.member.memberBanner.memberBannerPath,
-                //     introduce:res.data.member.memberIntroduce,
-                //     follow:res.data.member.follwer
-                // }
-                dispatch(login(res.data.member)); // 필수 사항
-                console.log(res.data);
+             
+                dispatch(login(res.data.member));
+                console.log(res.data.member);
+
+                handleClose();
             })
             .catch(error => {
                 console.log(error);

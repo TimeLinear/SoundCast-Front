@@ -1,10 +1,21 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { Followings, FollowList, Member } from "../type/memberType";
+import { Comment, FollowList, Followings, Member } from "../type/memberType";
 import { removeCookie, setCookie } from "../utils/Cookie";
 
 
+
+const commentInit:Comment={
+    commentNo : 0,
+    writerNo : 0,
+    content : '',
+    writerInfo : {
+        profile : '',
+        nickName : ''
+    }
+}
 const followingInit:Followings={
-    nickName: '',
+    memberNo: 0,
+    nickName : '',
     profile:''
 }
 
@@ -13,7 +24,6 @@ const followInit:FollowList={
     following : [followingInit]
 
 }
-
 const initialState:Member= {
     memberNo: 0,
     profile : '',
@@ -21,8 +31,9 @@ const initialState:Member= {
     email: '',
     banner: '',
     introduce: '',
-    follow: followInit
-}
+    follow: followInit,
+    comment: [commentInit]
+    }
 
 
 
@@ -34,6 +45,7 @@ let memberSlice = createSlice({
     reducers:{
         login : (state, action) =>{
             const data = action.payload;
+            console.log("헤더서 로그인해서 보낸 데이터");
             console.log(data);
             return {
                 memberNo:data.memberNo,
@@ -44,15 +56,24 @@ let memberSlice = createSlice({
                 introduce:data.memberIntroduce,
                 follow:{
                     follower:data.follower,
-                    following:data.followings?.map((following:any) => ({
-                        nickName:following.following.nickName,
-                        profile:following.following.profileImagePath
-                    })) || []
-                }
-            }
-
-           
-        },
+                    following:data.following?.map((following: any) => ({
+                        memberNo:following.memberNo,
+                        nickName:following.memberNickname,
+                        profile:following.profileImage.profileImagePath
+                    })) ||[]
+                },
+                
+                comment: data.commentList?.map((comment: any) => ({
+                    commentNo : comment.comment.commentNo,
+                    writerNo: comment.comment.commentWriterMemberNo,
+                    content: comment.comment.commentText,
+                    writerInfo: {
+                        profile: comment.profileImage.profileImagePath,
+                        nickName: comment.memberNickname
+                    }
+                })) || []
+         } 
+    },
         logout : (state) =>{
             removeCookie('accessToken');
             
