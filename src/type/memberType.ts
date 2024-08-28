@@ -15,6 +15,7 @@ export type FollowList = {
    
 }
 export type Followings ={
+    memberNo : number
     nickName : string
     profile: string
 }

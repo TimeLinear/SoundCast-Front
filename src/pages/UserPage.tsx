@@ -1,36 +1,33 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
-import { useEffect, useRef, useState } from "react";
+import { CSSProperties, useEffect, useRef, useState } from "react";
 import Pagination from "../components/Pagination";
 import Player from "./PlayBar";
-import { initSongs, Props } from "../type/SongType";
-import { setPlaySong } from "../features/songSlice";
+//import { initSongs, Props } from "../type/SongType";
+import { setPlaySong, setSongList } from "../features/songSlice";
 import "./css/UserPage.css";
 import axios from "axios";
 import memberSlice, { login, initialState, followInit } from "../features/memberSlice";
-import { useParams } from "react-router-dom";
-import MemberSongs from "../components/MemberSongs";
+import { useNavigate, useParams } from "react-router-dom";
+// import MemberSongs from "../components/MemberSongs";
 import MemberComments from "../components/MemberComments";
 import CustomAxios from "../utils/CustomAxios";
 import { getCookie } from "../utils/Cookie";
 import FollowingModal from "../components/FollowingModal";
+import SongItem from "../components/SongItem";
+import { Props } from "../type/SongType";
 
 
 const UserPage = () => {
-
+    const song = useSelector((state:RootState)=>state.song);
     const member = useSelector((state:RootState)=>state.member);
     const [isShow, setIsShow] = useState('song');
     const {memberNo} = useParams();
     const NumbMemberNo = Number(memberNo);
     const serverImagePath = "http://localhost:8087/soundcast/resource/";
-    
+    const navi = useNavigate();
     const dispatch = useDispatch();
     
-    const [activeSongNo, setActiveSongNo] = useState<number|null>(null);
-    const props:Props = {
-        activeSongNo,
-        setActiveSongNo
-    }
     const [selectMember, setSelectMember] = useState(initialState);
 
     //팔로우리스트 프론트
@@ -47,8 +44,13 @@ const UserPage = () => {
 
     
     //팔로우 임시
+    console.log("팔로우변수체크");
+    const followingCheck = member.follow.following.filter((following) => following.memberNo === NumbMemberNo) ? false : true;
 
-    const [isFollowing, setIsFollowing] = useState(false);
+    console.log(member.follow.following);
+    console.log(NumbMemberNo);
+    console.log(followingCheck);
+    const [isFollowing, setIsFollowing] = useState(followingCheck);
     const [followList, setFollowList] = useState(followInit);
     //isFollowing == false  -- 팔로우버튼
     //isFollowing == true -- 팔로우 취소 버튼
@@ -134,7 +136,6 @@ const UserPage = () => {
                setFollowList({
                     follower : response.data.follower,
                     following : response.data.following
-                   
                });
                 
                 
@@ -154,8 +155,44 @@ const UserPage = () => {
     
     console.log("멤버배너");
     console.log(selectMember.banner);
+
+
+    //음원
+
+   
+    const [activeSongNo, setActiveSongNo] = useState<number|null>(null);
+ 
+    useEffect(()=>{
+            axios.get(`http://localhost:8087/soundcast/song/memberSongList/${memberNo}`)
+                .then((response) => {
+                      //키워드로 db에 저장된 노래 불러와 리스트 전역에 저장
+                    console.log(response.data);
+                    dispatch(setSongList(response.data));
+                })
+                .catch((err)=>console.log(err));
+        
+    },[member])
     
-    
+
+    useEffect(()=>{
+        if(activeSongNo!==null){
+            dispatch(setPlaySong(activeSongNo));
+        }
+    },[activeSongNo])
+      
+    const props:Props = {
+        activeSongNo,
+        setActiveSongNo,
+        song,
+        searchSong: function (): void {
+            throw new Error("Function not implemented.");
+        }
+    }
+
+    // 스타일
+    const searchListFontStyle:CSSProperties = { fontFamily: "Inter", fontStyle: "normal", fontSize: "20px", fontWeight: "700", lineHeight: "24px", color: "#000000" };
+    //--
+   
     return ( 
      
         <>
@@ -169,6 +206,8 @@ const UserPage = () => {
                 
             
                 <div style={divStyle}>
+                    
+                      
                         <img 
                                 src={isFollowing ? "/images/default/unfollow.png" : "/images/default/follow.png"} 
                                 alt={isFollowing ? "Unfollow" : "Follow"} 
@@ -249,13 +288,21 @@ const UserPage = () => {
                 </div>
 
                 {isShow === 'song' ? (
-                    <MemberSongs/>  
+                    song.list.length > 0 ? 
+                        (<SongItem {...props}/>) 
+                        : (
+                            <>
+                                <div className='search-list-non' style={{width:"100%", height:"80vw", display:"flex", alignContent:"center", justifyContent:"center"}}>
+                                    <p style={{...searchListFontStyle, fontSize:"22px"}}> 해당 회원의 음원 목록이 존재하지 않습니다. </p>
+                                </div>
+                            </>
+                        ) 
                 ) : (
                     <MemberComments selectMember={selectMember} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} deletingCommentNo={deletingCommentNo} setDeletingCommentNo={setDeletingCommentNo}/>                  
                 )}
             </div>
             {/* <FollowingModal show={showFollingModal} Close={followingCloseHandler} /> */}
-            <Player {...props} />
+            {/* <Player {...props} /> */}
         </>
     );
 }

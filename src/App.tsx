@@ -17,6 +17,8 @@ import SearchList from './pages/SearchList';
 import { Route, Routes } from 'react-router-dom';
 import Footer from './components/Footer';
 import MyPageBanner from './pages/MyPageBanner';
+import SearchPage from './pages/SearchPage';
+import MusicDetail from './pages/MusicDetail';
 
 
 export let Context = createContext({}); //Context == state 보관소
@@ -65,6 +67,7 @@ function App() {
             <MyPageBanner />
             
           </>
+          
         }/>
 
         <Route path='/member/memberInfo/:memberNo' element={
@@ -74,6 +77,8 @@ function App() {
         }/>
 
 
+      <Route path='/search' element={<SearchPage />} />
+      <Route path='/music/detail' element={<MusicDetail />} />
 
       </Routes>
         <Footer/>

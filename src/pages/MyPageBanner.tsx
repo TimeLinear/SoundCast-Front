@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Pagination from "../components/Pagination";
@@ -6,17 +6,22 @@ import "./css/myPageBanner.css";
 import FollowingModal from "../components/FollowingModal";
 import ModifyMyPageModal from "../components/ModifyMyPageModal"; 
 import MyPageComment from "../components/MyPageComment";
+import axios from "axios";
+import { Props } from "../type/SongType";
+import { setPlaySong, setSongList } from "../features/songSlice";
+import MyPageSong from "../components/MyPageSong";
+import ModifyMusic from "./ModifyMusic";
 
 const MyPageBanner = () => {
     const member = useSelector((state: RootState) => state.member);
+    const song = useSelector((state:RootState)=>state.song);
+    const dispatch = useDispatch();
     console.log("팔로잉배열")
     console.log(member.follow.following)
     const [isShow, setIsShow] = useState('song');
-
     const [showFollingModal, setShowFollingModal] = useState(false);
     const [showModifyModal,setShowModifyModal] = useState(false);
-
-
+   
     const followingHandler = () => {
         setShowFollingModal(true);
     }
@@ -33,7 +38,43 @@ const MyPageBanner = () => {
         setShowModifyModal(false);
     }
 
+   
     
+    
+    //음원
+    const [activeSongNo, setActiveSongNo] = useState<number|null>(null);
+ 
+    useEffect(()=>{
+      
+        axios.get(`http://localhost:8087/soundcast/song/memberSongList/${member.memberNo}`)
+            .then((response) => {
+                  //키워드로 db에 저장된 노래 불러와 리스트 전역에 저장
+                console.log(response.data);
+                dispatch(setSongList(response.data));
+            })
+            .catch((err)=>console.log(err));
+    
+    },[member])
+
+
+    useEffect(()=>{
+        if(activeSongNo!==null){
+            dispatch(setPlaySong(activeSongNo));
+        }
+    },[activeSongNo])
+    
+    const props:Props = {
+        activeSongNo,
+        setActiveSongNo,
+        song,
+        searchSong: function (): void {
+            throw new Error("Function not implemented.");
+        }
+    }
+
+    const insertSongHandler = () =>{
+        
+    }
 
     const songItems = [
         { profileImg: "/images/defaultLogo.png", title: "cass" },
@@ -153,24 +194,30 @@ currentPage의 state값에 따라서 동적으로 화면상에 표기할 current
                     </div>
 
                     <div key={"comment"}  className={`rest ${isShow === 'comment' ? 'selectSac' : ''}`}>
-                        {isShow === "song" ? (
-                           null
-                        ) : (
-                            <></>
-                        )}
+                        {isShow === "song" &&
+                           <div style={{ minWidth: "1300px", height: "50px", backgroundColor: "#1C003B", display: "flex", alignItems: "center", borderTopRightRadius: "7px", justifyContent: "space-between", width: "100%" }}>
+                                <button style={{ fontWeight: "bolder", fontSize: "17px", marginRight:"23px",  marginLeft: "auto", width:"90px" ,cursor: "pointer",borderRadius:"7px",backgroundColor:"white"}} onClick={insertSongHandler}>업로드</button>
+                            </div>
+                        }
 
                     </div>
                 </div>
 
                 {isShow === 'song' ? (
-                   null
+                    song.list.length > 0 ? 
+                    (<MyPageSong {...props}/>) 
+                    : (
+                        <>
+                            <div className='search-list-non' style={{width:"100%", height:"80vw", display:"flex", alignContent:"center", justifyContent:"center"}}>
+                                <p style={{fontSize:"22px"}}> 해당 회원의 음원 목록이 존재하지 않습니다. </p>
+                            </div>
+                        </>
+                    ) 
                 ) : (
                     <MyPageComment/>
                 )}
             </div>
 
-
-           
         </>
     );
 }

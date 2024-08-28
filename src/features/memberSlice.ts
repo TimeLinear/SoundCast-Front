@@ -14,8 +14,10 @@ const commentInit:Comment={
     }
 }
 const followingInit:Followings={
+    memberNo : 0,
     nickName : '',
     profile:''
+    
 }
 
 const followInit:FollowList={
@@ -56,6 +58,7 @@ let memberSlice = createSlice({
                 follow:{
                     follower:data.follower,
                     following:data.following?.map((following: any) => ({
+                        memberNo:following.memberNo,
                         nickName:following.memberNickname,
                         profile:following.profileImage.profileImagePath
                     })) ||[]

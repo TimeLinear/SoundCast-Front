@@ -68,8 +68,8 @@ const MyPageComment = () =>{
             </div>
 
             <div className="commentBox" style={{  width: "1300px", backgroundColor: "#FFFFFF", }}>
-              
-             {member.comment.map((reply) => (
+              {member.comment.length > 0 ? (
+                member.comment.map((reply) => (
                             <div className="writedComment" key={reply.commentNo}  style={{ width: "100%", display: "flex", alignItems: "center", marginTop: "10px" }}>
                                 <input type="checkbox" 
                                     checked={checkedComments.includes(reply.commentNo)}
@@ -83,8 +83,16 @@ const MyPageComment = () =>{
                                     </div>
                                 </div>
                             </div>
-                        ))}
-
+                        ))
+                    ) :
+                    
+                        (
+                        <>
+                        <div className='search-list-non' style={{width:"100%", height:"80vw", display:"flex", alignContent:"center", justifyContent:"center"}}>
+                            <p style={{fontSize:"22px"}}> 해당 회원의 댓글이 존재하지 않습니다. </p>
+                        </div>
+                          </>
+                        )}
             </div>    
         </>
     )
