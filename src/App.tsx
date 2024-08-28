@@ -1,46 +1,19 @@
-<<<<<<< HEAD
-import './App.css';
-import { createContext, useEffect, useState } from 'react';
-import { Provider, useDispatch, useSelector } from 'react-redux';
-import store, { RootState } from './store/store';
-import { Member } from './type/memberType';
-import { getCookie } from './utils/Cookie';
-import axios from './utils/CustomAxios';
-import { login } from './features/memberSlice';
-import { Route, Routes } from 'react-router-dom';
-=======
-
->>>>>>> origin/myPage_sds
 import './App.css';
 import Header from './components/Header';
 
-import { createContext, useEffect, useState } from 'react';
-import { Provider, useDispatch, useSelector } from 'react-redux';
-import store, { RootState } from './store/store';
-import { Member } from './type/memberType';
-import { getCookie } from './utils/Cookie';
-import axios from './utils/CustomAxios';
-import { login } from './features/memberSlice';
+import { createContext} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from './store/store';
 import PlaceDevider from './components/PlaceDevider';
-<<<<<<< HEAD
 import MainPage from './pages/MainPage';
 import MusicDetail from './pages/MusicDetail';
 import Mypage from './pages/Mypage';
 import Footer from './components/Footer';
 import SearchPage from './pages/SearchPage';
-import Header from './components/Header';
 import UserPage from './pages/UserPage';
-=======
-
-
-import UserPage from './pages/UserPage';
-import SearchList from './pages/SearchList';
 import { Route, Routes } from 'react-router-dom';
-import Footer from './components/Footer';
-import MyPageBanner from './pages/MyPageBanner';
-import SearchPage from './pages/SearchPage';
-import MusicDetail from './pages/MusicDetail';
->>>>>>> origin/myPage_sds
+
+
 
 
 export let Context = createContext({}); //Context == state 보관소

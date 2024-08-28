@@ -1,5 +1,5 @@
 import { CredentialResponse } from '@react-oauth/google';
-import '../pages/css/Signup.css';
+import '../pages/css/SignUp.css';
 import axios from '../utils/CustomAxios';
 import { getCookie, setSessionCookie } from '../utils/Cookie';
 import { useDispatch, useSelector } from 'react-redux';
