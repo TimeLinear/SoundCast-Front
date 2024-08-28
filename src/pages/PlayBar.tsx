@@ -1,6 +1,17 @@
 import { useSelector } from "react-redux";
 import { Props } from "../type/SongType";
 import { RootState } from "../store/store";
+import { ChangeEvent, useRef, useState } from "react";
+import ReactPlayer from "react-player";
+
+
+interface PlayerState {
+    played: number;
+    duration: number;
+    volume: number;
+    showVolumeBar: boolean;
+}
+
 
 function Player(props:Props){
     
@@ -18,12 +29,74 @@ function Player(props:Props){
             .catch((err)=>{console.log(err)})
     }
 
+    const [playerState, setPlayerState] = useState<PlayerState>({
+        played: 0,
+        duration: 0,
+        volume: 0.8,
+        showVolumeBar: false,
+    });
+
+    const playerRef = useRef<ReactPlayer | null>(null);
+
+
+    const handleProgress = (state: { played: number }) => {
+        setPlayerState(prevState => ({
+            ...prevState,
+            played: state.played,
+        }));
+    };
+
+    const handleDuration = (duration: number) => {
+        setPlayerState(prevState => ({
+            ...prevState,
+            duration: duration,
+        }));
+    };
+
+    const handleSeekChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const newPlayed = parseFloat(e.target.value);
+        setPlayerState(prevState => ({
+            ...prevState,
+            played: newPlayed,
+        }));
+        playerRef.current?.seekTo(newPlayed);
+    };
+
+    const formatTime = (seconds: number): string => {
+        const minutes = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+    };
+
+    const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newVolume = parseFloat(e.target.value);
+        setPlayerState(prevState => ({
+            ...prevState,
+            volume: newVolume,
+        }));
+    };
+
+    const currentSong = activeSongNo ? songs.list.filter((song) => song.songNo === activeSongNo)[0] : null;
+
+    const serverResourePath = "http://localhost:8087/soundcast/resource/";
+
     return (
 
-        activeSongNo !== null ? (
+        currentSong !== null ? (
         <div className="player" 
             style={{...playerBoxStyle, position:"fixed", bottom:0 ,boxSizing:"border-box", width:"100%", height:"70px", background:"rgba(255, 255, 255, 0.95)", border:"1px solid #D4D4D4", borderRadius:"7px"}}>
         
+            <ReactPlayer
+                ref={playerRef}
+                url={serverResourePath + currentSong.songFile.songFilePathName + currentSong.songFile.songFileChangeName}
+                playing={activeSongNo ? true : false}
+                volume={playerState.volume}
+                onProgress={handleProgress}
+                onDuration={handleDuration}
+                width="0" // 화면에 비디오가 표시되지 않도록 설정합니다.
+                height="0"
+            />
+
             <div className='play-icon' style={{width:"45px", height:"45px", paddingRight: "25px"}}>
                 <img src={activeSongNo === songs.currentSong.songNo ? "images/pause-button-icon-black.png" : "images/play-icon-black.png"} 
                     style={{height:"100%", width:"100%"}}
@@ -46,22 +119,44 @@ function Player(props:Props){
 
             <div className="play-status-box" style={{...playerBoxStyle, width:"45%", paddingRight: "25px"}}>
                 <div className="now-playing" style={{...playerBoxStyle, justifyContent:"center", width:"60px"}} >
-                    <span style={{...playerFontStyle}}>0:00</span>
+                    <span style={{...playerFontStyle}}>{formatTime(playerState.played * playerState.duration)}</span>
                 </div>
                 <div className="play-bar" style={{width:"80%"}}>
-                    <span>재생바</span>
+                <input
+                    type="range"
+                    min={0}
+                    max={1}
+                    step={5}
+                    value={playerState.played}
+                    onChange={handleSeekChange}
+                    className="progress-bar"
+                />
                 </div>
                 <div className="play-time" style={{...playerBoxStyle, justifyContent:"center",width:"60px"}}>
-                    <span style={{...playerFontStyle}}>1:58</span>
+                    <span style={{...playerFontStyle}}>{formatTime(playerState.duration - playerState.played * playerState.duration)}</span>
                 </div>
             </div>
 
             <div className="volume-box" style={{...playerBoxStyle, width:"15%", paddingRight: "25px"}}>
                 <div className="volume-icon" style={{width:"25px", height:"25px"}}>
-                    <img src="images/audio-control-icon-black.png" style={{height:"100%", width:"100%"}}/>
+                    <img 
+                        src="images/audio-control-icon-black.png"
+                        onMouseEnter={() => setPlayerState(prev => ({ ...prev, showVolumeBar: true }))}
+                        onMouseLeave={() => setPlayerState(prev => ({ ...prev, showVolumeBar: false }))}
+                        style={{height:"100%", width:"100%"}}/>
                 </div>
                 <div className="volume-control" style={{width:"150px"}}>
-                    <span>볼륨바</span>
+                    {playerState.showVolumeBar && (
+                        <input
+                            type="range"
+                            min={0}
+                            max={1}
+                            step="any"
+                            value={playerState.volume}
+                            onChange={handleVolumeChange}
+                            className="volume-bar"
+                        />
+                    )}
                 </div>
             </div>
 

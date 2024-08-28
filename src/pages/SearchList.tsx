@@ -81,7 +81,7 @@ function SearchList(){
                         </>
                     ) }
             </div>
-                <Player {...props} />
+            <Player {...props} />
                     
         </>
     );

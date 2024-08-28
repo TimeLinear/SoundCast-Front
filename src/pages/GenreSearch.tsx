@@ -6,7 +6,7 @@ import { setGenre, setKeyword, setMood } from "../features/searchSlice";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "../store/store";
-import { setSongList } from "../features/songSlice";
+import { setGenreList, setSongList } from "../features/songSlice";
 
 
 export interface SearchProps {
@@ -28,8 +28,9 @@ function GenreSearch ({searchGenre, searchMood}:{searchGenre:number, searchMood:
   const dispatch = useDispatch();
   const navi = useNavigate();
   const search = useSelector((state:RootState) => state.search);
-  
-  const [genres, setGenres] = useState<Genre[]>(initGenres);
+  const song = useSelector((state:RootState) => state.song);
+  // const [genres, setGenres] = useState<Genre[]>(initGenres);
+
   const [searchGenreNo, setSearchGenreNo] = useState(-1);
 
   const [isHovered, setIsHovered] = useState({genreDiv:false, moodDiv:false});
@@ -62,7 +63,7 @@ function GenreSearch ({searchGenre, searchMood}:{searchGenre:number, searchMood:
    //------------수정한 부분(08/21)
    useEffect(()=>{
     axios.get("http://localhost:8087/soundcast/song/genres")
-    .then((response) => setGenres(response.data))
+    .then((response) => dispatch(setGenreList(response.data)))
     .catch((err) => console.log(err))
   },[]);
   
@@ -99,9 +100,12 @@ function GenreSearch ({searchGenre, searchMood}:{searchGenre:number, searchMood:
         onMouseEnter={handleMouseOver}
         onMouseLeave={(e) => {handleMouseOut(e); onLeaveSearchs();}}
         style={{...genreCommonStyle, boxSizing: "border-box", width:"100%", height:"65px", background:"#1C003B", borderRadius: "0"}} >
+        {/* <div className='genre' style={{...genreCommonStyle, ...genreItemStyle, boxSizing: "border-box", background:"#BA9FCC"}}>
+          <span style={{...genreItemFontStyle, color:"#FFFFFF"}} >모든 장르</span>
+        </div> */}
             {/* 여기서 부터 select 결과 출력 */}
         {
-          genres.map( genre => (
+          song.genreList.map( genre => (
           <div id='genre'
               key={genre.genreNo}
               onMouseEnter={()=>{console.log(genre.genreNo); setSearchGenreNo(genre.genreNo)}}

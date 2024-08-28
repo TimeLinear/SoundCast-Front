@@ -1,6 +1,8 @@
 import { ChangeEvent, FormEvent, MouseEvent, SetStateAction, useRef, useState } from "react";
 import { Member } from "../type/memberType";
 import axios from "../utils/CustomAxios";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store";
 
 const UploadMusic = ({
   show,
@@ -229,16 +231,9 @@ const UploadMusic = ({
   // 장르클릭 핸들러
   const [selectedGenre, setSelectedGenre] = useState(1);
 
-  const genres = [
-    "Rock",
-    "Electronic",
-    "Hip-Hop",
-    "Jazz",
-    "Classical",
-    "Sound Track",
-    "Pop",
-    "R&B/Soul",
-  ];
+  const song = useSelector((state:RootState) => state.song);
+
+  const genres = song.genreList.filter((genre) => genre.genreNo > 0);
 
   const genreClickHandler = (genre: SetStateAction<number>) => {
     setSelectedGenre(genre);
@@ -247,16 +242,7 @@ const UploadMusic = ({
   // 분위기 클릭 핸들러
   const [selectedMood, setSelectedMood] = useState(1);
 
-  const moods = [
-    "Gloomy",
-    "Dreamer",
-    "Dark",
-    "Angry",
-    "Classical",
-    "Sound Track",
-    "Pop",
-    "R&B/Soul",
-  ];
+  const moods = song.moodList.filter((mood) => mood.moodNo > 0);
 
   const moodClickHandler = (mood: SetStateAction<number>) => {
     setSelectedMood(mood);
@@ -483,7 +469,7 @@ const UploadMusic = ({
                   <div style={genreOptionsStyle}>
                     {genres.map((genre, index) => (
                       <button
-                        key={genre}
+                        key={genre.genreNo}
                         style={
                           selectedGenre === index + 1
                             ? { ...genreOptionStyle, ...genreOptionSelectedStyle }
@@ -491,7 +477,7 @@ const UploadMusic = ({
                         }
                         onClick={() => genreClickHandler(index + 1)}
                       >
-                        {genre}
+                        {genre.genreName}
                       </button>
                     ))}
                   </div>
@@ -502,7 +488,7 @@ const UploadMusic = ({
                   <div style={genreOptionsStyle}>
                     {moods.map((mood, index) => (
                       <button
-                        key={mood}
+                        key={mood.moodNo}
                         style={
                           selectedMood === index + 1
                             ? { ...genreOptionStyle, ...genreOptionSelectedStyle }
@@ -510,11 +496,11 @@ const UploadMusic = ({
                         }
                         onClick={() => moodClickHandler(index + 1)}
                       >
-                        {mood}
+                        {mood.moodName}
                       </button>
                     ))}
                   </div>
-                  <div style={formGroupStyle}>
+                  <div style={{...formGroupStyle, marginTop:"40px"}}>
                     <label style={labelStyle}>업로드 이용약관</label>
                     <textarea
                       rows={5}
