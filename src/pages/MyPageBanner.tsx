@@ -118,8 +118,8 @@ currentPage의 state값에 따라서 동적으로 화면상에 표기할 current
                     <div className="UserIntroduce" style={{ width: "630px", height: "160px", marginTop: "80px" }}>
                         <span style={{ fontWeight: "bolder", fontSize: "28px" }}>{member.nickName}<span style={{ fontSize: "15px", fontWeight: "normal", marginLeft: "10px" }}>{member.email}</span></span>
                              <div style={{ display: "flex" }}>
-                                <p style={{ margin: "0 10px 0 20px", fontWeight: "bold" }}>팔로워</p><p style={{ margin: 0 }}>{member.follow.follower}</p>
-                                <p style={{ margin: "0 10px 0 0", fontWeight: "bold", cursor:"pointer" }} onClick={followingHandler}>팔로잉 중 </p><p style={{ margin: 0 }}>{member.follow.following.length}</p>
+                                <p style={{ marginLeft:"10px", fontWeight: "bold" }}>팔로워</p><p style={{ marginLeft:"5px" }}>{member.follow.follower}</p>
+                                <p style={{ marginLeft:"10px", fontWeight: "bold", cursor:"pointer" }} onClick={followingHandler}>팔로잉 중</p><p style={{ marginLeft:"5px" }}>{member.follow.following.length}</p>
           
                     </div>
                  

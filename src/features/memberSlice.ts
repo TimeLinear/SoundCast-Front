@@ -47,6 +47,7 @@ let memberSlice = createSlice({
             const data = action.payload;
             console.log("헤더서 로그인해서 보낸 데이터");
             console.log(data);
+            console.log(data.profileImage);
             return {
                 memberNo:data.memberNo,
                 profile:data.profileImage.profileImagePath,
@@ -56,7 +57,7 @@ let memberSlice = createSlice({
                 introduce:data.memberIntroduce,
                 follow:{
                     follower:data.follower,
-                    following:data.following?.map((following: any) => ({
+                    following:data.following?.map((following: {memberNo:string, memberNickname:string, profileImage:{profileImagePath:string}}) => ({
                         memberNo:following.memberNo,
                         nickName:following.memberNickname,
                         profile:following.profileImage.profileImagePath
