@@ -15,8 +15,6 @@ interface KakaoLoginFormProps{
 export default function KakaoLoginForm({onSignupRequest, handleClose}:{onSignupRequest:()=>void, handleClose:()=>void}){
     const kakaoJavascriptKey = process.env.REACT_APP_KAKAO_API_KEY as string;
 
-    console.log("Kakao App Key : %s", kakaoJavascriptKey);
-
     const member = useSelector((state:RootState) => state.member);
     const dispatch = useDispatch();
     
@@ -30,6 +28,7 @@ export default function KakaoLoginForm({onSignupRequest, handleClose}:{onSignupR
                 accessToken:ACCESS_TOKEN
             })
             .then(res => { 
+                console.log(res);
                 if(!res.data.member){
                     new Cookies().set("ACCESS_TOKEN", ACCESS_TOKEN, {maxAge: 60 * 3, path:'/'});
                     

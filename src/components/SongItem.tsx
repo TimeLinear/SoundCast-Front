@@ -1,13 +1,16 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { CSSProperties, MouseEvent, useEffect, useState } from "react";
-import { setPlaySong } from "../features/songSlice";
+import { setPlaySong, setSongList } from "../features/songSlice";
 import { Song } from "../type/SongType";
 import Pagination from "./Pagination";
 import { useNavigate } from "react-router-dom";
+
+import axios from "axios";
+import { setGenre, setMood } from "../features/searchSlice";
 import { current } from "@reduxjs/toolkit";
 
-const SongItem = ({ activeSongNo, setActiveSongNo, song }: { activeSongNo: number | null, setActiveSongNo: (no: number) => void, song:{list:Song[], currentSong:Song} }) => {
+const SongItem = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activeSongNo: number | null, setActiveSongNo: (no: number) => void, song:{list:Song[], currentSong:Song}, searchSong:()=>void }) => {
 
     const searchListBoxStyle: CSSProperties = {
         width: "100%", height: "80px", display: "flex", alignItems: "center", justifyContent: "space-evenly",
@@ -21,16 +24,26 @@ const SongItem = ({ activeSongNo, setActiveSongNo, song }: { activeSongNo: numbe
 
     const [hoverState, setHoverState] = useState({ songNo: 0, class: "" });
 
-
     const mouseEnterEventHandler = (e:MouseEvent) => {
         const songNo = (e.target as HTMLDivElement).dataset.songno;
         const classname = (e.target as HTMLDivElement).className;
+        const songTypeNo = (e.target as HTMLDivElement).dataset.typeno;
         
+        console.log(songTypeNo, classname )
         setHoverState({ songNo: Number(songNo), class: classname })
+
+        if(classname === 'genre-box'){dispatch(setGenre(Number(songTypeNo)))}
+        else if(classname === 'mood-box'){dispatch(setMood(Number(songTypeNo)))}
     };
 
+    const search = useSelector((state:RootState)=>state.search)
     const mouseLeaveEventHandler = (e: MouseEvent) => {
         setHoverState({ songNo: 0, class: '' })
+
+        const classname = (e.target as HTMLDivElement).className;
+        console.log(search.genre, search.mood, classname )
+        if(classname === 'genre-box'){dispatch(setGenre(-1))}
+        else if(classname === 'mood-box'){dispatch(setMood(-1))}
     };
 
     const dispatch = useDispatch();
@@ -77,6 +90,10 @@ const SongItem = ({ activeSongNo, setActiveSongNo, song }: { activeSongNo: numbe
     const currentItems = song.list.slice(indexOfFirstItem, indexOfLastItem);
 
     // console.log(hoverState);
+   
+
+    //수정 (검색함수 props에 추가, 이미지 경로 지정, 아티스트명 클릭시 아티스트 페이지로 이동, 장르, 분위기 data-songno 수정 클릭 이벤트 부여)
+    const url = "http://localhost:8087/soundcast/public"; 
 
     return (
         <div>
@@ -128,16 +145,20 @@ const SongItem = ({ activeSongNo, setActiveSongNo, song }: { activeSongNo: numbe
                                 <div className='genre-box'
                                     onMouseEnter={mouseEnterEventHandler} 
                                     onMouseLeave={mouseLeaveEventHandler}
-                                    data-key={Song.songNo}
+                                    onClick={searchSong}
+                                    data-songno={Song.songNo}
+                                    data-typeno={Song.songGenreNo}
                                     style={hoverState.class === 'genre-box' && hoverState.songNo === Song.songNo ? {...itemBoxStyle, ...selectedCategoryStyle} : {...itemBoxStyle}}>
-                                    <span style={{ ...searchListFontStyle }}>{Song.songGenreNo}</span>
+                                    <span style={{ ...searchListFontStyle }}>{Song.songGenreName}</span>
                                 </div>
                                 <div className='mood-box'
                                     onMouseEnter={mouseEnterEventHandler} 
                                     onMouseLeave={mouseLeaveEventHandler}
-                                    data-key={Song.songNo}
+                                    data-songno={Song.songNo}
+                                    data-typeno={Song.songMoodNo}
+                                    onClick={searchSong}
                                     style={hoverState.class === 'mood-box' && hoverState.songNo === Song.songNo ? {...itemBoxStyle, ...selectedCategoryStyle} : {...itemBoxStyle}}>
-                                    <span style={{ ...searchListFontStyle }}>{Song.songMoodNo}</span>
+                                    <span style={{ ...searchListFontStyle }}>{Song.songMoodName}</span>
                                 </div>
 
                                 {/* 라이센스가 있을 경우 나타나는 아이콘 */}

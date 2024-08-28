@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import './App.css';
 import { createContext, useEffect, useState } from 'react';
 import { Provider, useDispatch, useSelector } from 'react-redux';
@@ -7,14 +8,39 @@ import { getCookie } from './utils/Cookie';
 import axios from './utils/CustomAxios';
 import { login } from './features/memberSlice';
 import { Route, Routes } from 'react-router-dom';
+=======
+
+>>>>>>> origin/myPage_sds
 import './App.css';
+import Header from './components/Header';
+
+import { createContext, useEffect, useState } from 'react';
+import { Provider, useDispatch, useSelector } from 'react-redux';
+import store, { RootState } from './store/store';
+import { Member } from './type/memberType';
+import { getCookie } from './utils/Cookie';
+import axios from './utils/CustomAxios';
+import { login } from './features/memberSlice';
 import PlaceDevider from './components/PlaceDevider';
+<<<<<<< HEAD
 import MainPage from './pages/MainPage';
 import MusicDetail from './pages/MusicDetail';
 import Mypage from './pages/Mypage';
 import Footer from './components/Footer';
 import SearchPage from './pages/SearchPage';
 import Header from './components/Header';
+import UserPage from './pages/UserPage';
+=======
+
+
+import UserPage from './pages/UserPage';
+import SearchList from './pages/SearchList';
+import { Route, Routes } from 'react-router-dom';
+import Footer from './components/Footer';
+import MyPageBanner from './pages/MyPageBanner';
+import SearchPage from './pages/SearchPage';
+import MusicDetail from './pages/MusicDetail';
+>>>>>>> origin/myPage_sds
 
 
 export let Context = createContext({}); //Context == state 보관소
@@ -32,28 +58,7 @@ function App() {
   // 같이 넘어온 사용자 정보가 있다면
   // 사용자 정보를 가지고 로그인 버튼을 로그아웃 버튼으로 바꾸고
   // 프로필 이미지를 헤더 상단에 띄워주는 로직이 필요하다
-  useEffect(() => {
-    let cookie = getCookie("accessToken");
-    console.log("cookie: " +cookie);
-    cookie && !(member.nickName) && (
-      axios
-            .post("http://localhost:8087/soundcast/auth/login",{
-                accessToken:cookie
-            })
-            .then(res => {
-              console.log(res);
-              if (!res) {
-                return;
-              }
-
-              dispatch(login(res.data.member));
-            })
-            .catch(error => {
-              console.log(error);
-            })
-    );
-  }, []);
-
+  
   
 
   return (
@@ -63,8 +68,9 @@ function App() {
       <Routes>
         <Route path='/' element={<MainPage />} />
         <Route path='/search' element={<SearchPage />} />
-        <Route path='/song/detail/:musicNo' element={<MusicDetail />} />
+        <Route path='/song/detail/:musicNo' element={<MusicDetail/>} />
         <Route path='/member/mypage' element={<Mypage />} />
+        <Route path='/member/memberInfo/:memberNo' element={<UserPage/>}/>
       </Routes>
       <Footer />
     </div>

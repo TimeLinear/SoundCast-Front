@@ -1,11 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+
 import { Member } from "../type/memberType";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
-import { logout } from "../features/memberSlice";
+import { login, logout } from "../features/memberSlice";
+
 import { useNavigate } from "react-router-dom";
 import LoginModal from "./LoginModal";
 import SignUpModal from "./SignUpModal";
+import axios from "../utils/CustomAxios";
+import { getCookie } from "../utils/Cookie";
+
 
 
 
@@ -13,9 +19,33 @@ function Header() {
     const member = useSelector((state:RootState)=>state.member );
     const dispatch = useDispatch();
     const [showModal, setShowModal]=useState(false);
-    // const navi = useNavigate();
+    const navi = useNavigate();
 
-
+    useEffect(() => {
+        let cookie = getCookie("accessToken");
+        
+        cookie && !(member.nickName) && (
+          axios
+                .post("http://localhost:8087/soundcast/auth/login",{
+                    accessToken:cookie
+                })
+                .then(res => {
+                    console.log("헤더 res");
+                    console.log(res.data);
+                    
+                  if (!res) {
+                    return;
+                  }
+                  
+                  dispatch(login(res.data.member));
+                })
+                .catch(error => {
+                  console.log(error);
+                })
+        );
+      }, []);
+      console.log("헤더로그인");
+      console.log(member);
 
     //회원 로그인창 핸들러
     const loginHandler = () =>{
@@ -26,14 +56,19 @@ function Header() {
         setShowModal(false);
     }
     
-    const logoutHandler = ()=>{
-        dispatch(logout());
-       
-    }
 
-    // const myPageHandler = () => {
-    //     navi("/myPage");
-    // }
+    const logoutHandler = () => {
+        dispatch(logout());
+        mainGo();
+      }
+    
+      const mainGo = () => {
+        navi("/");
+      }
+    
+      const myPageHandler = () => {
+        navi("/myPage");
+      }
 
     //회원가입 모달창
     const [showSignUp, setShowSignUp] = useState(false);
@@ -41,18 +76,20 @@ function Header() {
     const closeSignUp = () => setShowSignUp(false);
 
 
+  const serverImagePath = "http://localhost:8087/soundcast/resource/";
+    
     return(
         <>
             <div className="Header">
                 <div className="Logo">
-                    <img src=".\images\default\defaultLogo.png"/>
+                    <img src="\images\default\defaultLogo.png" onClick={mainGo}/>
                 </div>
                 <div className="DivideBox"></div>
                 <div className="SiteMap">
                     <button>
                         <span>Sitemap</span>
                         <span>
-                            <img src=".\images\default\Chevron_down.png"/>
+                            <img src="\images\default\Chevron_down.png"/>
                         </span>
                     </button>
 
@@ -62,7 +99,7 @@ function Header() {
                         <button onClick={loginHandler}>
                             
                             <span>
-                                <img src=".\images\default\Login.png"/>
+                                <img src="\images\default\Login.png"/>
                             </span>
                             <span>Login</span>
                         </button>
@@ -74,12 +111,13 @@ function Header() {
                  <div className="Header-profile">
                                 {member.profile && (
                                     <img
-                                        src={member.profile}
-                                        alt="User Profile"
-                                        className="ProfileImage"
-                                        // onClick={myPageHandler}
-                                        style={{cursor:"pointer"}}
-                                    />
+                                    src={serverImagePath + 
+                                      member.profile}
+                                    alt="User Profile"
+                                    className="ProfileImage"
+                                    onClick={myPageHandler}
+                                    style={{ cursor: "pointer" }}
+                                  />
                                 )}
                             </div>
 
@@ -89,7 +127,7 @@ function Header() {
                  <div className="Logout">
                     <button onClick={logoutHandler}>
                         <span>
-                            <img src=".\images\default\logout.png"/>
+                            <img src="\images\default\logout.png"/>
                         </span>
                         <span>Logout</span>
                     </button >

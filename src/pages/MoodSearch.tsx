@@ -1,25 +1,30 @@
-import { CSSProperties, MouseEvent, useState } from "react";
-
-import { Mood } from "../type/SongType";
+import { CSSProperties, MouseEvent, useEffect, useState } from "react";
+import { initMoods, Mood } from "../type/SongType";
 import { SearchProps } from "./GenreSearch";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { setGenre, setMood } from "../features/searchSlice";
 
 function MoodSearch(props:SearchProps){
 
-    const {handleMouseOver, handleMouseOut, searchGenreNo, onLeaveSearchs} = props
+    const {handleMouseOver, handleMouseOut, searchGenreNo, onLeaveSearchs, searchSongs} = props
 
     const moodItemFontStyle:CSSProperties = {fontFamily:"Inter", fontStyle:"normal", fontSize:"16px", lineHeight: "19px", fontWeight:"700", color:"#000000"};
     const moodCommonStyle:CSSProperties = {display: "flex", justifyContent: "center", alignItems:"center", width: "130px", height:"40px", marginRight:"10px", boxSizing: "border-box"};
-  
-    const moods:Mood[] = [
-      {moodNo : 0 , moodName: '모든 분위기'},
-      {moodNo : 1 , moodName: '분위기1'},
-      {moodNo : 2 , moodName: '분위기2'},
-      {moodNo : 3 , moodName: '분위기3'},
-      {moodNo : 4 , moodName: '분위기4'},
-      {moodNo : 5 , moodName: '분위기5'},
-      {moodNo : 6 , moodName: '분위기6'}   
-    ];
 
+    const dispatch = useDispatch();
+
+     //------------수정한 부분(08/21)
+    const [moods, setMoods] = useState<Mood[]>(initMoods);
+    
+    useEffect(()=>{
+      axios.get("http://localhost:8087/soundcast/song/moods")
+      .then((response) => setMoods(response.data))
+      .catch((err) => console.log(err))
+ 
+    },[]);
+
+    //--------------------------------
     const [searchMoodNo, setSearchMoodNo] = useState<number>(-1);
 
     const onHoverMood = (e:MouseEvent, moodNo:number) => {
@@ -31,6 +36,10 @@ function MoodSearch(props:SearchProps){
       e.stopPropagation();
       setSearchMoodNo(-1);
     }
+
+    useEffect(()=>{
+      dispatch(setMood(searchMoodNo));
+    },[searchMoodNo])
   
     return (
       <div id="search-mood" 
@@ -43,7 +52,9 @@ function MoodSearch(props:SearchProps){
         {
           moods.map( mood => (
             <div id='mood' key={mood.moodNo}
-              style={{...moodCommonStyle}} onMouseEnter={(e) => onHoverMood(e, mood.moodNo)} onMouseLeave={(e) => onLeaveMood(e)}>
+              style={{...moodCommonStyle}} 
+              onClick={searchSongs}
+              onMouseEnter={(e) => {onHoverMood(e, mood.moodNo); console.log(mood.moodNo)}} onMouseLeave={(e) => onLeaveMood(e)}>
               <span style={searchMoodNo === mood.moodNo ? {...moodItemFontStyle, color:"#FFFFFF"} : moodItemFontStyle}>{mood.moodName}</span>
             </div>
           ))  

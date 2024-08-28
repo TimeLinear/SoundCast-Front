@@ -3,8 +3,11 @@ import { Props } from "../type/SongType";
 import Player from "../components/PlayBar";
 import SongItem from "../components/SongItem";
 import MusicReportModal from "./MusicReportModal";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
+import { useNavigate } from "react-router-dom";
+import axios from "../utils/CustomAxios";
+import { setSongList } from "../features/songSlice";
 
 const MusicDetail = () => {
 
@@ -17,10 +20,26 @@ const MusicDetail = () => {
 
     const currSong = song.currentSong;
 
+    const search = useSelector((state:RootState)=>state.search);
+    const dispatch = useDispatch();
+    const navi = useNavigate();
+    const searchSong = () => {
+        axios.get(`http://localhost:8087/soundcast/song/search`, {params : search})
+          .then((response) => {
+              //키워드로 db에 저장된 노래 불러와 리스트 전역에 저장
+              console.log(response.data);
+              dispatch(setSongList(response.data));
+            })
+          .catch((err)=>console.log(err));
+  
+        navi("/search");
+    }
     const props:Props = {
         activeSongNo,
         setActiveSongNo,
-        song
+        song,
+        searchSong
+      
     };
 
     const onClickReportButton = () => {
@@ -154,7 +173,7 @@ const MusicDetail = () => {
                             <div style={{ textAlign: "start" }}>
                                 <label style={{ ...commonTextStyle, font: "bold 24px sans-serif" }}>이 아티스트의 다른 음원입니다.</label>
                             </div>
-                            <SongItem activeSongNo={activeSongNo} setActiveSongNo={setActiveSongNo} song={song} />
+                            <SongItem activeSongNo={activeSongNo} setActiveSongNo={setActiveSongNo} song={song} searchSong={searchSong}/>
                         </div>
                     </div>
                 </div>

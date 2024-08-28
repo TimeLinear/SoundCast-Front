@@ -10,16 +10,18 @@ const searchSlice = createSlice({
             return {...state, keyword:action.payload};
         },
         
+        // 수정 (24-08-22) -----
         setPlaceNo : (state, action:PayloadAction<number>) => {
-            if(action.payload) { return {...state, placeNo:action.payload} }
+            if(state.placeNo !== action.payload) { return {...state, placeNo:action.payload} }
         },
+        //-------- 
 
         setMood : (state, action:PayloadAction<number>) => {
             if(action.payload) { return {...state, mood:action.payload} }
         },
 
         setGenre : (state, action:PayloadAction<number>) => {
-            if(action.payload) { return {...state, mood:action.payload} }
+            if(action.payload) { return {...state, genre:action.payload} }
         }
     }  
 })

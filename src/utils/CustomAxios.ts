@@ -17,9 +17,15 @@ CustomAxios.interceptors.response.use(function(response){
     return response
 },
     function(error){
+<<<<<<< HEAD
         const{response:{status}} = error;
 
         if(Number(status) === 403){
+=======
+        const{config, response:{status}} = error;
+
+        if(status == 403){
+>>>>>>> origin/myPage_sds
             console.log("403 error");
             removeCookie('accessToken');
             removeCookie('member');

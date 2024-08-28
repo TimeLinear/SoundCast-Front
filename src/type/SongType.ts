@@ -121,7 +121,8 @@ export const initSongList: Song[] = [
 export type Props = {
 	activeSongNo : number|null,
     setActiveSongNo : Dispatch<SetStateAction<number|null>>,
-	song : { list:Song[], currentSong:Song }
+	song : {list: Song[], currentSong:Song},
+	searchSong : () => void
 };
 
 export type Genre = {

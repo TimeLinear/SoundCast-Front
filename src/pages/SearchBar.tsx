@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { Params, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { RootState } from "../store/store";
-import { setKeyword } from "../features/searchSlice";
+import { setGenre, setKeyword, setMood } from "../features/searchSlice";
 import { setSongList } from "../features/songSlice";
 import { ChangeEvent, useState } from "react";
 
@@ -17,21 +17,6 @@ function SearchBar({searchKeyword}:{searchKeyword:string}){
   const dispatch = useDispatch();
   const search = useSelector((state:RootState)=>state.search);
   // 입력창에 직접 store의 state를 사용하는 건 지양하는 것이 좋습니다.
-
-  const searchSongs = () => {
-      //searchList에 searchKeyword를 넣고 실행시킴. 
-      dispatch(setKeyword(inputkeyword));
-
-      axios.get(`http://localhost:8087/soundcast/searchSong/${search.placeNo}/${search.keyword}`)
-      .then((response) => {
-          //키워드로 db에 저장된 노래 불러와 리스트 전역에 저장
-          dispatch(setSongList(response.data));
-        })
-      .catch((err)=>console.log(err))
-      
-      
-      navi('/search');
-  }
   
   const [inputkeyword, setInputKeyword] = useState(searchKeyword);
 
@@ -39,6 +24,26 @@ function SearchBar({searchKeyword}:{searchKeyword:string}){
     const inputStr = e.target.value;
     setInputKeyword(inputStr);
   }
+
+  //------------수정한 부분(08/21)-------------
+  const searchSongs = () => {
+      dispatch(setKeyword(inputkeyword));      
+      console.log(inputkeyword);
+
+      // search 객체를 보내서 백엔드 측에서 jackson 라이브러리를 통해 다시 HashMap으로 만드는 작업 시도
+      axios.get(`http://localhost:8087/soundcast/song/search`, {params : search})
+        .then((response) => {
+            //키워드로 db에 저장된 노래 불러와 리스트 전역에 저장
+            console.log(response.data);
+            dispatch(setSongList(response.data));
+          })
+        .catch((err)=>console.log(err));
+
+      navi("/search");
+      
+      setInputKeyword('');
+  }
+  //-----------------------------------------
 
   return(
       <div className='search-bar' style={{...searchBarStyle, boxSizing:"border-box"}}>

@@ -1,11 +1,35 @@
 export type Member = {
-    memberNo: number
+    memberNo : number
     profile :string
     nickName : string
     email: string
     banner: string
     introduce: string
-    follow: number
+    follow: FollowList
+    comment : Comment[]
+}
+
+export type FollowList = {
+    follower : number
+    following : Followings[]
+   
+}
+export type Followings ={
+    memberNo : number
+    nickName : string
+    profile: string
+}
+
+export type Comment ={
+    commentNo : number
+    writerNo : number
+    content : string
+    writerInfo : {
+       
+        profile : string
+        nickName : string
+        
+    }
 }
 
 export type SetMember = (list:Member) => void;
