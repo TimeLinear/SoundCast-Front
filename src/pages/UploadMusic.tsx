@@ -1,5 +1,6 @@
 import { ChangeEvent, FormEvent, MouseEvent, SetStateAction, useRef, useState } from "react";
 import { Member } from "../type/memberType";
+import axios from "../utils/CustomAxios";
 
 const UploadMusic = ({
   show,
@@ -115,7 +116,9 @@ const UploadMusic = ({
     justifyContent: "center",
     color: "#FFFFFF",
     border: "0.5px solid #F0F0F0",
-    borderRadius: "8px"
+    borderRadius: "8px",
+    padding: "0 10px",
+    boxSizing: "border-box"
   }
 
   const hoveredStyle: React.CSSProperties = {
@@ -260,30 +263,26 @@ const UploadMusic = ({
   };
 
   const [songFile, setSongFile] = useState<File>();
-  const [coverFile, setCoverFile] = useState('');
+  const [showCoverFile, setShowCoverFile] = useState('');
+  const [coverFile, setCoverFile] = useState<File>();;
 
   const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files;
     if (file && file.length > 0) {
       setSongFile(file[0]);
-      formData.append("songFile", file[0]);
     }
   }
 
   const onCoverChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files;
     if (file && file.length > 0) {
+      setCoverFile(file[0]);
+
       const reader = new FileReader();
       reader.onloadend = () => {
-        reader.result && setCoverFile(reader.result.toString());
+        reader.result && setShowCoverFile(reader.result.toString());
       }
       reader.readAsDataURL(file[0]);
-    }
-
-    if(file) {
-      formData.append("songImage", file[0])
-    } else {
-      formData.delete("songImage");
     }
   }
 
@@ -292,12 +291,29 @@ const UploadMusic = ({
   const onUploadSubmit = (e:MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    formData.append("songTitle", songInfo.songTitle);
-    formData.append("songMemberNo", songInfo.songMemberNo.toString());
-    formData.append("songDetail", songInfo.songDetail);
-    formData.append("songLicense", songInfo.songLicense);
-    formData.append("songGenreNo", selectedGenre.toString());
-    formData.append("songMoodNo", selectedMood.toString());
+    songFile && formData.append("songFile", songFile);
+    coverFile && formData.append("songImage", coverFile);
+
+    const uploadSong = {
+      songTitle: songInfo.songTitle,
+      songMemberNo: songInfo.songMemberNo,
+      songDetail: songInfo.songDetail,
+      songLicense: songInfo.songLicense,
+      songGenreNo: selectedGenre,
+      songMoodNo: selectedMood
+    }
+
+    const songInfos = new Blob([JSON.stringify(uploadSong)], {type : 'application/json'});
+
+    formData.append("song", songInfos);
+
+    formData.forEach((item) => {
+      console.log(item);
+    })
+    axios.post("http://localhost:8087/soundcast/song/unofficial/upload", formData)
+    .then((res) => {
+      console.log(res);
+    })
   }
 
   // 그외 텍스트 정보들
@@ -350,12 +366,12 @@ const UploadMusic = ({
                   hidden />
                 <label htmlFor="cover-file-upload" style={{ cursor: "pointer" }}>
                   <img
-                    src={coverFile ? coverFile : "/images/default/song_default.png"}
-                    style={coverFile ? imagePreviewStyle : { ...imagePreviewStyle, opacity: "0.3" }}
+                    src={showCoverFile ? showCoverFile : "/images/default/song_default.png"}
+                    style={showCoverFile ? imagePreviewStyle : { ...imagePreviewStyle, opacity: "0.3" }}
                     alt="Preview"
                   />
                 </label>
-                {!coverFile && (
+                {!showCoverFile && (
                   <img
                     src="/images/song/file-upload-icon-white.png"
                     style={{
@@ -516,7 +532,7 @@ const UploadMusic = ({
                     />
                   </div>
                 </div>
-                <button style={submitButtonStyle} >수정</button>
+                <button style={submitButtonStyle} onClick={onUploadSubmit}>수정</button>
               </div>
             </div>
           </div>

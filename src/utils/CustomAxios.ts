@@ -19,7 +19,7 @@ CustomAxios.interceptors.response.use(function(response){
     function(error){
         const{response:{status}} = error;
 
-        if(Number(status) === 403){
+        if(status === 403){
             console.log("403 error");
             removeCookie('accessToken');
             removeCookie('member');

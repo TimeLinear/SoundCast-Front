@@ -67,7 +67,7 @@ function Header() {
       }
     
       const myPageHandler = () => {
-        navi("/myPage");
+        navi("/member/myPage");
       }
 
     //회원가입 모달창
