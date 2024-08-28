@@ -1,45 +1,63 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
+import { updateComments } from "../features/memberSlice";
 
 const MyPageComment = () =>{
     const member = useSelector((state:RootState)=>state.member);
     const serverImagePath = "http://localhost:8087/soundcast/resource/";
-
+    
     const [checkedComments, setCheckedComments] =  useState<number[]>([])
+
+    const dispatch = useDispatch();
 
     const handleCheckboxChange = (commentNo: number) => {
         setCheckedComments(prevState => {
             if (prevState.includes(commentNo)) {
-                // 체크박스가 이미 체크되어 있는 경우, 상태에서 제거
                 return prevState.filter(id => id !== commentNo);
             } else {
-                // 체크박스가 체크되지 않은 경우, 상태에 추가
                 return [...prevState, commentNo];
             }
         });
     };
 
 
-
-
-    const commentDeleteHandler= () =>{
-        const updatedComments = member.comment.filter(reply => !checkedComments.includes(reply.commentNo));
-        member.comment = updatedComments;
-        axios
-            .delete(`http://localhost:8087/soundcast/member/comment/delete`,{
-                params:{
-                    comments: updatedComments.map(reply => ({
-                        commentNo: reply.commentNo,
-                        writerNo: reply.writerNo
-                    }))
+    const commentDeleteHandler = async () => {
+        try {
+            const promises = checkedComments.map(commentNo => {
+                const commentToDelete = member.comment.find(c => c.commentNo === commentNo);
+    
+                // commentToDelete가 존재하는지 확인
+                if (!commentToDelete) {
+                    console.warn(`Comment with commentNo ${commentNo} not found`);
+                    return Promise.resolve(); // 해당 댓글이 없으므로 요청을 무시합니다.
                 }
-            })
+    
+                return axios.delete(`http://localhost:8087/soundcast/member/comment/delete`, {
+                    data: {
+                        commentNo: commentNo,
+                        writerNo: commentToDelete.writerNo
+                    }
+                });
+            });
+    
+            // 모든 삭제 요청을 병렬로 처리
+            await Promise.all(promises);
             
+            const updatedComments = member.comment.filter(comment => !checkedComments.includes(comment.commentNo));
+            dispatch(updateComments(updatedComments));
 
-        setCheckedComments([]);
-    }
+            setCheckedComments([]); // 선택된 체크박스 초기화
+
+            // 댓글 목록 갱신 또는 UI 업데이트
+            alert('선택한 댓글이 삭제되었습니다.');
+
+        } catch (error) {
+            console.error('댓글 삭제에 실패했습니다', error);
+            
+        }
+    };
 
 
     return(
@@ -50,8 +68,8 @@ const MyPageComment = () =>{
             </div>
 
             <div className="commentBox" style={{  width: "1300px", backgroundColor: "#FFFFFF", }}>
-              
-             {member.comment.map((reply) => (
+              {member.comment.length > 0 ? (
+                member.comment.map((reply) => (
                             <div className="writedComment" key={reply.commentNo}  style={{ width: "100%", display: "flex", alignItems: "center", marginTop: "10px" }}>
                                 <input type="checkbox" 
                                     checked={checkedComments.includes(reply.commentNo)}
@@ -65,8 +83,16 @@ const MyPageComment = () =>{
                                     </div>
                                 </div>
                             </div>
-                        ))}
-
+                        ))
+                    ) :
+                    
+                        (
+                        <>
+                        <div className='search-list-non' style={{width:"100%", height:"80vw", display:"flex", alignContent:"center", justifyContent:"center"}}>
+                            <p style={{fontSize:"22px"}}> 해당 회원의 댓글이 존재하지 않습니다. </p>
+                        </div>
+                          </>
+                        )}
             </div>    
         </>
     )

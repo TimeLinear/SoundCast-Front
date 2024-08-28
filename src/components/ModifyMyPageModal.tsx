@@ -3,11 +3,10 @@ import axios from "../utils/CustomAxios";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { login, logout } from "../features/memberSlice";
-import { error } from "console";
 import { useNavigate } from "react-router-dom";
 
 const ModifyMyPageModal = ({ show, Close }: { show: boolean; Close: () => void }) => {
-    const member = useSelector((state: RootState) => state.member); //로그인한 멤버
+    const member = useSelector((state: RootState) => state.member);
     console.log("수정 모달에서 출력 : ");
     console.log(member);
     const dispatch = useDispatch();
@@ -103,9 +102,8 @@ const ModifyMyPageModal = ({ show, Close }: { show: boolean; Close: () => void }
         inputState.email && formData.append('email', inputState.email);
         inputState.introduce && formData.append('introduce', inputState.introduce);
         member.memberNo && formData.append('memberNo', member.memberNo.toString());
-
+        
         Close();
-        // window.location.reload()
         // try {
         //     const response = await axios.post('http://localhost:8087/soundcast/member/modify', formData, {
         //         headers: {
@@ -125,7 +123,6 @@ const ModifyMyPageModal = ({ show, Close }: { show: boolean; Close: () => void }
                 }
             })
             .then(res => {
-                console.log("회원 수정 출력");
                 console.log(res.data);
                 console.log(res.data.memberNo);
                 dispatch(login({
@@ -134,27 +131,25 @@ const ModifyMyPageModal = ({ show, Close }: { show: boolean; Close: () => void }
                     },
                     ...res.data
                 }))
-                
             })
             .catch(error => {
                 console.log(error);
             })
-        
     };
 
     const leaveSubmit = () => {
-          axios.post(`http://localhost:8087/soundcast/member/leave/${member.memberNo}`)
-            .then(res => {
-                console.log(res.data);
-            })
-            .catch(error => {
-                console.log(error);
-            })
-            window.alert("회원 탈퇴 성공 !");
-            dispatch(logout());
-            navi("/");
-        
-    }
+        axios.post(`http://localhost:8087/soundcast/member/leave/${member.memberNo}`)
+          .then(res => {
+              console.log(res.data);
+          })
+          .catch(error => {
+              console.log(error);
+          })
+          window.alert("회원 탈퇴 성공 !");
+          dispatch(logout());
+          navi("/");
+      
+  }
 
     const backGroundClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         if (event.target === event.currentTarget) {
@@ -164,14 +159,14 @@ const ModifyMyPageModal = ({ show, Close }: { show: boolean; Close: () => void }
 
 
     const serverImagePath = "http://localhost:8087/soundcast/resource/";
-    const requestStartWith = "/SoundCAST_resources/";
+  
 
 
     return (
         <div className={show ? "modal display-block" : "modal display-none"} onClick={backGroundClick}>
             <div className="mf-modal" style={{ backgroundColor: "#F0ECFD", borderRadius: "10px", width: "820px", height: "700px", margin: "0", position: "relative" }}>
                 <button className="close-button" style={{ color: "black" }} onClick={Close}>X</button>
-                <p style={{ fontSize: "30px", fontWeight: "bolder", marginBottom: "0px", marginLeft: "20px", cursor:"pointer" }}>내 정보 수정</p>
+                <p style={{ fontSize: "30px", fontWeight: "bolder", marginBottom: "0px", marginLeft: "20px" }}>내 정보 수정</p>
                 <hr style={{ width: "95%", border: "1px solid black" }} />
 
                 <div className="total" style={{ width: "90%", height: "80%", margin: "auto" }}>
@@ -182,7 +177,7 @@ const ModifyMyPageModal = ({ show, Close }: { show: boolean; Close: () => void }
                     }}>
                         <div style={{ margin: "0", display: "flex", position: "absolute", right: "15px", bottom: "15px", cursor: "pointer" }}>
                             <img src="images/modify-banner.png" style={{ width: "auto" }} />
-                            <p style={{ color: "white", margin: "0", cursor:"pointer" }}>배경화면 수정</p>
+                            <p style={{ color: "white", margin: "0" }}>배경화면 수정</p>
                             <input type="file" accept="image/*" style={{ opacity: 0, position: "absolute", left: 0, right: 0, top: 0, bottom: 0, cursor: "pointer" }} onChange={handleBackgroundChange} />
                         </div>
                     </div>
@@ -229,7 +224,7 @@ const ModifyMyPageModal = ({ show, Close }: { show: boolean; Close: () => void }
                             <div style={{ margin: "0", justifyContent: "center", alignItems: "center", display: "flex", backgroundColor: "#00AB6B", borderRadius: "20px", width: "140px", height: "35px", fontWeight: "bolder", color: "white", textAlign: "center", cursor: "pointer" }} onClick={handleSubmit}>
                                 <p>수정</p>
                             </div>
-                            <div style={{ justifyContent: "center", alignItems: "center", display: "flex", marginTop: "15px", backgroundColor: "#FF3C3C", borderRadius: "20px", border: "none", width: "140px", height: "35px", textAlign: "center", fontWeight: "bolder", color: "white", cursor: "pointer"}} onClick={leaveSubmit}>
+                            <div style={{ justifyContent: "center", alignItems: "center", display: "flex", marginTop: "15px", backgroundColor: "#FF3C3C", borderRadius: "20px", border: "none", width: "140px", height: "35px", textAlign: "center", fontWeight: "bolder", color: "white", cursor: "pointer"}} onClick={leaveSubmit} >
                                 <p>탈퇴</p>
                             </div>
                         </div>

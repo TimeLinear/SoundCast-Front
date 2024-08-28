@@ -45,9 +45,9 @@ const MemberComments = ({selectMember, isSubmitting, setIsSubmitting ,deletingCo
        
         axios
         .delete(`http://localhost:8087/soundcast/member/comment/delete`,{
-            params : {
-                commentNos: commentNo,
-                writerNos :writerNo
+            data: {
+                commentNo: commentNo,
+                writerNo: writerNo
             }
         })
         .then(response =>{
@@ -84,9 +84,11 @@ const MemberComments = ({selectMember, isSubmitting, setIsSubmitting ,deletingCo
         } catch(error){
             console.log(error);
         }
+    }else{
+        alert("로그인이 필요한 메뉴입니다.")
+
     }
     
-   
     console.log(isSubmitting);
 };
 
@@ -99,7 +101,7 @@ const MemberComments = ({selectMember, isSubmitting, setIsSubmitting ,deletingCo
             
           <div className="commentBox" style={{  width: "1300px", backgroundColor: "#FFFFFF", }}>
                         <div className="commentWrite" style={{marginTop:"10px", position:"relative", display:"flex"}}>
-                        <img src="/images/music/song-image.png" style={{ width: "45px", height: "45px", borderRadius: "100px", marginLeft: "10px", marginRight: "10px", flexShrink: "0" }} />
+                        <img src={!(member.nickName == '')? (serverImagePath+member.profile) : (serverImagePath+"public/member/defaultProfile.png")} style={{ width: "45px", height: "45px", borderRadius: "100px", marginLeft: "10px", marginRight: "10px", flexShrink: "0" }} />
                         <form onSubmit={handleSubmit} style={{display:"flex", width:"100%"}}>
                             <textarea className="textarea-style" placeholder="댓글 작성..." 
                             ref={textareaRef}

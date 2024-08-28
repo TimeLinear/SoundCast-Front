@@ -42,11 +42,13 @@ const SignUpModal = ({showSignUp, openSignUp, closeSignUp } : {showSignUp:boolea
     };
     const canSignUp = isPrivacyPolicyAgreed && isTermsAgreed;
 
+   
+    
+    const Credential = getCookie('Credential');
+    const kktCredential = getCookie('ACCESS_TOKEN');
 
-
+    const checkCre = Credential || kktCredential;
     const enroll =()=>{
-        const Credential = getCookie('Credential');
-        const kktCredential = getCookie('ACCESS_TOKEN');
         console.log("enroll Credential:"+ Credential);
         console.log("enroll accessToken : "+ kktCredential);
 
@@ -88,9 +90,8 @@ const SignUpModal = ({showSignUp, openSignUp, closeSignUp } : {showSignUp:boolea
 
 
     }
-
     
-
+    const serverImagePath = "http://localhost:8087/soundcast/resource/";
 
     return (
         <div className={showHideClassName}>
@@ -109,23 +110,29 @@ const SignUpModal = ({showSignUp, openSignUp, closeSignUp } : {showSignUp:boolea
                     </div>
                     <div className="signup-buttons">
                    
-                        <img src=".\images\default\web_light_sq_ctn.svg" alt="Google Icon"  onClick={() => {
+                    {checkCre === Credential && (
+                        <img 
+                            src={serverImagePath+"public/member/google_Login.svg"}
+                            alt="Google Icon" 
+                            onClick={() => {
                                 if (canSignUp) {
                                     enroll();
                                 }
-                            }} />
-                        
-                            <br></br>
-                        {/* <GoogleLoginForm onSignupRequest={openSignUp} /> */}
+                            }} 
+                        />
+                    )}
 
-                        <img src=".\images\default\kakao_login_medium_wide.png" alt="Kakao Icon"  onClick={() => {
+                    {checkCre === kktCredential && (
+                        <img 
+                            src={serverImagePath+"public/member/kakao_Login.png"}
+                            alt="Kakao Icon" 
+                            onClick={() => {
                                 if (canSignUp) {
                                     enroll();
                                 }
-                            }} />
-                        <button className="signup-btn kakao">카카오로 간편가입</button>
-                        <button className="signup-btn naver">네이버로 간편가입</button>
-                        
+                            }} 
+                        />
+                    )}
                     </div>
                 </div>
             </div>

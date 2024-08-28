@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { Comment, FollowList, Followings, Member } from "../type/memberType";
 import { removeCookie, setCookie } from "../utils/Cookie";
 
@@ -14,9 +14,10 @@ const commentInit:Comment={
     }
 }
 const followingInit:Followings={
-    memberNo: 0,
+    memberNo : 0,
     nickName : '',
     profile:''
+    
 }
 
 const followInit:FollowList={
@@ -47,7 +48,6 @@ let memberSlice = createSlice({
             const data = action.payload;
             console.log("헤더서 로그인해서 보낸 데이터");
             console.log(data);
-            console.log(data.profileImage);
             return {
                 memberNo:data.memberNo,
                 profile:data.profileImage.profileImagePath,
@@ -74,19 +74,27 @@ let memberSlice = createSlice({
                     }
                 })) || []
          } 
+        
     },
         logout : (state) =>{
             removeCookie('accessToken');
             
             return initialState;
 
-        }
+        },
+        setComments(state, action: PayloadAction<Comment[]>) {
+            state.comment = action.payload;
+          },
+
+        updateComments(state, action: PayloadAction<Comment[]>) {
+            state.comment = action.payload;
+          }
     }
 })
 
 
 
-export const{login,logout} = memberSlice.actions;
+export const{login,logout,setComments,updateComments} = memberSlice.actions;
 export default memberSlice.reducer;
 export {initialState};
 export {followInit};

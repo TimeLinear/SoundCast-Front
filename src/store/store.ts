@@ -1,14 +1,15 @@
 import { configureStore } from "@reduxjs/toolkit";
-import memberSlice from "../features/memberSlice";
 import songSlice from "../features/songSlice";
+import searchSlice from "../features/searchSlice";
+import memberSlice from "../features/memberSlice";
 
-let store = configureStore({
+const store = configureStore({
     reducer : {
-        member : memberSlice,
-        song : songSlice
+        song : songSlice,
+        search : searchSlice,
+        member : memberSlice
     }
 })
 
 export default store;
-
 export type RootState = ReturnType<typeof store.getState>

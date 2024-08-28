@@ -62,10 +62,12 @@ const GoogleLoginForm = ({onSignupRequest, handleClose}:{onSignupRequest:()=>voi
      return (
         <>
             <GoogleOAuthProvider clientId={clientId}>
+           
                 <GoogleLogin
                     onSuccess={googleOnSuccess}
                     onError={googleOnFail}
                 />
+        
             </GoogleOAuthProvider>
             
         </>
