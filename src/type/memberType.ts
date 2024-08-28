@@ -1,4 +1,5 @@
 export type Member = {
+    memberNo: number
     profile :string
     nickName : string
     email: string

@@ -5,6 +5,7 @@ import { removeCookie, setCookie } from "../utils/Cookie";
 
 
 const initialState:Member= {
+    memberNo: 0,
     profile : '',
     nickName : '',
     email: '',
@@ -23,6 +24,7 @@ let memberSlice = createSlice({
             const member = action.payload;
             console.log(member)
             return {
+                memberNo:member.memberNo,
                 profile:member.profileImage.profileImagePath,
                 nickName:member.memberNickname,
                 email:member.memberEmail,
