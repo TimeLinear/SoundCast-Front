@@ -14,7 +14,8 @@ interface KakaoLoginFormProps{
 
 export default function KakaoLoginForm({onSignupRequest, handleClose}:{onSignupRequest:()=>void, handleClose:()=>void}){
     const kakaoJavascriptKey = process.env.REACT_APP_KAKAO_API_KEY as string;
-
+    console.log("kakaoJavascriptKey");
+    console.log(kakaoJavascriptKey);
     const member = useSelector((state:RootState) => state.member);
     const dispatch = useDispatch();
     
@@ -23,11 +24,23 @@ export default function KakaoLoginForm({onSignupRequest, handleClose}:{onSignupR
 
         const ACCESS_TOKEN = data.response.access_token;
 
+        // axios.get("https://kapi.kakao.com/v2/user/me" , {
+        //     headers : {Authorization : `Bearer ${ACCESS_TOKEN}`}
+        // }).then((res)=>{
+        //     console.log(res);
+        //     const {properties} = res.data
+        //     const user = {
+        //         nickName : properties.nickname,
+        //         profile : properties.profile_image
+        //     }
+        //     setUser(user);
+        // })
         axios 
             .post("http://localhost:8087/soundcast/auth/login/kakao",{
                 accessToken:ACCESS_TOKEN
             })
             .then(res => { 
+                console.log(res);
                 if(!res.data.member){
                     new Cookies().set("ACCESS_TOKEN", ACCESS_TOKEN, {maxAge: 60 * 3, path:'/'});
                     
@@ -58,10 +71,12 @@ export default function KakaoLoginForm({onSignupRequest, handleClose}:{onSignupR
     }
 
     return(
+       
         <KakaoLogin 
             token={kakaoJavascriptKey}
             onSuccess={kakaoOnSucess}
             onFail={kakaoOnFail}
         />
+      
     )
 }

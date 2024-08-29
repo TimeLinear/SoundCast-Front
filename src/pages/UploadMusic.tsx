@@ -1,11 +1,19 @@
-import { ChangeEvent, MouseEvent, SetStateAction, useState } from "react";
+import { ChangeEvent, FormEvent, MouseEvent, SetStateAction, useRef, useState } from "react";
+import { Member } from "../type/memberType";
+import axios from "../utils/CustomAxios";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../store/store";
+import { setPlaySong, setSongList } from "../features/songSlice";
+import { useNavigate } from "react-router-dom";
 
 const UploadMusic = ({
   show,
-  handleClose
+  handleClose,
+  member
 }: {
   show: boolean,
   handleClose: () => void
+  member: Member
 }) => {
 
   // ==== 스타일 ====
@@ -62,6 +70,7 @@ const UploadMusic = ({
     paddingTop: '20px',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
+    boxSizing: 'border-box'
   };
 
   const modalHeaderTextStyle: React.CSSProperties = {
@@ -104,14 +113,16 @@ const UploadMusic = ({
 
   const fileUploadStyle: React.CSSProperties = {
     position: "relative",
-    width:"100%",
-    height:"100%",
+    width: "100%",
+    height: "100%",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    color:"#FFFFFF",
+    color: "#FFFFFF",
     border: "0.5px solid #F0F0F0",
-    borderRadius: "8px"    
+    borderRadius: "8px",
+    padding: "0 10px",
+    boxSizing: "border-box"
   }
 
   const hoveredStyle: React.CSSProperties = {
@@ -119,7 +130,7 @@ const UploadMusic = ({
     color: "#333333",
     fontWeight: 700,
     cursor: "pointer",
-    borderRadius: "8px"    
+    borderRadius: "8px"
   }
 
   const filenameStyle: React.CSSProperties = {
@@ -155,12 +166,13 @@ const UploadMusic = ({
   };
 
   const licenseInputStyle: React.CSSProperties = {
-    width: '96%',
+    width: '100%',
     height: 'auto',
     padding: '10px',
     border: '1px solid #CCCCCC',
     borderRadius: '8px',
     resize: 'none',
+    boxSizing: 'border-box'
   };
 
   const genreOptionsStyle: React.CSSProperties = {
@@ -185,12 +197,13 @@ const UploadMusic = ({
   };
 
   const agreementStyle: React.CSSProperties = {
-    width: '96%',
+    width: '100%',
     height: 'auto',
     padding: '10px',
     border: '1px solid #CCCCCC',
     borderRadius: '8px',
     resize: 'none',
+    boxSizing: 'border-box'
   };
 
   const submitButtonStyle: React.CSSProperties = {
@@ -210,67 +223,147 @@ const UploadMusic = ({
 
   const showHideClassName = show ? { ...modalStyle, ...displayBlockStyle } : { ...modalStyle, ...displayNoneStyle };
 
+  const formData = new FormData();
+
   const handleBackgroundClick = (event: MouseEvent) => {
     if (event.target === event.currentTarget) {
       handleClose();
     }
   };
   // 장르클릭 핸들러
-  const [selectedGenre, setSelectedGenre] = useState("Rock");
+  const [selectedGenre, setSelectedGenre] = useState(1);
 
-  const genres = [
-    "Rock",
-    "Electronic",
-    "Hip-Hop",
-    "Jazz",
-    "Classical",
-    "Sound Track",
-    "Pop",
-    "R&B/Soul",
-  ];
-  //genre 속성 정의해야함 우선 string으로
-  const genreClickHandler = (genre: SetStateAction<string>) => {
+  const song = useSelector((state: RootState) => state.song);
+
+  const dispatch = useDispatch();
+
+  const navi = useNavigate();
+
+  const genres = song.genreList.filter((genre) => genre.genreNo > 0);
+
+  const genreClickHandler = (genre: SetStateAction<number>) => {
     setSelectedGenre(genre);
   };
 
   // 분위기 클릭 핸들러
-  const [selectedMood, setSelectedMood] = useState("Gloomy");
+  const [selectedMood, setSelectedMood] = useState(1);
 
-  const moods = [
-    "Gloomy",
-    "Dreamer",
-    "Dark",
-    "Angry",
-    "Classical",
-    "Sound Track",
-    "Pop",
-    "R&B/Soul",
-  ];
+  const moods = song.moodList.filter((mood) => mood.moodNo > 0);
 
-  const moodClickHandler = (mood: SetStateAction<string>) => {
+  const moodClickHandler = (mood: SetStateAction<number>) => {
     setSelectedMood(mood);
   };
 
   const [songFile, setSongFile] = useState<File>();
-  const [coverFile, setCoverFile] = useState('');
+  const [showCoverFile, setShowCoverFile] = useState('');
+  const [coverFile, setCoverFile] = useState<File>();;
 
   const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files;
-      (file && file.length > 0) && setSongFile(file[0]);
+    if (file && file.length > 0) {
+      setSongFile(file[0]);
+    }
   }
 
   const onCoverChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files;
-    if(file && file.length > 0) {
+    if (file && file.length > 0) {
+      setCoverFile(file[0]);
+
       const reader = new FileReader();
       reader.onloadend = () => {
-        reader.result && setCoverFile(reader.result.toString());
+        reader.result && setShowCoverFile(reader.result.toString());
       }
       reader.readAsDataURL(file[0]);
     }
   }
 
   const [ishovered, setIsHovered] = useState('unhovered');
+
+  const onUploadSubmit = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    songFile && formData.append("songFile", songFile);
+    coverFile && formData.append("songImage", coverFile);
+
+    const uploadSong = {
+      songTitle: songInfo.songTitle,
+      songMemberNo: songInfo.songMemberNo,
+      songDetail: songInfo.songDetail,
+      songLicense: songInfo.songLicense,
+      songGenreNo: selectedGenre,
+      songMoodNo: selectedMood
+    }
+
+    const songInfos = new Blob([JSON.stringify(uploadSong)], { type: 'application/json' });
+
+    formData.append("song", songInfos);
+
+    formData.forEach((item) => {
+      console.log(item);
+    })
+    axios.post("http://localhost:8087/soundcast/song/unofficial/upload", formData)
+      .then((res) => {
+        // console.log(res);
+        if(!res.data) {
+          alert("음원 등록에 실패하였습니다");
+          navi("/member/mypage");
+          return;
+        }
+
+        const newSong = {
+          songNo: res.data.songNo, // 음원 번호
+          songMemberNo: res.data.songMemberNo, // 업로더 회원 번호
+          songMoodNo: res.data.songMoodNo, // 음원 분위기 번호
+          songGenreNo: res.data.songGenreNo, // 음원 장르 번호
+          songTitle: res.data.songTitle, // 음원명(유저가 입력)
+          songLicense: res.data.songLicense, // 음원 출처(유저가 입력)
+          songDetail: res.data.songDetail, // 음원 상세(유저가 입력)
+          songPlaceNo: res.data.songPlaceNo,
+
+          songGenreName: res.data.songGenreName,
+          songMoodName: res.data.songMoodName,
+
+          songImage: {
+            songImageNo: res.data.songImageNo, // 음원 커버 이미지 번호
+            songImagePathNo: res.data.songImagePathNo, // 음원 커버 이미지 경로 번호
+            songImageName: res.data.songImageName, // 음원 커버 이미지 파일명
+            songImagePathName: res.data.songImagePathName // 음원 커버 이미지 경로명
+          },
+
+          songFile: {
+            songFileNo: res.data.songFileNo, // 음원 파일 번호
+            songFilePathNo: res.data.songFilePathNo,
+            songFileSongPathName: res.data.songFilePathName,
+            songFileChangeName: res.data.songFileChangeName,
+            songFileOriginName: res.data.songFileOriginName
+          }
+        }
+        dispatch(setSongList([...song.list, newSong]));
+        dispatch(setPlaySong(newSong.songNo));
+      })
+      .finally(() => {
+        handleClose();
+        navi("/song/detail/" + song.currentSong.songNo);
+      })
+  }
+
+  // 그외 텍스트 정보들
+  const [songInfo, setSongInfo] = useState({
+    songTitle: "",
+    songMemberNo: member.memberNo,
+    songDetail: "",
+    songLicense: ""
+  });
+
+  const onChangeSongInfo = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const value = e.target.value;
+    const name = e.target.name;
+
+    setSongInfo((prev) => {
+      return { ...prev, [name]: value };
+    })
+  }
 
   return (
     <div style={showHideClassName} onClick={handleBackgroundClick}>
@@ -290,6 +383,7 @@ const UploadMusic = ({
                 <input
                   type="file"
                   id="cover-file-upload"
+                  name="songImage"
                   accept="image/*"
                   onChange={onCoverChange}
                   style={{
@@ -301,22 +395,22 @@ const UploadMusic = ({
                     opacity: 0,
                     cursor: "pointer"
                   }}
-                  hidden/>
-                <label htmlFor="cover-file-upload" style={{cursor:"pointer"}}>
+                  hidden />
+                <label htmlFor="cover-file-upload" style={{ cursor: "pointer" }}>
                   <img
-                    src={coverFile ? coverFile : "/images/default/song_default.png"}
-                    style={coverFile ? imagePreviewStyle : {...imagePreviewStyle, opacity:"0.3"}}
+                    src={showCoverFile ? showCoverFile : "/images/default/song_default.png"}
+                    style={showCoverFile ? imagePreviewStyle : { ...imagePreviewStyle, opacity: "0.3" }}
                     alt="Preview"
                   />
                 </label>
-                {!coverFile && (
+                {!showCoverFile && (
                   <img
                     src="/images/song/file-upload-icon-white.png"
                     style={{
-                      position:"absolute",
-                      left:"50%",
-                      top:"50%",
-                      transform:"translate(-50%, -50%)",
+                      position: "absolute",
+                      left: "50%",
+                      top: "50%",
+                      transform: "translate(-50%, -50%)",
                       width: "60px",
                       height: "60px",
                     }}
@@ -325,42 +419,44 @@ const UploadMusic = ({
               </div>
 
               <div className="music-file"
-          style={{
-            width:"250px",
-            height:"70px"
-          }}
-          >
-            <div className="file-upload"
-              onMouseOver={()=>{setIsHovered('hovered')}}
-              onMouseLeave={()=>{setIsHovered('unhovered')}}
-              style={ ishovered === 'hovered'? {...fileUploadStyle, ...hoveredStyle} : {...fileUploadStyle}}
-            >
-              <label htmlFor="song-file-upload"
-                className="file-upload-box"
                 style={{
-                  display: "block",
-                  cursor: "pointer"
-                }}>
-              <p className="song-file-name">{songFile ? songFile.name : "음원 업로드"}</p>
-              <input 
-                type="file"
-                id="song-file-upload"
-                accept="audio/*"
-                onChange={onFileChange}
-                className="song-file-input"
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "100%",
-                  opacity: 0,
-                  cursor: "pointer"
-                }}/>
-              </label> 
+                  width: "250px",
+                  height: "70px"
+                }}
+              >
+                <div className="file-upload"
+                  onMouseOver={() => { setIsHovered('hovered') }}
+                  onMouseLeave={() => { setIsHovered('unhovered') }}
+                  style={ishovered === 'hovered' ? { ...fileUploadStyle, ...hoveredStyle } : { ...fileUploadStyle }}
+                >
+                  <label htmlFor="song-file-upload"
+                    className="file-upload-box"
+                    style={{
+                      display: "block",
+                      cursor: "pointer"
+                    }}>
+                    <p className="song-file-name">{songFile ? songFile.name : "음원 업로드"}</p>
+                    <input
+                      type="file"
+                      id="song-file-upload"
+                      name="songFile"
+                      accept="audio/*"
+                      onChange={onFileChange}
+                      className="song-file-input"
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "100%",
+                        opacity: 0,
+                        cursor: "pointer"
+                      }} />
+                  </label>
+                </div>
+              </div>
             </div>
-        </div>
-            </div>
+
             <div style={rightSectionStyle}>
               <div style={modalHeaderStyle}>
                 <p style={modalHeaderTextStyle}>내 음원 업로드하기</p>
@@ -374,16 +470,20 @@ const UploadMusic = ({
                   <label style={labelStyle}>*제목</label>
                   <input
                     type="text"
+                    name="songTitle"
                     placeholder="곡 제목을 입력해주세요"
                     style={textInputStyle}
+                    value={songInfo.songTitle}
+                    onChange={onChangeSongInfo}
                   />
                 </div>
                 <div style={formGroupStyle}>
                   <label style={labelStyle}>*제작자</label>
                   <input
                     type="text"
-                    placeholder="곡 제작자를 입력해주세요"
                     style={textInputStyle}
+                    value={member.nickName}
+                    readOnly
                   />
                 </div>
 
@@ -391,33 +491,39 @@ const UploadMusic = ({
                   <label style={labelStyle}>곡 설명</label>
                   <input
                     type="text"
+                    name="songDetail"
                     placeholder="곡 설명을 입력해주세요"
                     style={textInputStyle}
+                    value={songInfo.songDetail}
+                    onChange={onChangeSongInfo}
                   />
                 </div>
                 <div style={formGroupStyle}>
                   <label style={labelStyle}>라이센스</label>
                   <textarea
+                    name="songLicense"
                     placeholder="라이센스를 입력해주세요"
                     rows={5}
                     style={licenseInputStyle}
+                    value={songInfo.songLicense}
+                    onChange={onChangeSongInfo}
                   />
                 </div>
 
                 <div style={formGroupStyle}>
                   <label style={labelStyle}>*장르를 선택해 주세요.</label>
                   <div style={genreOptionsStyle}>
-                    {genres.map((genre) => (
+                    {genres.map((genre, index) => (
                       <button
-                        key={genre}
+                        key={genre.genreNo}
                         style={
-                          selectedGenre === genre
+                          selectedGenre === index + 1
                             ? { ...genreOptionStyle, ...genreOptionSelectedStyle }
                             : genreOptionStyle
                         }
-                        onClick={() => genreClickHandler(genre)}
+                        onClick={() => genreClickHandler(index + 1)}
                       >
-                        {genre}
+                        {genre.genreName}
                       </button>
                     ))}
                   </div>
@@ -426,21 +532,21 @@ const UploadMusic = ({
                 <div style={formGroupStyle}>
                   <label style={labelStyle}>*분위기를 선택해 주세요.</label>
                   <div style={genreOptionsStyle}>
-                    {moods.map((mood) => (
+                    {moods.map((mood, index) => (
                       <button
-                        key={mood}
+                        key={mood.moodNo}
                         style={
-                          selectedMood === mood
+                          selectedMood === index + 1
                             ? { ...genreOptionStyle, ...genreOptionSelectedStyle }
                             : genreOptionStyle
                         }
-                        onClick={() => moodClickHandler(mood)}
+                        onClick={() => moodClickHandler(index + 1)}
                       >
-                        {mood}
+                        {mood.moodName}
                       </button>
                     ))}
                   </div>
-                  <div style={formGroupStyle}>
+                  <div style={{ ...formGroupStyle, marginTop: "40px" }}>
                     <label style={labelStyle}>업로드 이용약관</label>
                     <textarea
                       rows={5}
@@ -458,7 +564,7 @@ const UploadMusic = ({
                     />
                   </div>
                 </div>
-                <button style={submitButtonStyle}>수정</button>
+                <button style={submitButtonStyle} onClick={onUploadSubmit}>등록</button>
               </div>
             </div>
           </div>

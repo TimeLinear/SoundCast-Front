@@ -29,14 +29,30 @@ const PlaceDevider = () => {
         );
         setCssItems(newCssItems);
 
-        //가지고 있던 검색 키워드-장르-무드 비우기
-        dispatch(setKeyword(''));
-        dispatch(setMood(0));
-        dispatch(setGenre(0));
-        navi("/");
-    }
+         //가지고 있던 검색 키워드-장르-무드 비우기
+         dispatch(setKeyword(''));
+         dispatch(setMood(0));
+         dispatch(setGenre(0));
+         navi("/");
+    }    
 
-   
+    useEffect(()=>{
+        const newCssItems = cssItems.map((item, index) => 
+            index === search.placeNo ? selectedDevider : unselecttedDevider
+        );
+        setCssItems(newCssItems);
+        
+        dispatch(setKeyword(''));
+         dispatch(setMood(0));
+         dispatch(setGenre(0));
+         navi("/");
+
+
+    },[search.placeNo])
+
+
+
+
     const placeItemStyle = {flexGrow:"1", fontFamily:"sans-serif", border:"4px solid #770ABF",
         fontStyle:"italic", fontWeight:"bolder", fontSize:"40px", borderRadius:"10px"};
 

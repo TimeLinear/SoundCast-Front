@@ -110,12 +110,12 @@
   color: white;
 }
 
-.header .profile .img {
+.Header-profile .img {
   
   cursor: pointer; /* 커서를 포인터로 변경 */
   transition: transform 0.2s ease; /* 눌림 효과를 위한 부드러운 트랜지션 추가 */
 }
 
-.header .profile .img:active {
+.Header-profile .img:active {
   transform: scale(0.95); /* 이미지를 살짝 축소하여 눌리는 효과 */
 }

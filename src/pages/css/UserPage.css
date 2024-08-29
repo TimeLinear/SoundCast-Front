@@ -1,0 +1,42 @@
+.textarea-style {
+    width: 100%;
+    margin-left: 16px;
+    margin-bottom: 30px;
+    padding: 0px;
+    overflow: hidden;
+    border: none;
+    border-bottom: 3px solid #000000; /* 기본 밑줄 */
+    background: transparent;
+    resize: none;
+    line-height: 1.5;
+    align-self: center;
+    box-sizing: border-box;
+    transition: border-bottom 0.3s; /* 애니메이션 추가 */
+  }
+  
+  .textarea-style:focus {
+    outline: none; /* 포커스 시 기본 테두리 제거 */
+    border-bottom: 4px solid #1C003B; /* 포커스 시 두꺼운 밑줄 */
+  }
+
+
+  .submit-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    background-color: #1C003B;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+  
+  .submit-button:active {
+    transform: scale(0.98);
+  }
+  
+  .submit-button:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+  }

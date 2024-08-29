@@ -2,8 +2,9 @@ import { CSSProperties, MouseEvent, useEffect, useState } from "react";
 import { initMoods, Mood } from "../type/SongType";
 import { SearchProps } from "./GenreSearch";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setGenre, setMood } from "../features/searchSlice";
+import { RootState } from "../store/store";
 
 function MoodSearch(props:SearchProps){
 
@@ -14,16 +15,8 @@ function MoodSearch(props:SearchProps){
 
     const dispatch = useDispatch();
 
-     //------------수정한 부분(08/21)
-    const [moods, setMoods] = useState<Mood[]>(initMoods);
+    const song = useSelector((state:RootState) => state.song); 
     
-    useEffect(()=>{
-      axios.get("http://localhost:8087/soundcast/song/moods")
-      .then((response) => setMoods(response.data))
-      .catch((err) => console.log(err))
- 
-    },[]);
-
     //--------------------------------
     const [searchMoodNo, setSearchMoodNo] = useState<number>(-1);
 
@@ -50,7 +43,7 @@ function MoodSearch(props:SearchProps){
         
         {/* 여기서 부터 select 결과 출력 */}
         {
-          moods.map( mood => (
+          song.moodList.map( mood => (
             <div id='mood' key={mood.moodNo}
               style={{...moodCommonStyle}} 
               onClick={searchSongs}
