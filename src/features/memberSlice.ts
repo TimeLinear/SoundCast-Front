@@ -100,13 +100,22 @@ let memberSlice = createSlice({
                         { memberNo:newFollowing.memberNo, nickName:newFollowing.nickName, profile:newFollowing.profile}]
                 }
             }
+        },
+        removeFollowing(state, action:PayloadAction<number>) {
+            return {
+                ...state,
+                follow: {
+                    follower: state.follow.follower,
+                    following: [ ...(state.follow.following.filter((followingMember) => followingMember.memberNo !== action.payload)) ]
+                }
+            }
         }
     }
 })
 
 
 
-export const { login, logout, setComments, updateComments, addFollowing } = memberSlice.actions;
+export const { login, logout, setComments, updateComments, addFollowing, removeFollowing } = memberSlice.actions;
 export default memberSlice.reducer;
 export { initialState };
 export { followInit };

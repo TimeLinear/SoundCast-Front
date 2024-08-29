@@ -1,4 +1,3 @@
-import { CredentialResponse } from '@react-oauth/google';
 import '../pages/css/Signup.css';
 import axios from '../utils/CustomAxios';
 import { getCookie, setSessionCookie } from '../utils/Cookie';

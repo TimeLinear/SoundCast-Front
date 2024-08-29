@@ -6,7 +6,7 @@ import Player from "./PlayBar";
 import { setPlaySong, setSongList } from "../features/songSlice";
 import "./css/UserPage.css";
 import axios from "axios";
-import { login, initialState, followInit, addFollowing } from "../features/memberSlice";
+import { login, initialState, followInit, addFollowing, removeFollowing } from "../features/memberSlice";
 import { useNavigate, useParams } from "react-router-dom";
 // import MemberSongs from "../components/MemberSongs";
 import MemberComments from "../components/MemberComments";
@@ -25,7 +25,6 @@ const UserPage = () => {
     const serverImagePath = "http://localhost:8087/soundcast/resource/";
     const navi = useNavigate();
     const dispatch = useDispatch();
-
     const [selectMember, setSelectMember] = useState(initialState);
 
     //팔로우리스트 프론트
@@ -68,6 +67,7 @@ const UserPage = () => {
                     .then(response => {
                         console.log(response)
                         //alert(response.data.msg)
+                        dispatch(removeFollowing(NumbMemberNo));
                         setIsFollowing(!isFollowing)
                     })
             }
@@ -93,14 +93,13 @@ const UserPage = () => {
         else {
 
             if (selectMember.memberNo == member.memberNo) {
-                window.alert("내가 나를 팔로우할 수 없다")
+                window.alert("자신을 팔로우할 수 없습니다")
             } else {
 
                 window.alert("로그인이 필요한 메뉴입니다.")
             }
 
         }
-
     };
 
     const [filteredMembers, setFilteredMembers] = useState([]);
@@ -148,6 +147,10 @@ const UserPage = () => {
             })
             .catch(error => {
                 console.error('Error fetching member info:', error);
+            })
+            .finally(() => {
+                member.follow.following.find((following) => following.memberNo === NumbMemberNo) &&
+                    setIsFollowing(true)
             })
         // .finally(() => {
         //     member.follow.following.filter((target) => target.memberNo === NumbMemberNo).length && setIsFollowing(true);

@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+
+import { Member } from "../type/memberType";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { login, logout } from "../features/memberSlice";
@@ -89,7 +91,6 @@ function Header() {
   const [showSignUp, setShowSignUp] = useState(false);
   const openSignUp = () => setShowSignUp(true);
   const closeSignUp = () => setShowSignUp(false);
-
 
   //sitemap 클릭 버튼
   const [dropShow, setDropShow] = useState(false);

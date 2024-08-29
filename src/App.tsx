@@ -17,10 +17,8 @@ import Introduce from './pages/Introduce';
 import Mypage from './pages/Mypage'
 
 
-
-export let Context = createContext({}); //Context == state 보관소
-
 function App() {
+  
 
   const member = useSelector((state:RootState) => state.member);
 
