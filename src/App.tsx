@@ -1,3 +1,4 @@
+
 import './App.css';
 import Header from './components/Header';
 
@@ -11,16 +12,15 @@ import Footer from './components/Footer';
 import SearchPage from './pages/SearchPage';
 import UserPage from './pages/UserPage';
 import { Route, Routes } from 'react-router-dom';
-import MyPageBanner from './pages/MyPageBanner';
-
+import Commnuity from './pages/Commnuity';
+import Introduce from './pages/Introduce';
+import Mypage from './pages/Mypage'
 
 
 
 export let Context = createContext({}); //Context == state 보관소
 
 function App() {
-  
-  const dispatch = useDispatch();
 
   const member = useSelector((state:RootState) => state.member);
 
@@ -39,11 +39,15 @@ function App() {
       <Header />
       <PlaceDevider />
       <Routes>
+
         <Route path='/' element={<MainPage />} />
         <Route path='/search' element={<SearchPage />} />
         <Route path='/song/detail/:musicNo' element={<MusicDetail/>} />
-        <Route path='/member/mypage' element={<MyPageBanner />} />
+        <Route path='/member/mypage' element={<Mypage />} />
         <Route path='/member/memberInfo/:memberNo' element={<UserPage/>}/>
+
+        <Route path='/community' element={<Commnuity />}/>
+        <Route path='/introduce/:section' element={<Introduce />}/>
       </Routes>
       <Footer />
     </div>

@@ -50,6 +50,16 @@ const MusicDetail = () => {
         setShowReportModal(true);
     }
 
+    const [isArtistHover, setIsArtistHover] = useState(false);
+
+    const mouseEnterEventHandler = () => {
+        setIsArtistHover(true);
+    }
+
+    const mouseLeaveEventHandler = () => {
+        setIsArtistHover(false);
+    }
+
     const commonFlexStyle:CSSProperties = {
         display: "flex",
     };
@@ -115,18 +125,14 @@ const MusicDetail = () => {
         borderRadius: "10px",
     };
 
-    const isDupExclude = useState(true);
-
     const serverResourcePath = "http://localhost:8087/soundcast/resource/"
 
     useEffect(() => {
         dispatch(setSongList(song.list.filter((songItem) => songItem.songNo !== song.currentSong.songNo)));
         return () => {
-            // dispatch(setSongList([...song.list, song.currentSong]));
             dispatch(setPlaySong(0));
         }
     }, [])
-
 
 
     return (
@@ -143,13 +149,13 @@ const MusicDetail = () => {
                                     <img style={{ width: "420px" }} 
                                         src={serverResourcePath + (currSong.songImage.songImageName ? 
                                             currSong.songImage.songImagePathName + currSong.songImage.songImageName
-                                            : "public/default/song_image.png")} alt="음원 커버 이미지" />
+                                            : "public/song/song-image.png")} alt="음원 커버 이미지" />
                                 </div>
                                 <div style={{ ...commonFlexStyle, justifyContent: "flex-start", alignItems: "center", margin: "10px 0", padding: "0 5px", width: "420px" }}>
                                     <img style={{ width: "70px", margin: "0 5px" }} src="/images/song/play_button.png" alt="재생 버튼" />
                                     <span style={{ ...commonTextStyle, margin: "0 10px", font: "bold 20px sans-serif" }}>1:58</span>
                                     <div style={{ flexGrow: "1" }}></div>
-                                    <img style={{ width: "25px", margin: "0 10px" }} src={serverResourcePath + "public/icons/share_icon.png"} alt="공유 버튼" />
+                                    <img style={{ width: "25px", margin: "0 10px" }} src={serverResourcePath + "public/song/share_icon.png"} alt="공유 버튼" />
                                 </div>
                                 <div style={{ ...commonFlexStyle, justifyContent: "center", width: "420px", margin: "20px auto 20px 0" }}>
                                     <button style={downloadButtonStyle}>다운로드</button>
@@ -158,12 +164,18 @@ const MusicDetail = () => {
                             <div style={{ ...commonFlexStyle, boxSizing: "border-box", width: "50%", flexDirection: "column" }}>
                                 <div style={{ ...commonFlexStyle, width: "100%", justifyContent: "space-between", alignItems: "center", margin: "5px 0" }}>
                                     <h2 style={{ ...commonTextStyle, ...commonFontStyle, fontSize: "35px" }}>{currSong.songTitle}</h2>
-                                    <img style={{ width: "30px", height: "30px" }} src={serverResourcePath + "public/icons/flash.png"}
+                                    <img style={{ width: "30px", height: "30px" }} src={serverResourcePath + "public/song/flash.png"}
                                         alt="신고 버튼"
                                         onClick={onClickReportButton} />
                                 </div>
-                                <div style={{ textAlign: "start", margin: "15px 0" }}>
-                                    <h3 style={{ ...commonTextStyle, fontSize: "30px" }}>{currSong.memberNickname}</h3>
+                                <div 
+                                    style={{ textAlign: "start", margin: "15px 0" }}
+                                    onMouseEnter={mouseEnterEventHandler}
+                                    onMouseLeave={mouseLeaveEventHandler}
+                                    onClick={() => { navi(`/member/memberInfo/${currSong.songMemberNo}`) }}>
+                                    <h3 style={{ ...commonTextStyle, fontSize: "30px", cursor: "pointer", color: isArtistHover ? "magenta" : "white" }}>
+                                        {currSong.memberNickname}
+                                    </h3>
                                 </div>
                                 <div style={{ ...commonFlexStyle, height: "30px" }}>
                                     <button style={buttonStyle}>{currSong.songGenreName}</button>
@@ -179,7 +191,7 @@ const MusicDetail = () => {
                                         <textarea style={licenseTextareaStyle} value={currSong.songLicense ? currSong.songLicense : ''} disabled>
                                         </textarea>
                                         <button style={{ border: "1px solid white", backgroundColor: "white", borderRadius: "0 10px 10px 0", marginLeft: "-2px" }}>
-                                            <img src={serverResourcePath + "public/icons/paste_icon.png"} alt="복사 버튼" />
+                                            <img src={serverResourcePath + "public/song/paste_icon.png"} alt="복사 버튼" />
                                         </button>
                                     </div>
                                 </div>

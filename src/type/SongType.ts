@@ -63,7 +63,6 @@ export const initSong:Song = {
 	},
 	memberNickname: '',
 	songDuration: 0
-
 }
 
 export const initSongList: Song[] = [

@@ -1,8 +1,9 @@
 import { useSelector } from "react-redux";
-import { Props } from "../type/SongType";
+import { Props, Song } from "../type/SongType";
 import { RootState } from "../store/store";
 import { ChangeEvent, DragEvent, useRef, useState } from "react";
 import ReactPlayer from "react-player";
+import axios from "../utils/CustomAxios";
 
 
 interface PlayerState {
@@ -79,6 +80,34 @@ function Player(props:Props){
     const currentSong = activeSongNo ? songs.list.filter((song) => song.songNo === activeSongNo)[0] : null;
 
     const serverResourePath = "http://localhost:8087/soundcast/resource/";
+
+    const member = useSelector((state:RootState) => state.member);
+    
+    const handleDownload = (currentSong:Song) => {
+        //console.log(member.memberNo);
+        
+        try{
+            axios.get(`http://localhost:8087/soundcast/song/download/${currentSong.songNo}`, { params : {memberNo : member.memberNo} , responseType: 'blob'})
+            .then((response) => {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+    
+                link.setAttribute('download', currentSong.songFile.songFileOriginName);
+                
+                document.body.appendChild(link);
+                link.click();
+                
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(err => console.log(err))
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
 
     return (
 
@@ -166,7 +195,9 @@ function Player(props:Props){
             </div>
 
             <div className='download-icon' style={{width:"25px", height:"25px", paddingRight: "25px"}}>
-                <img src="images/download-icon-black.png" style={{height:"100%", width:"100%"}}/>
+                <img src="images/download-icon-black.png" 
+                    style={{height:"100%", width:"100%"}}
+                    onClick={()=>handleDownload(currentSong)}/>
             </div>
 
             <div className='license-copy-icon' 

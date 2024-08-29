@@ -1,10 +1,7 @@
 import { CSSProperties, MouseEvent, useEffect, useState } from "react";
-import { initMoods, Mood } from "../type/SongType";
 import { SearchProps } from "./GenreSearch";
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { setGenre, setMood } from "../features/searchSlice";
-import { setMoodList } from "../features/songSlice";
+import { setMood } from "../features/searchSlice";
 import { RootState } from "../store/store";
 
 function MoodSearch(props:SearchProps){
@@ -15,17 +12,9 @@ function MoodSearch(props:SearchProps){
     const moodCommonStyle:CSSProperties = {display: "flex", justifyContent: "center", alignItems:"center", width: "130px", height:"40px", marginRight:"10px", boxSizing: "border-box"};
 
     const dispatch = useDispatch();
-    const song = useSelector((state:RootState) => state.song);
-     //------------수정한 부분(08/21)
-    //const [moods, setMoods] = useState<Mood[]>(initMoods);
-    
-    useEffect(()=>{
-      axios.get("http://localhost:8087/soundcast/song/moods")
-      .then((response) => dispatch(setMoodList(response.data)))
-      .catch((err) => console.log(err))
- 
-    },[]);
 
+    const song = useSelector((state:RootState) => state.song); 
+    
     //--------------------------------
     const [searchMoodNo, setSearchMoodNo] = useState<number>(-1);
 
@@ -56,7 +45,7 @@ function MoodSearch(props:SearchProps){
             <div id='mood' key={mood.moodNo}
               style={{...moodCommonStyle}} 
               onClick={searchSongs}
-              onMouseEnter={(e) => {onHoverMood(e, mood.moodNo); console.log(mood.moodNo)}} onMouseLeave={(e) => onLeaveMood(e)}>
+              onMouseEnter={(e) => {onHoverMood(e, mood.moodNo)}} onMouseLeave={(e) => onLeaveMood(e)}>
               <span style={searchMoodNo === mood.moodNo ? {...moodItemFontStyle, color:"#FFFFFF"} : moodItemFontStyle}>{mood.moodName}</span>
             </div>
           ))  
