@@ -1,4 +1,4 @@
-import { ChangeEvent, CSSProperties, MouseEvent, useState } from 'react';
+import { ChangeEvent, CSSProperties, MouseEvent, useRef, useState } from 'react';
 import '../index.css'
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
@@ -74,10 +74,13 @@ const MusicReportModal = ({setShowReportModal}:{setShowReportModal:(toggle:boole
     };
 
     const member = useSelector((state:RootState) => state.member);
+    const song = useSelector((state:RootState) => state.song);
 
-    const [reportContent, setReportContent] = useState('');
+    const [reportContent, setReportContent] = useState('음원이 아닌 파일 업로드');
 
     const [reportInput, setReportInput] = useState('');
+
+    const textareaRef = useRef(null);
 
     const onChangeInput = (e:ChangeEvent<HTMLTextAreaElement>) => {
         setReportInput(e.target.value);
@@ -92,13 +95,24 @@ const MusicReportModal = ({setShowReportModal}:{setShowReportModal:(toggle:boole
     const onSendReport = (e:MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
 
+        if(!member.memberNo && !song.currentSong.songNo) {
+            return;
+        }
+
         if(reportContent.includes("[기타]")) {
             setReportContent(reportContent + " " + reportInput);
         }
 
-        axios.post("")
+        axios.post("http://localhost:8087/soundcast/song/report", {
+            reportSongNo: song.currentSong.songNo,
+            reportMemberNo: member.memberNo,
+            reportText: reportContent
+        })
             .then(res => {
-                
+                if(res.data) {
+                    alert("신고되었습니다.")
+                    setShowReportModal(false);
+                }
             })
     }
 
@@ -159,14 +173,15 @@ const MusicReportModal = ({setShowReportModal}:{setShowReportModal:(toggle:boole
                             <textarea 
                                 name="etcReason"
                                 style={{ boxSizing: "border-box", width: "100%", resize: "none", flexGrow: "1", outline: "none"}}
-                                onChange={onChangeInput}>
+                                onChange={onChangeInput}
+                                ref={textareaRef}>
                             </textarea>
                         </div>
                     </div>
                 </div>
                 <div style={footerStyle}>
                     <span style={{ font: "12px Inter", color: "gray" }}>※ 반복된 허위 신고 시 제제를 받을 수 있습니다</span>
-                    <button style={sendButtonStyle} onClick={}>보내기</button>
+                    <button style={sendButtonStyle} onClick={onSendReport}>보내기</button>
                 </div>
             </section>
         </div>

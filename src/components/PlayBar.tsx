@@ -158,6 +158,7 @@ function Player(props:Props){
                             step="any"
                             value={playerState.volume}
                             onChange={handleVolumeChange}
+                            style={{accentColor:"#1C003B"}}
                             className="volume-bar"
                         />
                     )}

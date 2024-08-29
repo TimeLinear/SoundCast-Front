@@ -1,4 +1,4 @@
-import '../pages/css/SignUp.css';
+import '../pages/css/Signup.css';
 import axios from '../utils/CustomAxios';
 import { getCookie, setSessionCookie } from '../utils/Cookie';
 import { useDispatch, useSelector } from 'react-redux';
