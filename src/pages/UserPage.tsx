@@ -1,8 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { CSSProperties, useEffect, useRef, useState } from "react";
-import Pagination from "../components/Pagination";
-import Player from "./PlayBar";
 //import { initSongs, Props } from "../type/SongType";
 import { setPlaySong, setSongList } from "../features/songSlice";
 import "./css/UserPage.css";
@@ -13,7 +11,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import MemberComments from "../components/MemberComments";
 import CustomAxios from "../utils/CustomAxios";
 import { getCookie } from "../utils/Cookie";
-import FollowingModal from "../components/FollowingModal";
 import SongItem from "../components/SongItem";
 import { Props } from "../type/SongType";
 

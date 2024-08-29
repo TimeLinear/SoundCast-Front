@@ -1,5 +1,5 @@
 import { useEffect, useState, CSSProperties } from "react";
-import { initSearch, Props } from "../type/SongType";
+import { initSearch, Props, Song } from "../type/SongType";
 import Player from "../components/PlayBar";
 import { useDispatch, useSelector } from "react-redux";
 import { setPlaySong, setSongList } from "../features/songSlice";
@@ -29,7 +29,7 @@ function SearchList(){
                 console.log(response.data);
                 dispatch(setSongList(response.data));
             })
-            .catch((err)=>console.log(err));
+            .catch((err)=>console.log(err))
         navi("/search");
     }
 
@@ -53,7 +53,7 @@ function SearchList(){
                 console.log(response.data);
                 dispatch(setSongList(response.data));
             })
-            .catch((err)=>console.log(err));
+            .catch((err)=>console.log(err))
            
     },[search.placeNo])
 

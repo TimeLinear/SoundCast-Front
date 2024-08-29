@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { Props } from "../type/SongType";
 import { RootState } from "../store/store";
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, DragEvent, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 
 
@@ -53,10 +53,10 @@ function Player(props:Props){
         }));
     };
 
-    const handleSeekChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const newPlayed = parseFloat(e.target.value);
-        setPlayerState(prevState => ({
-            ...prevState,
+    const handleSeekChange = (e:ChangeEvent|DragEvent) => {
+        const newPlayed = parseFloat((e.target as HTMLInputElement).value);
+        setPlayerState(prev => ({
+            ...prev,
             played: newPlayed,
         }));
         playerRef.current?.seekTo(newPlayed);
@@ -88,7 +88,7 @@ function Player(props:Props){
         
             <ReactPlayer
                 ref={playerRef}
-                url={serverResourePath + currentSong.songFile.songFilePathName + currentSong.songFile.songFileChangeName}
+                url={serverResourePath + currentSong.songFile.songFileSongPathName + currentSong.songFile.songFileChangeName}
                 playing={activeSongNo ? true : false}
                 volume={playerState.volume}
                 onProgress={handleProgress}
@@ -113,7 +113,7 @@ function Player(props:Props){
                     <span style={{...playerFontStyle, fontSize:"22px", lineHeight:"24px"}}>{songs.currentSong.songTitle}</span>
                 </div>
                 <div className='artist-name' style={{height:"50%"}}>
-                    <span style={{...playerFontStyle}}>{songs.currentSong.songMemberNo}</span>
+                    <span style={{...playerFontStyle}}>{songs.currentSong.memberNickname}</span>
                 </div> 
             </div>
 
@@ -126,10 +126,11 @@ function Player(props:Props){
                     type="range"
                     min={0}
                     max={1}
-                    step={5}
+                    step={0.01}
                     value={playerState.played}
                     onChange={handleSeekChange}
-                    className="progress-bar"
+                    onDrag={handleSeekChange}
+                    style={{width:"100%", height:"100%", accentColor:"#BA9FCC"}}
                 />
                 </div>
                 <div className="play-time" style={{...playerBoxStyle, justifyContent:"center",width:"60px"}}>
@@ -145,7 +146,10 @@ function Player(props:Props){
                         onMouseLeave={() => setPlayerState(prev => ({ ...prev, showVolumeBar: false }))}
                         style={{height:"100%", width:"100%"}}/>
                 </div>
-                <div className="volume-control" style={{width:"150px"}}>
+                <div className="volume-control" 
+                    onMouseEnter={() => setPlayerState(prev => ({ ...prev, showVolumeBar: true }))}
+                    onMouseLeave={() => setPlayerState(prev => ({ ...prev, showVolumeBar: false }))}
+                    style={{width:"150px"}}>
                     {playerState.showVolumeBar && (
                         <input
                             type="range"

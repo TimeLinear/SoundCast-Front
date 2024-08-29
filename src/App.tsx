@@ -7,11 +7,11 @@ import { RootState } from './store/store';
 import PlaceDevider from './components/PlaceDevider';
 import MainPage from './pages/MainPage';
 import MusicDetail from './pages/MusicDetail';
-import Mypage from './pages/Mypage';
 import Footer from './components/Footer';
 import SearchPage from './pages/SearchPage';
 import UserPage from './pages/UserPage';
 import { Route, Routes } from 'react-router-dom';
+import MyPageBanner from './pages/MyPageBanner';
 
 
 
@@ -42,7 +42,7 @@ function App() {
         <Route path='/' element={<MainPage />} />
         <Route path='/search' element={<SearchPage />} />
         <Route path='/song/detail/:musicNo' element={<MusicDetail/>} />
-        <Route path='/member/mypage' element={<Mypage />} />
+        <Route path='/member/mypage' element={<MyPageBanner />} />
         <Route path='/member/memberInfo/:memberNo' element={<UserPage/>}/>
       </Routes>
       <Footer />

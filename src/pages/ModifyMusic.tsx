@@ -278,7 +278,7 @@ const ModifyMusic = ({show, handleClose}:{show:boolean, handleClose:() => void})
         songFile:{
           songFileNo : 1,
           songFilePathNo:1, 
-          songFilePathName : '/images',
+          songFileSongPathName : '/images',
           songFileOriginName : '우주여행.mp3',
           songFileChangeName : 'random'
         },

@@ -54,7 +54,7 @@ const SongItem = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activeS
     };
 
     useEffect(() => {
-        if (activeSongNo !== null) {
+        if (activeSongNo) {
             dispatch(setPlaySong(activeSongNo));
         }
     }, [activeSongNo]);
@@ -70,7 +70,7 @@ const SongItem = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activeS
     };
 
     const copySongAddress = (songNo: number) => {
-        const songAddress = "http://localhost:8087/music/detail/" + songNo;
+        const songAddress = "http://localhost:3000/song/detail/" + songNo;
         navigator.clipboard.writeText(songAddress)
             .then(() => { alert("음원 상세페이지 주소가 복사되었습니다!") })
             .catch((err) => { console.log(err) })
@@ -89,11 +89,8 @@ const SongItem = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activeS
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = song.list.slice(indexOfFirstItem, indexOfLastItem);
 
-    // console.log(hoverState);
-   
-
     //수정 (검색함수 props에 추가, 이미지 경로 지정, 아티스트명 클릭시 아티스트 페이지로 이동, 장르, 분위기 data-songno 수정 클릭 이벤트 부여)
-    const url = "http://localhost:8087/soundcast/public"; 
+    const url = "http://localhost:8087/soundcast/resource/"; 
 
     return (
         <div>
@@ -103,14 +100,14 @@ const SongItem = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activeS
                         //검색결과를 플레이리스트로 반환 (반복)
                         <div key={Song.songNo}>
                             <div className='search-list' style={{ ...searchListBoxStyle }}>
-                                <div className='play-icon' style={{ ...iconBoxSizeStyle }} >
-                                    <img src={Song.songNo === activeSongNo ? "/images/song/pause-button-icon-white.png" : "/images/song/play-icon-white.png"}
+                                <div className='play-icon' style={{ ...iconBoxSizeStyle, width:"50px", height:"50px" }} >
+                                    <img src={url + (Song.songNo === activeSongNo ? "public/icons/Pause_circle.png" : "public/icons/Play_circle.png")}
                                         style={{ height: "100%", width: "100%" }}
                                         onClick={() => handleIconClick(Song.songNo)} />
                                 </div>
                                 {/* 이미지 있는 경우 해당 이미지 보여주기, 없는 경우 default image */}
                                 <div className='song-image' style={{ width: "50px", height: "50px" }}>
-                                    <img src='/images/song/song-image.png' style={{ height: "100%", width: "100%" }} />
+                                    <img src={url + Song.songImage.songImagePathName + Song.songImage.songImageName} style={{ height: "100%", width: "100%" }} />
                                 </div>
                                 <div className='song-content' style={{ width: "260px", height: "50px", textAlign: "start", paddingLeft: "20px" }}>
                                     <div className='song-title' style={{ height: "50%" }}>
@@ -132,14 +129,14 @@ const SongItem = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activeS
                                             style={hoverState.class === 'artist-name' && hoverState.songNo === Song.songNo ? 
                                                 { ...searchListFontStyle, fontSize: "15px", lineHeight: "18px", color: "magenta", cursor:"pointer" }
                                                 : { ...searchListFontStyle, fontSize: "15px", lineHeight: "18px", color: "white", cursor:"pointer" }}>
-                                            {Song.songMemberNo}
+                                            {Song.memberNickname}
                                         </span>
                                     </div>
                                 </div>
 
                                 {/* 재생중일 때 나타나는 헤드폰 아이콘 */}
                                 <div className='headphone-icon' style={{ ...iconBoxSizeStyle, margin: "0 30px" }}>
-                                    {activeSongNo === Song.songNo && (<img src="/images/song/headphone-icon.png" style={{ height: "100%", width: "100%", cursor:"default" }} />)}
+                                    {activeSongNo === Song.songNo && (<img src={url + "public/icons/headphone_icon.png"} style={{ height: "100%", width: "100%", cursor:"default" }} />)}
                                 </div>
 
                                 <div className='genre-box'
@@ -164,16 +161,16 @@ const SongItem = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activeS
                                 {/* 라이센스가 있을 경우 나타나는 아이콘 */}
                                 <div className='license-icon' style={{ ...iconBoxSizeStyle, cursor:"default" }}>
                                     {Song.songLicense !== null &&
-                                        (<img src='/images/song/license-icon.png' style={{ height: "100%", width: "100%", cursor:"default" }} />)
+                                        (<img src={url + "public/icons/license_icon.png"} style={{ height: "100%", width: "100%", cursor:"default" }} />)
                                     }
                                 </div>
 
                                 <div className='play-time-box' style={{ display: "flex", alignItems: "center", height: "38px" }}>
                                     <div className='clock-icon' style={{ ...iconBoxSizeStyle, marginRight: "10px" }}>
-                                        <img src='/images/song/clock-icon.png' style={{ height: "100%", width: "100%", cursor:"default" }} />
+                                        <img src={url + "public/icons/clock_icon.png"} style={{ height: "100%", width: "100%", cursor:"default" }} />
                                     </div>
                                     <div className='play-time'>
-                                        <span style={{ ...searchListFontStyle, color: "white"}}>1:58</span>
+                                        <span style={{ ...searchListFontStyle, color: "white"}}>{Song.songDuration}</span>
                                     </div>
                                 </div>
 
@@ -182,7 +179,7 @@ const SongItem = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activeS
                                 </div>
 
                                 <div className='share-icon' style={{ ...iconBoxSizeStyle }}>
-                                    <img src='/images/song/share_icon.png'
+                                    <img src={url + 'public/icons/share_icon.png'}
                                         onClick={() => copySongAddress(Song.songNo)}
                                         style={{ height: "100%", width: "100%" }} />
                                 </div>
@@ -190,7 +187,7 @@ const SongItem = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activeS
                                 {/* 클릭했을 경우 라이센스를 표기하는 아래 박스가 표시됨 */}
                                 <div className='open-icon' style={{ ...iconBoxSizeStyle }} >
                                     {Song.songLicense !== null &&
-                                        (<img src={licenseItem === Song.songNo ? "/images/song/open-icon-now.png" : "/images/song/open-icon.png"}
+                                        (<img src={url + (licenseItem === Song.songNo ? "public/icons/open_icon_now.png" : "public/icons/open_icon.png")}
                                             style={{ height: "100%", width: "100%" }}
                                             onClick={() => { handleLicenseClick(Song.songNo) }} />)
                                     }
@@ -204,7 +201,7 @@ const SongItem = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activeS
                                         <div className='license-copy-icon'
                                             onClick={() => { if (Song.songLicense !== null) { licenseCopy(Song.songLicense) } }}
                                             style={{ ...itemBoxStyle, background: "#1C003B", width: "10%", height: "65%" }} >
-                                            <img src="/images/song/copy-Icon-white.png" />
+                                            <img src={url + "public/icons/copy_Icon_white.png"} />
                                         </div>
                                     </div>
                                 </div>)

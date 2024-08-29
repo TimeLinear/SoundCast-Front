@@ -10,6 +10,7 @@ const songSlice = createSlice({
             if(action.payload){return {...state, list:[...action.payload]}}
         },
         setPlaySong : (state, action:PayloadAction<number>) => {
+            if(action.payload === 0) {return {...state, currentSong:initSong}}
             const selectedSong = state.list.find((value)=>value.songNo === action.payload);
             if(selectedSong){return {...state, currentSong:selectedSong}}
         },
