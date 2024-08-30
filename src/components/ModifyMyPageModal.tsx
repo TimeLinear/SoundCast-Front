@@ -2,13 +2,15 @@ import { ChangeEvent, useEffect, useRef, useState } from "react";
 import axios from "../utils/CustomAxios";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
-import { login } from "../features/memberSlice";
+import { login, logout } from "../features/memberSlice";
+import { useNavigate } from "react-router-dom";
 
 const ModifyMyPageModal = ({ show, Close }: { show: boolean; Close: () => void }) => {
     const member = useSelector((state: RootState) => state.member);
     console.log("수정 모달에서 출력 : ");
     console.log(member);
     const dispatch = useDispatch();
+    const navi = useNavigate();
     
     const [backgroundImage, setBackgroundImage] = useState<string>();
     const [profileImage, setProfileImage] = useState<string>();
@@ -100,7 +102,8 @@ const ModifyMyPageModal = ({ show, Close }: { show: boolean; Close: () => void }
         inputState.email && formData.append('email', inputState.email);
         inputState.introduce && formData.append('introduce', inputState.introduce);
         member.memberNo && formData.append('memberNo', member.memberNo.toString());
-
+        
+        Close();
         // try {
         //     const response = await axios.post('http://localhost:8087/soundcast/member/modify', formData, {
         //         headers: {
@@ -114,7 +117,7 @@ const ModifyMyPageModal = ({ show, Close }: { show: boolean; Close: () => void }
         //     // Handle error response
         // }
 
-        axios.post('http://localhost:8087/soundcast/member/modify', formData, {
+        await axios.post('http://localhost:8087/soundcast/member/modify', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -125,14 +128,28 @@ const ModifyMyPageModal = ({ show, Close }: { show: boolean; Close: () => void }
                 dispatch(login({
                     member : {
                         ...member, 
-                        ...res.data
-                    }
+                    },
+                    ...res.data
                 }))
             })
             .catch(error => {
                 console.log(error);
             })
     };
+
+    const leaveSubmit = () => {
+        axios.post(`http://localhost:8087/soundcast/member/leave/${member.memberNo}`)
+          .then(res => {
+              console.log(res.data);
+          })
+          .catch(error => {
+              console.log(error);
+          })
+          window.alert("회원 탈퇴 성공 !");
+          dispatch(logout());
+          navi("/");
+      
+  }
 
     const backGroundClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         if (event.target === event.currentTarget) {
@@ -142,7 +159,7 @@ const ModifyMyPageModal = ({ show, Close }: { show: boolean; Close: () => void }
 
 
     const serverImagePath = "http://localhost:8087/soundcast/resource/";
-    const requestStartWith = "/SoundCAST_resources/";
+  
 
 
     return (
@@ -207,7 +224,7 @@ const ModifyMyPageModal = ({ show, Close }: { show: boolean; Close: () => void }
                             <div style={{ margin: "0", justifyContent: "center", alignItems: "center", display: "flex", backgroundColor: "#00AB6B", borderRadius: "20px", width: "140px", height: "35px", fontWeight: "bolder", color: "white", textAlign: "center", cursor: "pointer" }} onClick={handleSubmit}>
                                 <p>수정</p>
                             </div>
-                            <div style={{ justifyContent: "center", alignItems: "center", display: "flex", marginTop: "15px", backgroundColor: "#FF3C3C", borderRadius: "20px", border: "none", width: "140px", height: "35px", textAlign: "center", fontWeight: "bolder", color: "white", cursor: "pointer" }}>
+                            <div style={{ justifyContent: "center", alignItems: "center", display: "flex", marginTop: "15px", backgroundColor: "#FF3C3C", borderRadius: "20px", border: "none", width: "140px", height: "35px", textAlign: "center", fontWeight: "bolder", color: "white", cursor: "pointer"}} onClick={leaveSubmit} >
                                 <p>탈퇴</p>
                             </div>
                         </div>

@@ -44,12 +44,13 @@ function SearchBar({searchKeyword}:{searchKeyword:string}){
       setInputKeyword('');
   }
   //-----------------------------------------
+  const serverImagePath = "http://localhost:8087/soundcast/resource/";
 
   return(
       <div className='search-bar' style={{...searchBarStyle, boxSizing:"border-box"}}>
         <div className='search-bar-body' style={{...searchBarBodyStyle, boxSizing:"border-box"}}>
           <div className='search-icon-box' style={{height: "35px"}}>
-            <img src='images/default/search-icon.png' style={{height: "100%"}}/>
+            <img src={serverImagePath+'public/main/search-icon.png'} style={{height: "100%"}}/>
           </div>
           <div className='search-bar-input' style={{width:"85%", height:"90%"}}>
             <input

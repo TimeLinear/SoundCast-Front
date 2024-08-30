@@ -99,9 +99,6 @@ function GenreSearch ({searchGenre, searchMood}:{searchGenre:number, searchMood:
         onMouseEnter={handleMouseOver}
         onMouseLeave={(e) => {handleMouseOut(e); onLeaveSearchs();}}
         style={{...genreCommonStyle, boxSizing: "border-box", width:"100%", height:"65px", background:"#1C003B", borderRadius: "0"}} >
-        {/* <div className='genre' style={{...genreCommonStyle, ...genreItemStyle, boxSizing: "border-box", background:"#BA9FCC"}}>
-          <span style={{...genreItemFontStyle, color:"#FFFFFF"}} >모든 장르</span>
-        </div> */}
             {/* 여기서 부터 select 결과 출력 */}
         {
           genres.map( genre => (

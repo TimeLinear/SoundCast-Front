@@ -103,15 +103,18 @@ const UserPage = () => {
     const [filteredMembers, setFilteredMembers] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-      //댓글쪽
+    //댓글
     const [deletingCommentNo, setDeletingCommentNo] = useState(0);
-    //백엔드 
+    //멤버 인포불러오기 
     useEffect(() =>{
        axios
             .get(`http://localhost:8087/soundcast/member/memberInfo/${memberNo}`)
             .then(response => {
-               console.log(response.data);
+               console.log(response);
                console.log(response.data.commentList);
+               if(response.data === "" || response.data === null){
+                   navi("/");
+               }
                setSelectMember({
                     memberNo:response.data.memberNo,
                     profile:response.data.profileImage.profileImagePath,
@@ -191,7 +194,7 @@ const UserPage = () => {
 
     // 스타일
     const searchListFontStyle:CSSProperties = { fontFamily: "Inter", fontStyle: "normal", fontSize: "20px", fontWeight: "700", lineHeight: "24px", color: "#000000" };
-    //--
+    
    
     return ( 
      
@@ -209,7 +212,7 @@ const UserPage = () => {
                     
                       
                         <img 
-                                src={isFollowing ? "/images/default/unfollow.png" : "/images/default/follow.png"} 
+                                src={isFollowing ? serverImagePath+"public/member/unfollow.png" : serverImagePath+"public/member/follow.png"} 
                                 alt={isFollowing ? "Unfollow" : "Follow"} 
                                 onClick={handleFollowClick}
                                 style={{ marginLeft: "90px", cursor: "pointer" ,height:"20px", width:"auto"}}
@@ -302,7 +305,7 @@ const UserPage = () => {
                 )}
             </div>
             {/* <FollowingModal show={showFollingModal} Close={followingCloseHandler} /> */}
-            {/* <Player {...props} /> */}
+            <Player {...props} />
         </>
     );
 }

@@ -5,8 +5,6 @@ import { setPlaySong, setSongList } from "../features/songSlice";
 import { Song } from "../type/SongType";
 import Pagination from "./Pagination";
 import { useNavigate } from "react-router-dom";
-
-import axios from "axios";
 import { setGenre, setMood } from "../features/searchSlice";
 
 const SongItem = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activeSongNo: number | null, setActiveSongNo: (no: number) => void, song:{list:Song[], currentSong:Song}, searchSong:()=>void }) => {
@@ -92,7 +90,7 @@ const SongItem = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activeS
    
 
     //수정 (검색함수 props에 추가, 이미지 경로 지정, 아티스트명 클릭시 아티스트 페이지로 이동, 장르, 분위기 data-songno 수정 클릭 이벤트 부여)
-    const url = "http://localhost:8087/soundcast/public"; 
+    const url = "http://localhost:8087/soundcast/"; 
 
     return (
         <div>

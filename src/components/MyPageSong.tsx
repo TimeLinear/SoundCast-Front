@@ -5,6 +5,8 @@ import Pagination from "./Pagination";
 import { Song } from "../type/SongType";
 import { setPlaySong } from "../features/songSlice";
 import { useNavigate } from "react-router-dom";
+
+import SongItem from "./SongItem";
 import ModifyMusic from "../pages/ModifyMusic";
 
 const MyPageSong = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activeSongNo: number | null, setActiveSongNo: (no: number) => void, song:{list:Song[], currentSong:Song}, searchSong:()=>void })  =>{
@@ -34,6 +36,9 @@ const MyPageSong = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activ
             .catch((err) => { console.log(err) })
     };
 
+
+
+
     
 
     const itemsPerPage = 20;
@@ -53,7 +58,7 @@ const MyPageSong = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activ
    
 
     //수정 (검색함수 props에 추가, 이미지 경로 지정, 아티스트명 클릭시 아티스트 페이지로 이동, 장르, 분위기 data-songno 수정 클릭 이벤트 부여)
-    const url = "http://localhost:8087/soundcast/public"; 
+    const url = "http://localhost:8087/soundcast/"; 
 
 
     //모디파이
@@ -64,18 +69,20 @@ const MyPageSong = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activ
     const modifySongCloseHandler =() =>{
         setShowModifySong(false);
     }
+   
 
     return(
         <div className="mysong" style={{ border: "1px solid lightgrey", display: "flex", flexWrap: "wrap"}}>
 
-        {currentItems.map((Song) => (
-            <div style={{ margin: "20px 2.39%", width: "194px", height: "220px", display: "flex", flexDirection: "column" }}>
+        {currentItems.map((Song,index) => (
+
+            <div style={{ margin: "20px 2.39%", width: "194px", height: "220px", display: "flex", flexDirection: "column" }} key={index}>
 
                 <div className="hoverImage" style={{ width: "100%", height: "154px", boxSizing: "border-box", flexGrow: "1", position:"relative" }}>
                     <img className="modifyImage" src="/images/mypage-hover.png" style={{position:"absolute",width:"30px",height:"30px",top:"10px",left:"10px"}} onClick={modifySongHandler} />
                     <img src={Song.songImage.songImageNo !== 0 ? url+Song.songImage.songImagePathName+"/"+Song.songImage.songImageName : '/images/song/song-image.png'} style={{ width: "100%", height: "100%", objectFit: "cover", borderTopLeftRadius: "7px", borderTopRightRadius: "7px" }} />
                 </div>
-                    <ModifyMusic show={showModifySong} handleClose={modifySongCloseHandler}/>
+                    <ModifyMusic show={showModifySong} handleClose={modifySongCloseHandler} selectSong={Song} />
                 <div style={{
                     border: "1px solid black", width: "100%", height: "46px", boxSizing: "border-box",
                     fontWeight: "bolder", display: "flex", justifyContent: "center", alignItems: "center",

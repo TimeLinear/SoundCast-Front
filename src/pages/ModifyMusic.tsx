@@ -1,11 +1,13 @@
 import React, { MouseEvent, SetStateAction, useState } from "react";
 import { initGenres, initMoods, initSong, Song } from "../type/SongType";
 import axios from "axios";
+import CustomAxios from "../utils/CustomAxios";
 
-const ModifyMusic = ({show, handleClose}:{show:boolean, handleClose:() => void}) =>{
-  
+const ModifyMusic = ({show, handleClose, selectSong}:{show:boolean, handleClose:() => void, selectSong:Song}) =>{
+
+  console.log(selectSong);
   // ==== 스타일 ====
-    
+
   const modalStyle: React.CSSProperties = {
     position: 'fixed',
     top: 0,
@@ -239,31 +241,36 @@ const ModifyMusic = ({show, handleClose}:{show:boolean, handleClose:() => void})
     };
     
     // 파일 이미지 클릭 핸들러
-    const [songImage, setSongImage] = useState<string | null>(null);
+    const [songImageView, setSongImageView] = useState<string | null>(null);
+    const [songImage, setSongImage] = useState<File|string>('');
+
     const handleFileChange = (event:React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
         if (file) {
           const reader = new FileReader();
           reader.onloadend = () => {
-            setSongImage(reader.result as string);  // 파일의 데이터 URL을 songImage 상태에 설정
+            setSongImageView(reader.result as string);  // 파일의 데이터 URL을 songImage 상태에 설정
           };
           reader.readAsDataURL(file); // 파일을 읽어 데이터 URL로 변환
+
+          setSongImage(file);
         }
       }
 
     // 음원 파일 클릭 핸들러
-    const [songFileOriginName, setSongFileOriginName] = useState<string|undefined>(song.songFile.songFileOriginName);
+    const [songFileOriginName, setSongFileOriginName] = useState<string>(song.songFile.songFileOriginName);
+    const [songFile, setSongFile] = useState<File|string>('');
+    
     const handleSongFileChange = (event:React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
         if(file) {
           setSongFileOriginName(file.name);
-          const reader = new FileReader();
-          reader.onloadend = () => {
-            // setSongFileOriginName(reader.result as string);
-          }
-          reader.readAsDataURL(file);
+          setSongFile(file);
         }
     }
+
+
+
 
     const updateSong = ()=> {
       
@@ -281,20 +288,30 @@ const ModifyMusic = ({show, handleClose}:{show:boolean, handleClose:() => void})
           songFilePathName : '/images',
           songFileOriginName : '우주여행.mp3',
           songFileChangeName : 'random'
-        },
-        
-      }
-      
+        },      
+      }      
       setSong(renewSong);
+      
+      const requestBody = new FormData();
+      const songInfo = new Blob([JSON.stringify(renewSong)], {type : 'application/json'})
+      
+      requestBody.append("songInfo", songInfo);
+      requestBody.append("songFile", songFile);
+      requestBody.append("songImage", songImage);
 
       //back으로 update된 song 전송 하는 코드 추가 
       console.log(renewSong)
+      console.log(requestBody.get("songinfo"));
+      console.log(requestBody.get("file"));
 
-      axios.put(`http://localhost:8087/soundcast/song/update/${song.songNo}`, renewSong)
-        .then((response) => alert("수정되었습니다.") )
+      CustomAxios.put(`http://localhost:8087/soundcast/song/update/${song.songNo}`, requestBody)
+        .then((response) => {
+          alert(response.data);
+          handleClose();
+        })
         .catch(err => console.log(err))
 
-
+      
     }
 
 
@@ -330,7 +347,7 @@ const ModifyMusic = ({show, handleClose}:{show:boolean, handleClose:() => void})
                   height:"100%", 
                   objectFit:"cover"
                 }}
-                src={songImage === null ? "/images/default/song_default.png" : songImage} 
+                src={songImageView === null ? "/images/default/song_default.png" : songImageView} 
                 alt="Preview" />
               <input 
                 type="file" 
@@ -372,7 +389,7 @@ const ModifyMusic = ({show, handleClose}:{show:boolean, handleClose:() => void})
               <input 
                 type="file"
                 id="song-file-upload"
-                accept="mp3/*"
+                accept="audio/*"
                 onChange={handleSongFileChange}
                 className="song-file-input"
                 style={{

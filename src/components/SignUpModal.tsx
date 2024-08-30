@@ -48,7 +48,6 @@ const SignUpModal = ({showSignUp, openSignUp, closeSignUp } : {showSignUp:boolea
     const kktCredential = getCookie('ACCESS_TOKEN');
 
     const checkCre = Credential || kktCredential;
-
     const enroll =()=>{
         console.log("enroll Credential:"+ Credential);
         console.log("enroll accessToken : "+ kktCredential);
@@ -91,9 +90,8 @@ const SignUpModal = ({showSignUp, openSignUp, closeSignUp } : {showSignUp:boolea
 
 
     }
-
     
-
+    const serverImagePath = "http://localhost:8087/soundcast/resource/";
 
     return (
         <div className={showHideClassName}>
@@ -114,7 +112,7 @@ const SignUpModal = ({showSignUp, openSignUp, closeSignUp } : {showSignUp:boolea
                    
                     {checkCre === Credential && (
                         <img 
-                            src=".\images\default\web_light_sq_ctn.svg" 
+                            src={serverImagePath+"public/member/google_Login.svg"}
                             alt="Google Icon" 
                             onClick={() => {
                                 if (canSignUp) {
@@ -126,7 +124,7 @@ const SignUpModal = ({showSignUp, openSignUp, closeSignUp } : {showSignUp:boolea
 
                     {checkCre === kktCredential && (
                         <img 
-                            src=".\images\default\kakao_login_medium_wide.png" 
+                            src={serverImagePath+"public/member/kakao_Login.png"}
                             alt="Kakao Icon" 
                             onClick={() => {
                                 if (canSignUp) {
@@ -135,9 +133,6 @@ const SignUpModal = ({showSignUp, openSignUp, closeSignUp } : {showSignUp:boolea
                             }} 
                         />
                     )}
-                 
-                        <button className="signup-btn naver">네이버로 간편가입</button>
-                        
                     </div>
                 </div>
             </div>
