@@ -1,12 +1,10 @@
-import { CredentialResponse } from '@react-oauth/google';
 import '../pages/css/SignUp.css';
-import axios from '../utils/CustomAxios';
 import { getCookie, setSessionCookie } from '../utils/Cookie';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../features/memberSlice';
-import GoogleLoginForm from './GoogleLoginForm';
 import { RootState } from '../store/store';
 import { useState } from 'react';
+import axios from '../utils/CustomAxios';
 
 const SignUpModal = ({showSignUp, openSignUp, closeSignUp } : {showSignUp:boolean; openSignUp:()=>void; closeSignUp:()=>void}) => {
   
@@ -46,13 +44,17 @@ const SignUpModal = ({showSignUp, openSignUp, closeSignUp } : {showSignUp:boolea
     
     const Credential = getCookie('Credential');
     const kktCredential = getCookie('ACCESS_TOKEN');
+    const naverCredential = getCookie('access_token');
 
-    const checkCre = Credential || kktCredential;
+    console.log(naverCredential);
+    const checkCre = Credential || kktCredential || naverCredential;
+
+    
     const enroll =()=>{
         console.log("enroll Credential:"+ Credential);
         console.log("enroll accessToken : "+ kktCredential);
 
-        if(!Credential && kktCredential){
+        if(!Credential && !naverCredential && kktCredential){
             axios
                 .post("http://localhost:8087/soundcast/auth/enroll/kakao",{
                     accessToken: kktCredential
@@ -66,7 +68,7 @@ const SignUpModal = ({showSignUp, openSignUp, closeSignUp } : {showSignUp:boolea
                     dispatch(login(res.data.member));
                     closeSignUp();
                 })     
-        } else if(Credential){
+        } else if(!naverCredential && Credential){
             axios
                 .post("http://localhost:8087/soundcast/auth/enroll/google", {
                     Credential
@@ -86,8 +88,21 @@ const SignUpModal = ({showSignUp, openSignUp, closeSignUp } : {showSignUp:boolea
                     console.log(error);
                 })
 
+        } else if(naverCredential){
+            axios
+                .post("http://localhost:8087/soundcast/auth/enroll/naver", {
+                    naverCredential
+                })
+                .then(res => {
+                    console.log("네이버nroll : " +res);
+                    const JwtToken = res.data.jwtToken;
+                    console.log("네이버jwttoken : " + JwtToken);
+                    setSessionCookie("accessToken",JwtToken);
+                    
+                    dispatch(login(res.data.member));
+                    closeSignUp();
+                })
         }
-
 
     }
     
@@ -126,6 +141,19 @@ const SignUpModal = ({showSignUp, openSignUp, closeSignUp } : {showSignUp:boolea
                         <img 
                             src={serverImagePath+"public/member/kakao_Login.png"}
                             alt="Kakao Icon" 
+                            onClick={() => {
+                                if (canSignUp) {
+                                    enroll();
+                                }
+                            }} 
+                        />
+                    )}
+
+                    {checkCre === naverCredential &&(
+                        <img
+                            src={serverImagePath+"public/member/naver_Login.png"}
+                            alt="Kakao Icon" 
+                            style={{height:'45px'}}
                             onClick={() => {
                                 if (canSignUp) {
                                     enroll();

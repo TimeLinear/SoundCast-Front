@@ -1,6 +1,10 @@
-import { ChangeEvent, FormEvent, MouseEvent, SetStateAction, useRef, useState } from "react";
+import { ChangeEvent, FormEvent, MouseEvent, SetStateAction, useEffect, useRef, useState } from "react";
 import { Member } from "../type/memberType";
 import axios from "../utils/CustomAxios";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../store/store";
+import { setPlaySong, setSongList } from "../features/songSlice";
+import { useNavigate } from "react-router-dom";
 
 const UploadMusic = ({
   show,
@@ -222,23 +226,19 @@ const UploadMusic = ({
   const formData = new FormData();
 
   const handleBackgroundClick = (event: MouseEvent) => {
-    if (event.target === event.currentTarget) {
-      handleClose();
-    }
+    handleClose();
+    clearAll();
   };
   // 장르클릭 핸들러
   const [selectedGenre, setSelectedGenre] = useState(1);
 
-  const genres = [
-    "Rock",
-    "Electronic",
-    "Hip-Hop",
-    "Jazz",
-    "Classical",
-    "Sound Track",
-    "Pop",
-    "R&B/Soul",
-  ];
+  const song = useSelector((state: RootState) => state.song);
+
+  const dispatch = useDispatch();
+
+  const navi = useNavigate();
+
+  const genres = song.genreList.filter((genre) => genre.genreNo > 0);
 
   const genreClickHandler = (genre: SetStateAction<number>) => {
     setSelectedGenre(genre);
@@ -247,16 +247,7 @@ const UploadMusic = ({
   // 분위기 클릭 핸들러
   const [selectedMood, setSelectedMood] = useState(1);
 
-  const moods = [
-    "Gloomy",
-    "Dreamer",
-    "Dark",
-    "Angry",
-    "Classical",
-    "Sound Track",
-    "Pop",
-    "R&B/Soul",
-  ];
+  const moods = song.moodList.filter((mood) => mood.moodNo > 0);
 
   const moodClickHandler = (mood: SetStateAction<number>) => {
     setSelectedMood(mood);
@@ -264,12 +255,21 @@ const UploadMusic = ({
 
   const [songFile, setSongFile] = useState<File>();
   const [showCoverFile, setShowCoverFile] = useState('');
-  const [coverFile, setCoverFile] = useState<File>();;
+  const [coverFile, setCoverFile] = useState<File>();
+  const [duration, setDuration] = useState<number>(0);
 
   const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files;
     if (file && file.length > 0) {
       setSongFile(file[0]);
+      const audioUrl = URL.createObjectURL(file[0]);
+      const audio = new Audio(audioUrl);
+      audio.onloadedmetadata = () => {
+        // 오디오의 총 재생 길이(초 단위) 얻기
+        setDuration(audio.duration);
+        // 메모리 해제
+        URL.revokeObjectURL(audioUrl);
+      };
     }
   }
 
@@ -288,7 +288,7 @@ const UploadMusic = ({
 
   const [ishovered, setIsHovered] = useState('unhovered');
 
-  const onUploadSubmit = (e:MouseEvent<HTMLButtonElement>) => {
+  const onUploadSubmit = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
     songFile && formData.append("songFile", songFile);
@@ -300,10 +300,11 @@ const UploadMusic = ({
       songDetail: songInfo.songDetail,
       songLicense: songInfo.songLicense,
       songGenreNo: selectedGenre,
-      songMoodNo: selectedMood
+      songMoodNo: selectedMood,
+      songDuration: duration
     }
 
-    const songInfos = new Blob([JSON.stringify(uploadSong)], {type : 'application/json'});
+    const songInfos = new Blob([JSON.stringify(uploadSong)], { type: 'application/json' });
 
     formData.append("song", songInfos);
 
@@ -311,27 +312,80 @@ const UploadMusic = ({
       console.log(item);
     })
     axios.post("http://localhost:8087/soundcast/song/unofficial/upload", formData)
-    .then((res) => {
-      console.log(res);
-    })
+      .then((res) => {
+        // console.log(res);
+        if (!res.data) {
+          alert("음원 등록에 실패하였습니다");
+          navi("/member/mypage");
+          return;
+        }
+
+        const newSong = {
+          songNo: res.data.songNo, // 음원 번호
+          songMemberNo: res.data.songMemberNo, // 업로더 회원 번호
+          songMoodNo: res.data.songMoodNo, // 음원 분위기 번호
+          songGenreNo: res.data.songGenreNo, // 음원 장르 번호
+          songTitle: res.data.songTitle, // 음원명(유저가 입력)
+          songLicense: res.data.songLicense, // 음원 출처(유저가 입력)
+          songDetail: res.data.songDetail, // 음원 상세(유저가 입력)
+          songPlaceNo: res.data.songPlaceNo,
+
+          songGenreName: res.data.songGenreName,
+          songMoodName: res.data.songMoodName,
+
+          songImage: {
+            songImageNo: res.data.songImageNo, // 음원 커버 이미지 번호
+            songImagePathNo: res.data.songImagePathNo, // 음원 커버 이미지 경로 번호
+            songImageName: res.data.songImageName, // 음원 커버 이미지 파일명
+            songImagePathName: res.data.songImagePathName // 음원 커버 이미지 경로명
+          },
+
+          songFile: {
+            songFileNo: res.data.songFileNo, // 음원 파일 번호
+            songFilePathNo: res.data.songFilePathNo,
+            songFileSongPathName: res.data.songFileSongPathName,
+            songFileChangeName: res.data.songFileChangeName,
+            songFileOriginName: res.data.songFileOriginName
+          },
+
+          // songDuration: res.data.songDuration
+        }
+        dispatch(setSongList([...song.list, newSong]));
+        dispatch(setPlaySong(newSong.songNo));
+      })
+      .finally(() => {
+        handleClose();
+        navi("/song/detail/" + song.currentSong.songNo);
+      })
   }
 
   // 그외 텍스트 정보들
   const [songInfo, setSongInfo] = useState({
-    songTitle:"",
+    songTitle: "",
     songMemberNo: member.memberNo,
     songDetail: "",
     songLicense: ""
   });
 
-  const onChangeSongInfo = (e:ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => {
+  const onChangeSongInfo = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const value = e.target.value;
     const name = e.target.name;
 
     setSongInfo((prev) => {
-      return {...prev, [name]:value};
+      return { ...prev, [name]: value };
     })
   }
+
+  const clearAll = () => {
+    setSongInfo({ songDetail: '', songLicense: '', songMemberNo: songInfo.songMemberNo, songTitle: '' });
+    setShowCoverFile('');
+    setCoverFile(undefined);
+    setSongFile(undefined);
+    setSelectedGenre(1);
+    setSelectedMood(1);
+  }
+
+  const serverResourcePath = "http://localhost:8087/soundcast/resource/";
 
   return (
     <div style={showHideClassName} onClick={handleBackgroundClick}>
@@ -366,14 +420,14 @@ const UploadMusic = ({
                   hidden />
                 <label htmlFor="cover-file-upload" style={{ cursor: "pointer" }}>
                   <img
-                    src={showCoverFile ? showCoverFile : "/images/default/song_default.png"}
+                    src={(showCoverFile ? showCoverFile : serverResourcePath + "public/song/song-image.png")}
                     style={showCoverFile ? imagePreviewStyle : { ...imagePreviewStyle, opacity: "0.3" }}
                     alt="Preview"
                   />
                 </label>
                 {!showCoverFile && (
                   <img
-                    src="/images/song/file-upload-icon-white.png"
+                    src={serverResourcePath + "public/song/file-upload-icon-white.png"}
                     style={{
                       position: "absolute",
                       left: "50%",
@@ -428,7 +482,7 @@ const UploadMusic = ({
             <div style={rightSectionStyle}>
               <div style={modalHeaderStyle}>
                 <p style={modalHeaderTextStyle}>내 음원 업로드하기</p>
-                <button style={modalCloseStyle} onClick={handleClose}>
+                <button style={modalCloseStyle} onClick={() => { handleClose(); clearAll(); }}>
                   ✕
                 </button>
               </div>
@@ -483,7 +537,7 @@ const UploadMusic = ({
                   <div style={genreOptionsStyle}>
                     {genres.map((genre, index) => (
                       <button
-                        key={genre}
+                        key={genre.genreNo}
                         style={
                           selectedGenre === index + 1
                             ? { ...genreOptionStyle, ...genreOptionSelectedStyle }
@@ -491,7 +545,7 @@ const UploadMusic = ({
                         }
                         onClick={() => genreClickHandler(index + 1)}
                       >
-                        {genre}
+                        {genre.genreName}
                       </button>
                     ))}
                   </div>
@@ -502,7 +556,7 @@ const UploadMusic = ({
                   <div style={genreOptionsStyle}>
                     {moods.map((mood, index) => (
                       <button
-                        key={mood}
+                        key={mood.moodNo}
                         style={
                           selectedMood === index + 1
                             ? { ...genreOptionStyle, ...genreOptionSelectedStyle }
@@ -510,11 +564,11 @@ const UploadMusic = ({
                         }
                         onClick={() => moodClickHandler(index + 1)}
                       >
-                        {mood}
+                        {mood.moodName}
                       </button>
                     ))}
                   </div>
-                  <div style={formGroupStyle}>
+                  <div style={{ ...formGroupStyle, marginTop: "40px" }}>
                     <label style={labelStyle}>업로드 이용약관</label>
                     <textarea
                       rows={5}
@@ -532,7 +586,7 @@ const UploadMusic = ({
                     />
                   </div>
                 </div>
-                <button style={submitButtonStyle} onClick={onUploadSubmit}>수정</button>
+                <button style={submitButtonStyle} onClick={onUploadSubmit}>등록</button>
               </div>
             </div>
           </div>

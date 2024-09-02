@@ -6,23 +6,19 @@ import { createContext} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './store/store';
 import PlaceDevider from './components/PlaceDevider';
-
-
-import UserPage from './pages/UserPage';
-import { Route, Routes } from 'react-router-dom';
+import MainPage from './pages/MainPage';
+import MusicDetail from './pages/MusicDetail';
 import Footer from './components/Footer';
 import SearchPage from './pages/SearchPage';
-import MusicDetail from './pages/MusicDetail';
-import Mypage from './pages/Mypage';
-import MainPage from './pages/MainPage';
+import UserPage from './pages/UserPage';
+import { Route, Routes } from 'react-router-dom';
 import Commnuity from './pages/Commnuity';
 import Introduce from './pages/Introduce';
+import Mypage from './pages/Mypage'
 
-
-
-export let Context = createContext({}); //Context == state 보관소
 
 function App() {
+  
 
   const member = useSelector((state:RootState) => state.member);
 
@@ -34,12 +30,14 @@ function App() {
   // 사용자 정보를 가지고 로그인 버튼을 로그아웃 버튼으로 바꾸고
   // 프로필 이미지를 헤더 상단에 띄워주는 로직이 필요하다
   
+  
+
   return (
     <div className="App">
       <Header />
       <PlaceDevider />
       <Routes>
-        
+
         <Route path='/' element={<MainPage />} />
         <Route path='/search' element={<SearchPage />} />
         <Route path='/song/detail/:musicNo' element={<MusicDetail/>} />

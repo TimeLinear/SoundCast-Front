@@ -5,6 +5,7 @@ import GoogleLoginForm from './GoogleLoginForm';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import KakaoLoginForm from './KakaoLoginForm';
+import NaverLoginForm from './NaverLoginForm';
 
 const LoginModal = ({show, handleClose, onSignupRequest}:{show:boolean, handleClose:() => void, onSignupRequest:()=>void} ) => {
     const showHideClassName = show ? "modal display-block" : "modal display-none";
@@ -21,7 +22,6 @@ const LoginModal = ({show, handleClose, onSignupRequest}:{show:boolean, handleCl
             handleClose();
         }
     };
-
 
     const handleSignupRequest = () => {
         onSignupRequest();
@@ -40,6 +40,7 @@ const LoginModal = ({show, handleClose, onSignupRequest}:{show:boolean, handleCl
                         <div className="login-buttons">
                             <GoogleLoginForm onSignupRequest={handleSignupRequest} handleClose={handleClose}/>
                             <KakaoLoginForm onSignupRequest={handleSignupRequest} handleClose={handleClose}/>
+                            <NaverLoginForm onSignupRequest={handleSignupRequest} handleClose={handleClose}/>
                         </div>
                 </div>
             </div>

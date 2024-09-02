@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import Pagination from "../components/Pagination";
 import "./css/myPageBanner.css";
 import FollowingModal from "../components/FollowingModal";
 import ModifyMyPageModal from "../components/ModifyMyPageModal"; 
@@ -9,8 +10,7 @@ import axios from "axios";
 import { Props } from "../type/SongType";
 import { setPlaySong, setSongList } from "../features/songSlice";
 import MyPageSong from "../components/MyPageSong";
-import UploadMusic from "./UploadMusic";
-
+import ModifyMusic from "./ModifyMusic";
 
 const MyPageBanner = () => {
     const member = useSelector((state: RootState) => state.member);
@@ -21,8 +21,9 @@ const MyPageBanner = () => {
     const [isShow, setIsShow] = useState('song');
     const [showFollingModal, setShowFollingModal] = useState(false);
     const [showModifyModal,setShowModifyModal] = useState(false);
-    const [showUploadModal, setShowUploadModal] = useState(false);
+
     
+   
     const followingHandler = () => {
         setShowFollingModal(true);
     }
@@ -45,6 +46,7 @@ const MyPageBanner = () => {
     //음원
     const [activeSongNo, setActiveSongNo] = useState<number|null>(null);
     console.log(member.memberNo);
+    
     useEffect(()=>{
       
         axios.get(`http://localhost:8087/soundcast/song/memberSongList/${member.memberNo}`)
@@ -75,12 +77,67 @@ const MyPageBanner = () => {
     }
 
     const insertSongHandler = () =>{
-        setShowUploadModal(true);
+        
     }
-    const insetHandleClose =() =>{
-        setShowUploadModal(false);
-    }
-    
+
+    const songItems = [
+        { profileImg: "/images/defaultLogo.png", title: "cass" },
+        { profileImg: "/images/defaultLogo.png", title: "hite" },
+        { profileImg: "/images/defaultLogo.png", title: "grandmother" },
+        { profileImg: "/images/defaultLogo.png", title: "caaasasssssssssssssfffffffffffffffffffffff" },
+        { profileImg: "/images/defaultLogo.png", title: "ffffffffffffffff" },
+        { profileImg: "/images/defaultLogo.png", title: "hite" },
+        { profileImg: "/images/defaultLogo.png", title: "hite" },
+        { profileImg: "/images/defaultLogo.png", title: "hite" },
+        { profileImg: "/images/defaultLogo.png", title: "hite" },
+        { profileImg: "/images/defaultLogo.png", title: "hite" },
+        { profileImg: "/images/defaultLogo.png", title: "hite" },
+        { profileImg: "/images/defaultLogo.png", title: "hite" },
+        { profileImg: "/images/defaultLogo.png", title: "hite" },
+        { profileImg: "/images/defaultLogo.png", title: "hite" },
+        { profileImg: "/images/defaultLogo.png", title: "hite" },
+        { profileImg: "/images/defaultLogo.png", title: "hite" },
+        { profileImg: "/images/defaultLogo.png", title: "hite" },
+        { profileImg: "/images/defaultLogo.png", title: "hite" },
+        { profileImg: "/images/defaultLogo.png", title: "hite" },
+        { profileImg: "/images/defaultLogo.png", title: "hite" },
+        { profileImg: "/images/defaultLogo.png", title: "hite" },
+        { profileImg: "/images/defaultLogo.png", title: "hite" }
+    ]
+
+  
+
+    /* 페이지네이션 시작 */
+
+    // 한 페이지당 항목 수
+    const itemsPerPage = 20;
+
+    const [currentPage, setCurrentPage] = useState<number>(1); /* 현재 페이지, Pagination.tsx로 넘김 */
+    const totalPages: number = Math.ceil(songItems.length / itemsPerPage); /* 페이지 (버튼) 수, Pagination.tsx로 넘김 */
+
+    const handlePageChange = (pageNumber: number) => { /* pageNumber는 Pagination.tsx에서 기술 , Pagination.tsx로 넘김 */
+        setCurrentPage(pageNumber); /* 현재 페이지의 state를 Pagination.tsx에서 받아온 pageNumber로 변경,
+currentPage의 state값에 따라서 동적으로 화면상에 표기할 currentItems(memberListItems의 현재페이지의 첫번째부터 마지막 아이템들을 표시)가
+실시간으로 바뀐다. */
+
+        // 페이지 변경 시 데이터 가져오기 또는 화면 갱신 로직 추가
+    };
+
+    // 현재 페이지의 항목을 계산
+    const indexOfLastItem = currentPage * itemsPerPage; // 현재 페이지에서 가장 마지막 리스트 아이템의 인덱스 + 1
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage; // 현제 페이지에서 가장 첫번째 리스트 아이템의 인덱스
+    const currentItems = songItems.slice(indexOfFirstItem, indexOfLastItem);
+    // 현재 페이지에서 표시해야할 리스트 아이템들 [{no: "11", profileImg: "/images/mimikyu.png", artist: "Gun" , email: "parkyo@gmail.com"}]
+
+    /* 페이지네이션 끝 */
+    console.log("-----------------------------------------")
+    console.log(member.banner);
+    console.log(member.email);
+    console.log(member.introduce);
+    console.log(member.nickName);
+    console.log(member.profile);
+    console.log("-----------------------------------------")
+   
     useEffect(() => {
 
     }, [member]);
@@ -106,7 +163,7 @@ const MyPageBanner = () => {
                     <div className="UserIntroduce" style={{ width: "630px", height: "160px", marginTop: "80px" }}>
                         <span style={{ fontWeight: "bolder", fontSize: "28px" }}>{member.nickName}<span style={{ fontSize: "15px", fontWeight: "normal", marginLeft: "10px" }}>{member.email}</span></span>
                              <div style={{ display: "flex" }}>
-                                <p style={{ margin: "0 10px 0 0", fontWeight: "bold" }} onClick={followingHandler}>팔로잉 중 </p><p style={{ margin: 0 }}>{member.follow.following.length}</p>
+                                <p style={{ margin: "0 10px 0 0", fontWeight: "bold",cursor:"pointer" }} onClick={followingHandler}>팔로잉 중 </p><p style={{ margin: 0 }}>{member.follow.following.length}</p>
                                 <p style={{ margin: "0 10px 0 20px", fontWeight: "bold" }}>팔로워</p><p style={{ margin: 0 }}>{member.follow.follower}</p>
           
                     </div>
@@ -115,7 +172,7 @@ const MyPageBanner = () => {
                         <div dangerouslySetInnerHTML={{ __html: member.introduce }} />
                     </div>
                 </div>
-                <ModifyMyPageModal show={showModifyModal} Close={modifyCloseHandler}/>
+                <ModifyMyPageModal show={showModifyModal} Close={modifyCloseHandler} />
                 <FollowingModal show={showFollingModal} Close={followingCloseHandler} />
             </div>
 
@@ -146,7 +203,7 @@ const MyPageBanner = () => {
                                 <button style={{ fontWeight: "bolder", fontSize: "17px", marginRight:"23px",  marginLeft: "auto", width:"90px" ,cursor: "pointer",borderRadius:"7px",backgroundColor:"white"}} onClick={insertSongHandler}>업로드</button>
                             </div>
                         }
-                        <UploadMusic show={showUploadModal} handleClose={insetHandleClose} member={member}/>
+
                     </div>
                 </div>
 
