@@ -29,8 +29,8 @@ export type Song = {
 		songFileOriginName: string
 	}
 
-	memberNickname?: string; // 업로더 닉네임
-
+	memberNickname?: string, // 업로더 닉네임
+	songDuration?: number
 	
 };
 
@@ -60,9 +60,9 @@ export const initSong:Song = {
 		songFileSongPathName: 'songs/file/unofficial/',
 		songFileChangeName: 'soundcast-2024083012000011111.png',
 		songFileOriginName: ''
-	}
-	// songFileOriginName : '우주여행.mp3'
-
+	},
+	memberNickname: '',
+	songDuration: 0
 }
 
 export const initSongList: Song[] = [

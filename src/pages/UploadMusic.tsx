@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, MouseEvent, SetStateAction, useRef, useState } from "react";
+import { ChangeEvent, FormEvent, MouseEvent, SetStateAction, useEffect, useRef, useState } from "react";
 import { Member } from "../type/memberType";
 import axios from "../utils/CustomAxios";
 import { useDispatch, useSelector } from "react-redux";
@@ -226,9 +226,8 @@ const UploadMusic = ({
   const formData = new FormData();
 
   const handleBackgroundClick = (event: MouseEvent) => {
-    if (event.target === event.currentTarget) {
-      handleClose();
-    }
+    handleClose();
+    clearAll();
   };
   // 장르클릭 핸들러
   const [selectedGenre, setSelectedGenre] = useState(1);
@@ -256,12 +255,21 @@ const UploadMusic = ({
 
   const [songFile, setSongFile] = useState<File>();
   const [showCoverFile, setShowCoverFile] = useState('');
-  const [coverFile, setCoverFile] = useState<File>();;
+  const [coverFile, setCoverFile] = useState<File>();
+  const [duration, setDuration] = useState<number>(0);
 
   const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files;
     if (file && file.length > 0) {
       setSongFile(file[0]);
+      const audioUrl = URL.createObjectURL(file[0]);
+      const audio = new Audio(audioUrl);
+      audio.onloadedmetadata = () => {
+        // 오디오의 총 재생 길이(초 단위) 얻기
+        setDuration(audio.duration);
+        // 메모리 해제
+        URL.revokeObjectURL(audioUrl);
+      };
     }
   }
 
@@ -292,7 +300,8 @@ const UploadMusic = ({
       songDetail: songInfo.songDetail,
       songLicense: songInfo.songLicense,
       songGenreNo: selectedGenre,
-      songMoodNo: selectedMood
+      songMoodNo: selectedMood,
+      songDuration: duration
     }
 
     const songInfos = new Blob([JSON.stringify(uploadSong)], { type: 'application/json' });
@@ -305,7 +314,7 @@ const UploadMusic = ({
     axios.post("http://localhost:8087/soundcast/song/unofficial/upload", formData)
       .then((res) => {
         // console.log(res);
-        if(!res.data) {
+        if (!res.data) {
           alert("음원 등록에 실패하였습니다");
           navi("/member/mypage");
           return;
@@ -334,10 +343,12 @@ const UploadMusic = ({
           songFile: {
             songFileNo: res.data.songFileNo, // 음원 파일 번호
             songFilePathNo: res.data.songFilePathNo,
-            songFileSongPathName: res.data.songFilePathName,
+            songFileSongPathName: res.data.songFileSongPathName,
             songFileChangeName: res.data.songFileChangeName,
             songFileOriginName: res.data.songFileOriginName
-          }
+          },
+
+          // songDuration: res.data.songDuration
         }
         dispatch(setSongList([...song.list, newSong]));
         dispatch(setPlaySong(newSong.songNo));
@@ -364,6 +375,17 @@ const UploadMusic = ({
       return { ...prev, [name]: value };
     })
   }
+
+  const clearAll = () => {
+    setSongInfo({ songDetail: '', songLicense: '', songMemberNo: songInfo.songMemberNo, songTitle: '' });
+    setShowCoverFile('');
+    setCoverFile(undefined);
+    setSongFile(undefined);
+    setSelectedGenre(1);
+    setSelectedMood(1);
+  }
+
+  const serverResourcePath = "http://localhost:8087/soundcast/resource/";
 
   return (
     <div style={showHideClassName} onClick={handleBackgroundClick}>
@@ -398,14 +420,14 @@ const UploadMusic = ({
                   hidden />
                 <label htmlFor="cover-file-upload" style={{ cursor: "pointer" }}>
                   <img
-                    src={showCoverFile ? showCoverFile : "/images/default/song_default.png"}
+                    src={(showCoverFile ? showCoverFile : serverResourcePath + "public/song/song-image.png")}
                     style={showCoverFile ? imagePreviewStyle : { ...imagePreviewStyle, opacity: "0.3" }}
                     alt="Preview"
                   />
                 </label>
                 {!showCoverFile && (
                   <img
-                    src="/images/song/file-upload-icon-white.png"
+                    src={serverResourcePath + "public/song/file-upload-icon-white.png"}
                     style={{
                       position: "absolute",
                       left: "50%",
@@ -460,7 +482,7 @@ const UploadMusic = ({
             <div style={rightSectionStyle}>
               <div style={modalHeaderStyle}>
                 <p style={modalHeaderTextStyle}>내 음원 업로드하기</p>
-                <button style={modalCloseStyle} onClick={handleClose}>
+                <button style={modalCloseStyle} onClick={() => { handleClose(); clearAll(); }}>
                   ✕
                 </button>
               </div>

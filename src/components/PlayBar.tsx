@@ -3,7 +3,7 @@ import { Props, Song } from "../type/SongType";
 import { RootState } from "../store/store";
 import { ChangeEvent, DragEvent, useRef, useState } from "react";
 import ReactPlayer from "react-player";
-import axios from "axios";
+import axios from "../utils/CustomAxios";
 
 
 interface PlayerState {
@@ -187,6 +187,7 @@ function Player(props:Props){
                             step="any"
                             value={playerState.volume}
                             onChange={handleVolumeChange}
+                            style={{accentColor:"#1C003B"}}
                             className="volume-bar"
                         />
                     )}

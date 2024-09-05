@@ -58,9 +58,6 @@ function GenreSearch ({searchGenre, searchMood}:{searchGenre:number, searchMood:
     onLeaveSearchs();
   },[isHovered]);
 
-  
-   //------------수정한 부분(08/21)
-     
   useEffect(()=>{
     dispatch(setGenre(searchGenreNo));
   },[searchGenreNo])
@@ -99,7 +96,7 @@ function GenreSearch ({searchGenre, searchMood}:{searchGenre:number, searchMood:
           song.genreList.map( genre => (
           <div id='genre'
               key={genre.genreNo}
-              onMouseEnter={()=>{console.log(genre.genreNo); setSearchGenreNo(genre.genreNo)}}
+              onMouseEnter={()=>{setSearchGenreNo(genre.genreNo)}}
               onClick={searchSongs}
               style={searchGenreNo === genre.genreNo ? genreItemStyle : genreCommonStyle}>
             <span style={searchGenreNo === genre.genreNo ? {...genreItemFontStyle, color:"#FFFFFF"} : genreItemFontStyle}>{genre.genreName}</span>

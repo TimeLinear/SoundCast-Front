@@ -312,13 +312,6 @@ const ModifyMusic = ({show, handleClose, selectSong}:{show:boolean, handleClose:
         songLicense,
         songGenreNo : selectedGenre,
         songMoodNo : selectedMood,
-        
-        // songFile : {
-        //   ...song.songFile
-        // },
-        // songImage : {
-        //   ...song.songImage
-        // }
       }      
       setSong(renewSong);
       

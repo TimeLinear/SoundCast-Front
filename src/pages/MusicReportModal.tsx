@@ -1,5 +1,8 @@
-import { CSSProperties, useState } from 'react';
+import { ChangeEvent, CSSProperties, MouseEvent, useRef, useState } from 'react';
 import '../index.css'
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
+import axios from '../utils/CustomAxios';
 
 const MusicReportModal = ({setShowReportModal}:{setShowReportModal:(toggle:boolean) => void}) => {
     const commonFlexStyle: CSSProperties = {
@@ -70,6 +73,49 @@ const MusicReportModal = ({setShowReportModal}:{setShowReportModal:(toggle:boole
         borderRadius: "10px",
     };
 
+    const member = useSelector((state:RootState) => state.member);
+    const song = useSelector((state:RootState) => state.song);
+
+    const [reportContent, setReportContent] = useState('음원이 아닌 파일 업로드');
+
+    const [reportInput, setReportInput] = useState('');
+
+    const textareaRef = useRef(null);
+
+    const onChangeInput = (e:ChangeEvent<HTMLTextAreaElement>) => {
+        setReportInput(e.target.value);
+    }
+
+    const radioCheckHandler = (e:ChangeEvent<HTMLInputElement>) => {
+        if(e.target.checked) {
+            setReportContent(e.target.value);
+        }
+    }
+
+    const onSendReport = (e:MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+
+        if(!member.memberNo && !song.currentSong.songNo) {
+            return;
+        }
+
+        if(reportContent.includes("[기타]")) {
+            setReportContent(reportContent + " " + reportInput);
+        }
+
+        axios.post("http://localhost:8087/soundcast/song/report", {
+            reportSongNo: song.currentSong.songNo,
+            reportMemberNo: member.memberNo,
+            reportText: reportContent
+        })
+            .then(res => {
+                if(res.data) {
+                    alert("신고되었습니다.")
+                    setShowReportModal(false);
+                }
+            })
+    }
+
     return (
         <div style={containerStyle}>
             <header style={headerStyle}>
@@ -79,36 +125,63 @@ const MusicReportModal = ({setShowReportModal}:{setShowReportModal:(toggle:boole
                 <div style={commonTextStyle}>신고사유</div>
                 <div style={{ ...commonColumnFlexStyle, flexGrow: "1", paddingLeft: "30px", alignItems: "flex-start" }}>
                     <div style={{...commonFlexStyle, alignItems: "center" , marginTop: "20px" }}>
-                        <input style={commonRadioInputStyle} type="radio" name="reportReason" id="report_reason1" defaultChecked />
+                        <input 
+                            style={commonRadioInputStyle} 
+                            type="radio" 
+                            name="reportReason" 
+                            id="report_reason1" 
+                            value={"음원이 아닌 파일 업로드"}
+                            onChange={radioCheckHandler}
+                            defaultChecked />
                         <label style={commonLabelStyle} htmlFor="report_reason1">음원이 아닌 파일 업로드</label>
                     </div>
                     <div style={{...commonFlexStyle, alignItems: "center" , marginTop: "20px" }}>
-                        <input style={commonRadioInputStyle} type="radio" name="reportReason" id="report_reason2" />
+                        <input 
+                            style={commonRadioInputStyle} 
+                            type="radio" 
+                            name="reportReason" 
+                            id="report_reason2"
+                            value={"타인의 저작물 도용"}
+                            onChange={radioCheckHandler}
+                            />
                         <label style={commonLabelStyle} htmlFor="report_reason2">타인의 저작물 도용</label>
                     </div>
                     <div style={{...commonFlexStyle, alignItems: "center" , marginTop: "20px" }}>
-                        <input style={commonRadioInputStyle} type="radio" name="reportReason" id="report_reason3" />
+                        <input 
+                            style={commonRadioInputStyle} 
+                            type="radio" 
+                            name="reportReason" 
+                            id="report_reason3" 
+                            value={"폭력적 혹은 혐오스러운 컨텐츠"}
+                            onChange={radioCheckHandler}
+                            />
                         <label style={commonLabelStyle} htmlFor="report_reason3">폭력적 혹은 혐오스러운 컨텐츠</label>
                     </div>
                     <div style={{ marginTop: "20px", ...commonColumnFlexStyle, width: "100%", flexGrow: "1", paddingBottom: "5px" }}>
                         <div style={commonFlexStyle}>
-                            <input style={commonRadioInputStyle} type="radio" name="reportReason" id="report_reason4" />
+                            <input 
+                                style={commonRadioInputStyle} 
+                                type="radio" 
+                                name="reportReason" 
+                                id="report_reason4" 
+                                value={"[기타]"}
+                                onChange={radioCheckHandler}
+                                />
                             <label style={commonLabelStyle} htmlFor="report_reason4">기타</label>
                         </div>
                         <div style={{ paddingLeft: "30px", flexGrow: "1", ...commonColumnFlexStyle }}>
-                            <textarea name="etcReason" style={{
-                                boxSizing: "border-box",
-                                width: "100%",
-                                resize: "none",
-                                flexGrow: "1",
-                                outline: "none"
-                            }}></textarea>
+                            <textarea 
+                                name="etcReason"
+                                style={{ boxSizing: "border-box", width: "100%", resize: "none", flexGrow: "1", outline: "none"}}
+                                onChange={onChangeInput}
+                                ref={textareaRef}>
+                            </textarea>
                         </div>
                     </div>
                 </div>
                 <div style={footerStyle}>
                     <span style={{ font: "12px Inter", color: "gray" }}>※ 반복된 허위 신고 시 제제를 받을 수 있습니다</span>
-                    <button style={sendButtonStyle}>보내기</button>
+                    <button style={sendButtonStyle} onClick={onSendReport}>보내기</button>
                 </div>
             </section>
         </div>

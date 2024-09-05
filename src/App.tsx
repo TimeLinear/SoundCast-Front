@@ -6,23 +6,19 @@ import { createContext} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './store/store';
 import PlaceDevider from './components/PlaceDevider';
-
-
-import UserPage from './pages/UserPage';
-import { Route, Routes } from 'react-router-dom';
+import MainPage from './pages/MainPage';
+import MusicDetail from './pages/MusicDetail';
 import Footer from './components/Footer';
 import SearchPage from './pages/SearchPage';
-import MusicDetail from './pages/MusicDetail';
-import Mypage from './pages/Mypage';
-import MainPage from './pages/MainPage';
+import UserPage from './pages/UserPage';
+import { Route, Routes } from 'react-router-dom';
 import Commnuity from './pages/Commnuity';
 import Introduce from './pages/Introduce';
+import Mypage from './pages/Mypage'
 
-
-
-export let Context = createContext({}); //Context == state 보관소
 
 function App() {
+  
 
   const member = useSelector((state:RootState) => state.member);
 

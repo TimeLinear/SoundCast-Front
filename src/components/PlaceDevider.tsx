@@ -3,8 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setGenre, setKeyword, setMood, setPlaceNo } from "../features/searchSlice";
 import { RootState } from "../store/store";
-import axios from "axios";
-import { setSongList } from "../features/songSlice";
 
 const PlaceDevider = () => {
 

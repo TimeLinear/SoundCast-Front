@@ -66,8 +66,6 @@ const MyPageSong = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activ
     //수정 (검색함수 props에 추가, 이미지 경로 지정, 아티스트명 클릭시 아티스트 페이지로 이동, 장르, 분위기 data-songno 수정 클릭 이벤트 부여)
     const url = "http://localhost:8087/soundcast/"; 
 
-
-    
     const serverImagePath = "http://localhost:8087/soundcast/resource/";
 
     return(
