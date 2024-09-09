@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 
 import { Member } from "../type/memberType";
@@ -11,6 +11,7 @@ import LoginModal from "./LoginModal";
 import SignUpModal from "./SignUpModal";
 import axios from "../utils/CustomAxios";
 import { getCookie } from "../utils/Cookie";
+import "../pages/css/siteMap.css";
 
 
 
@@ -21,27 +22,29 @@ function Header() {
   const [showModal, setShowModal] = useState(false);
   const navi = useNavigate();
 
-  let cookie = getCookie("accessToken");
+  useEffect(() => {
+    let cookie = getCookie("accessToken");
 
+    cookie && !(member.nickName) && (
+      axios
+        .post("http://localhost:8087/soundcast/auth/login", {
+          accessToken: cookie
+        })
+        .then(res => {
+          console.log("헤더 res");
+          console.log(res.data);
 
-  cookie && !(member.nickName) && (
-    axios
-      .post("http://localhost:8087/soundcast/auth/login", {
-        accessToken: cookie
-      })
-      .then(res => {
-        console.log("헤더 res");
-        console.log(res.data);
-        if (!res) {
-          return;
-        }
+          if (!res) {
+            return;
+          }
 
-        dispatch(login(res.data.member));
-      })
-      .catch(error => {
-        console.log(error);
-      })
-  );
+          dispatch(login(res.data.member));
+        })
+        .catch(error => {
+          console.log(error);
+        })
+    );
+  }, []);
   console.log("헤더로그인");
   console.log(member);
 
@@ -53,6 +56,7 @@ function Header() {
   const loginCloseHandler = () => {
     setShowModal(false);
   }
+
 
   const logoutHandler = () => {
     dispatch(logout());
@@ -72,33 +76,80 @@ function Header() {
   const openSignUp = () => setShowSignUp(true);
   const closeSignUp = () => setShowSignUp(false);
 
-  const serverImagePath = "http://localhost:8087/soundcast/resource/";
-  const requestStartWith = "/SoundCAST_resources/";
+  //sitemap 클릭 버튼
+  const [dropShow, setDropShow] = useState(false);
+  const [animateDropdown, setAnimateDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
-  console.log("헤더 프로필 경로 : %s", serverImagePath + member.profile.slice(member.banner.indexOf(requestStartWith) + requestStartWith.length));
+  const dropChange = (e: React.MouseEvent) => {
+    e.stopPropagation(); // 이벤트 전파 방지
+    if (!dropShow) {
+      setDropShow(true);
+      setTimeout(() => setAnimateDropdown(true), 10); // 애니메이션 시작
+    } else {
+      setAnimateDropdown(false);
+      setTimeout(() => setDropShow(false), 300); // 애니메이션 종료 후 드롭다운 숨김
+    }
+  }
+
+  const serverImagePath = "http://localhost:8087/soundcast/resource/";
 
   return (
     <>
       <div className="Header">
         <div className="Logo">
-          <img src="\images\defaultLogo.png" onClick={mainGo} style={{cursor:"pointer"}}/>
+          <img src={serverImagePath + "public/main/defaultLogo.png"} onClick={mainGo} style={{cursor:"pointer"}} />
         </div>
         <div className="DivideBox"></div>
         <div className="SiteMap">
-          <button>
-            <span>Sitemap</span>
+          <button onClick={dropChange} ref={buttonRef}>
+            <span>SiteMap</span>
             <span>
-              <img src="\images\Chevron_down.png" />
+              <img src={dropShow ? serverImagePath + "public/main/Chevron_down.png" : serverImagePath + "public/main/Chevron_up.png"} />
             </span>
           </button>
+          {dropShow && (
+            <div ref={dropdownRef} className={`dropdown-menu ${animateDropdown ? "show" : "hide"}`} style={{ position: "absolute", top: "35px" ,right: 0,zIndex:"1"}}>
+              <div className="big stiemapdiv" style={{display:"flex", backgroundColor:"#460373", width:"500px",borderRadius:"10px"}}>
+                
+                <div className="sitemap-place" style={{width:"33%" ,color:"#B59AC7"}}>
+                  <div style={{fontSize:"17px", fontWeight:"bolder",color:"white",marginLeft:"20px",marginTop:"10px"}}>플레이스</div>
+                  <div style={{marginLeft:"20px",marginTop:"15px",fontWeight:"bold"}}>
+                    <li>공식 무료 음원</li>
+                    <li>창작 음원</li>
+                  </div>
+                </div>
 
+                <div className="sitemap-com" style={{paddingLeft:"5px",width:"33%",color:"#B59AC7",borderLeft:"solid #FFFFFF thin"}}>
+                  <div style={{fontSize:"17px", fontWeight:"bolder",color:"white",marginTop:"10px",marginLeft:"10px"}}>커뮤니케이션</div>
+                  <div style={{marginTop:"15px",fontWeight:"bold",marginLeft:"10px"}}>
+                    <li>자주 묻는 질문</li>
+                    <li>공지사항</li>
+                  </div>
+                </div>
+
+                <div className="sitemap-intro" style={{paddingLeft:"5px",width:"33%",color:"#B59AC7",borderLeft:"solid #FFFFFF thin"}}>
+                  <div style={{fontSize:"17px", fontWeight:"bolder",color:"white",marginTop:"10px",marginLeft:"10px"}}>소개</div>
+                  <div style={{marginTop:"15px",fontWeight:"bold",marginLeft:"10px",marginBottom:"20px"}}>
+                    <li>SoundCast 소개</li>
+                    <li>라이선스 요약</li>
+                    <li>서비스 약관</li>
+                    <li>개인정보 보호 정책</li>
+                    <li>쿠키 정책</li>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          )}
         </div>
         {member.nickName === "" ? (
           <div className="Login">
             <button onClick={loginHandler}>
 
               <span>
-                <img src="\images\Login.png" />
+                <img src={serverImagePath + "public/main/Login.png"} />
               </span>
               <span>Login</span>
             </button>
@@ -110,7 +161,8 @@ function Header() {
             <div className="Header-profile">
               {member.profile && (
                 <img
-                  src={serverImagePath + member.profile.slice(member.banner.indexOf(requestStartWith) + requestStartWith.length)}
+                  src={serverImagePath +
+                    member.profile}
                   alt="User Profile"
                   className="ProfileImage"
                   onClick={myPageHandler}
@@ -119,18 +171,14 @@ function Header() {
               )}
             </div>
 
-
-
-
             <div className="Logout">
               <button onClick={logoutHandler}>
                 <span>
-                  <img src="\images\logout.png" />
+                  <img src={serverImagePath + "public/main/Logout.png"} />
                 </span>
                 <span>Logout</span>
               </button >
             </div>
-
 
           </>
         )}

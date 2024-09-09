@@ -1,24 +1,17 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { initSong, initSongs, Song } from "../type/SongType";
+import { initSong, initSongList, Song } from "../type/SongType";
 
 const songSlice = createSlice({
     name : 'songs',
-    initialState : {list:initSongs, currentSong:initSong},
+    initialState : {list:initSongList, currentSong:initSong},
     reducers : {
-        setSongList : (state, action:PayloadAction<typeof initSongs>)=>{
-            if(action.payload){
-                state.list = action.payload;
-            } else {
-                state.list = initSongs;
-            }
+        setSongList : (state, action:PayloadAction<typeof initSongList>)=>{
+            console.log(action.payload);
+            if(action.payload){return {...state, list:[...action.payload]}}
         },
-
         setPlaySong : (state, action:PayloadAction<number>) => {
             const selectedSong = state.list.find((value)=>value.songNo === action.payload);
-            
-            if(selectedSong){
-                state.currentSong = selectedSong;
-            } 
+            if(selectedSong){return {...state, currentSong:selectedSong}}
         }
 
     }

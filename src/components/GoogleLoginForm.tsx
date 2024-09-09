@@ -37,8 +37,8 @@ const GoogleLoginForm = ({onSignupRequest, handleClose}:{onSignupRequest:()=>voi
                const JwtToken = res.data.jwtToken;
                console.log(JwtToken);
                setSessionCookie("accessToken",JwtToken);
-               
-               
+               console.log("구글로그인폼res")
+               console.log(res)
                dispatch(login(res.data.member));
 
 
@@ -62,10 +62,12 @@ const GoogleLoginForm = ({onSignupRequest, handleClose}:{onSignupRequest:()=>voi
      return (
         <>
             <GoogleOAuthProvider clientId={clientId}>
+           
                 <GoogleLogin
                     onSuccess={googleOnSuccess}
                     onError={googleOnFail}
                 />
+        
             </GoogleOAuthProvider>
             
         </>

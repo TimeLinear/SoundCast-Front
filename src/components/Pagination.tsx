@@ -54,7 +54,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
   };
 
   return (
-    <div className="pagination" >
+    <div className="pagination">
       <button
         onClick={() => {
           handlePageClick(1);

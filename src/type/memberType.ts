@@ -6,19 +6,31 @@ export type Member = {
     banner: string
     introduce: string
     follow: FollowList
-
+    comment : Comment[]
 }
 
 export type FollowList = {
     follower : number
     following : Followings[]
+   
 }
-
-export type Followings = {
+export type Followings ={
+    memberNo : number
     nickName : string
-    profile : string
+    profile: string
 }
 
+export type Comment ={
+    commentNo : number
+    writerNo : number
+    content : string
+    writerInfo : {
+       
+        profile : string
+        nickName : string
+        
+    }
+}
 
 export type SetMember = (list:Member) => void;
 

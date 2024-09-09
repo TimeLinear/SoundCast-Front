@@ -27,19 +27,19 @@ const LoginModal = ({show, handleClose, onSignupRequest}:{show:boolean, handleCl
         onSignupRequest();
         handleClose();
     }
+    const serverImagePath = "http://localhost:8087/soundcast/resource/";
 
     return (
         <div className={showHideClassName} onClick={handleBackgroundClick}>
             <div className="modal-main">
                 <button className="close-button" onClick={handleClose}>X</button>
                 <div className='modal-serve'>
-                    <img src="images\LoginLogo.png" alt="Soundcast Logo" className="logo" />
+                    <img src={serverImagePath+"public/main/LoginLogo.png"} alt="Soundcast Logo" className="logo" />
                         <h2 className='h2' style={{ color: 'black' }}>로그인</h2>
                         <p style={{ color: '#BBBBBB' }}>지금 바로 서비스를 이용해 보세요!</p>
-                        <div className="login-buttons">
+                        <div className="login-buttons" >
+                            <GoogleLoginForm onSignupRequest={handleSignupRequest} handleClose={handleClose}/>
                             <KakaoLoginForm onSignupRequest={handleSignupRequest} handleClose={handleClose}/>
-                            <button className="login-btn naver">네이버로 로그인</button>
-                            <GoogleLoginForm onSignupRequest={handleSignupRequest} handleClose={handleClose} />
                         </div>
                 </div>
             </div>

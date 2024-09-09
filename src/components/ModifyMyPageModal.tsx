@@ -2,13 +2,15 @@ import { ChangeEvent, useEffect, useRef, useState } from "react";
 import axios from "../utils/CustomAxios";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
-import { login } from "../features/memberSlice";
+import { login, logout } from "../features/memberSlice";
+import { useNavigate } from "react-router-dom";
 
 const ModifyMyPageModal = ({ show, Close }: { show: boolean; Close: () => void }) => {
     const member = useSelector((state: RootState) => state.member);
     console.log("수정 모달에서 출력 : ");
     console.log(member);
     const dispatch = useDispatch();
+    const navi = useNavigate();
     
     const [backgroundImage, setBackgroundImage] = useState<string>();
     const [profileImage, setProfileImage] = useState<string>();
@@ -100,7 +102,8 @@ const ModifyMyPageModal = ({ show, Close }: { show: boolean; Close: () => void }
         inputState.email && formData.append('email', inputState.email);
         inputState.introduce && formData.append('introduce', inputState.introduce);
         member.memberNo && formData.append('memberNo', member.memberNo.toString());
-
+        
+        Close();
         // try {
         //     const response = await axios.post('http://localhost:8087/soundcast/member/modify', formData, {
         //         headers: {
@@ -114,7 +117,7 @@ const ModifyMyPageModal = ({ show, Close }: { show: boolean; Close: () => void }
         //     // Handle error response
         // }
 
-        axios.post('http://localhost:8087/soundcast/member/modify', formData, {
+        await axios.post('http://localhost:8087/soundcast/member/modify', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -125,14 +128,28 @@ const ModifyMyPageModal = ({ show, Close }: { show: boolean; Close: () => void }
                 dispatch(login({
                     member : {
                         ...member, 
-                        ...res.data
-                    }
+                    },
+                    ...res.data
                 }))
             })
             .catch(error => {
                 console.log(error);
             })
     };
+
+    const leaveSubmit = () => {
+        axios.post(`http://localhost:8087/soundcast/member/leave/${member.memberNo}`)
+          .then(res => {
+              console.log(res.data);
+          })
+          .catch(error => {
+              console.log(error);
+          })
+          window.alert("회원 탈퇴 성공 !");
+          dispatch(logout());
+          navi("/");
+      
+  }
 
     const backGroundClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         if (event.target === event.currentTarget) {
@@ -142,7 +159,7 @@ const ModifyMyPageModal = ({ show, Close }: { show: boolean; Close: () => void }
 
 
     const serverImagePath = "http://localhost:8087/soundcast/resource/";
-    const requestStartWith = "/SoundCAST_resources/";
+  
 
 
     return (
@@ -155,7 +172,7 @@ const ModifyMyPageModal = ({ show, Close }: { show: boolean; Close: () => void }
                 <div className="total" style={{ width: "90%", height: "80%", margin: "auto" }}>
                     <div className="modifyBanner" style={{
                         width: "100%", height: "25%", backgroundColor: "#B8CCFE", margin: "0 auto", position: "relative",
-                        backgroundImage: backgroundImage ? `url(${backgroundImage})` : `url(${serverImagePath + member.banner.slice(member.banner.indexOf(requestStartWith) + requestStartWith.length)})`,
+                        backgroundImage: backgroundImage ? `url(${backgroundImage})` : `url(${serverImagePath + member.banner})`,
                         backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat"
                     }}>
                         <div style={{ margin: "0", display: "flex", position: "absolute", right: "15px", bottom: "15px", cursor: "pointer" }}>
@@ -167,7 +184,7 @@ const ModifyMyPageModal = ({ show, Close }: { show: boolean; Close: () => void }
 
                     <div className="mf-total" style={{ display: "flex", width: "100%", height: "25%" }}>
                         <div className="mf-profile" style={{ width: "30%", height: "100%", paddingTop: "10px", cursor: "pointer" }} onClick={triggerFileInput}>
-                            <img src={profileImage ? profileImage : serverImagePath + member.profile.slice(member.banner.indexOf(requestStartWith) + requestStartWith.length)} style={{ width: "80%", height: "85%" }} />
+                            <img src={profileImage ? profileImage : serverImagePath + member.profile} style={{ width: "80%", height: "85%" }} />
                             <input type="file" accept="image/*" ref={fileInputRef} style={{ display: "none" }} onChange={handleProfileChange} />
                         </div>
 
@@ -207,7 +224,7 @@ const ModifyMyPageModal = ({ show, Close }: { show: boolean; Close: () => void }
                             <div style={{ margin: "0", justifyContent: "center", alignItems: "center", display: "flex", backgroundColor: "#00AB6B", borderRadius: "20px", width: "140px", height: "35px", fontWeight: "bolder", color: "white", textAlign: "center", cursor: "pointer" }} onClick={handleSubmit}>
                                 <p>수정</p>
                             </div>
-                            <div style={{ justifyContent: "center", alignItems: "center", display: "flex", marginTop: "15px", backgroundColor: "#FF3C3C", borderRadius: "20px", border: "none", width: "140px", height: "35px", textAlign: "center", fontWeight: "bolder", color: "white", cursor: "pointer" }}>
+                            <div style={{ justifyContent: "center", alignItems: "center", display: "flex", marginTop: "15px", backgroundColor: "#FF3C3C", borderRadius: "20px", border: "none", width: "140px", height: "35px", textAlign: "center", fontWeight: "bolder", color: "white", cursor: "pointer"}} onClick={leaveSubmit} >
                                 <p>탈퇴</p>
                             </div>
                         </div>
