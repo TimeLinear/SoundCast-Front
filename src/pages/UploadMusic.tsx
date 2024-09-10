@@ -219,7 +219,7 @@ const UploadMusic = ({
     marginBottom: '20px',
   };
 
-  // ====
+  // ==== 여기까지 스타일 변수 ====
 
   const showHideClassName = show ? { ...modalStyle, ...displayBlockStyle } : { ...modalStyle, ...displayNoneStyle };
 
@@ -350,12 +350,14 @@ const UploadMusic = ({
 
           // songDuration: res.data.songDuration
         }
+        
         dispatch(setSongList([...song.list, newSong]));
-        dispatch(setPlaySong(newSong.songNo));
+
+        alert("음원이 등록되었습니다.");
+        window.location.replace(window.location.href);
       })
       .finally(() => {
         handleClose();
-        navi("/song/detail/" + song.currentSong.songNo);
       })
   }
 

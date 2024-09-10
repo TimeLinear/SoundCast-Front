@@ -108,6 +108,7 @@ function Player(props:Props){
         }
     }
 
+    const serverImagePath = "http://localhost:8087/soundcast/resource/";
 
     return (
 
@@ -134,7 +135,11 @@ function Player(props:Props){
             
             {/* 이미지 있는 경우 해당 이미지 보여주기, 없는 경우 default image */}
             <div className='song-image' style={{width:"50px", height:"50px", paddingRight: "25px"}}>
-                <img src='images/song-image.png' style={{height:"100%", width:"100%", borderRadius:"2px"}}/>
+                <img 
+                src={currentSong.songImage.songImageName ? 
+                serverImagePath + currentSong.songImage.songImagePathName + currentSong.songImage.songImageName 
+                : 'images/song-image.png'} 
+                style={{height:"100%", width:"100%", borderRadius:"2px"}}/>
             </div>
             
             <div className='song-content' style={{width:"300px", height:"50px", paddingRight: "25px"}}>
