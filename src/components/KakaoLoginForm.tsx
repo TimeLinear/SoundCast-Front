@@ -14,8 +14,6 @@ interface KakaoLoginFormProps{
 
 export default function KakaoLoginForm({onSignupRequest, handleClose}:{onSignupRequest:()=>void, handleClose:()=>void}){
     const kakaoJavascriptKey = process.env.REACT_APP_KAKAO_API_KEY as string;
-    console.log("kakaoJavascriptKey");
-    console.log(kakaoJavascriptKey);
     const member = useSelector((state:RootState) => state.member);
     const dispatch = useDispatch();
     

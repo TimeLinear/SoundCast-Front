@@ -161,7 +161,6 @@ const ModifyMyPageModal = ({ show, Close }: { show: boolean; Close: () => void }
     const serverImagePath = "http://localhost:8087/soundcast/resource/";
   
 
-
     return (
         <div className={show ? "modal display-block" : "modal display-none"} onClick={backGroundClick}>
             <div className="mf-modal" style={{ backgroundColor: "#F0ECFD", borderRadius: "10px", width: "820px", height: "700px", margin: "0", position: "relative" }}>

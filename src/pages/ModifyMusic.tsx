@@ -1,11 +1,19 @@
-import React, { MouseEvent, SetStateAction, useState } from "react";
+import React, { MouseEvent, SetStateAction, useEffect, useState } from "react";
 import { initGenres, initMoods, initSong, Song } from "../type/SongType";
 import axios from "axios";
+import CustomAxios from "../utils/CustomAxios";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../store/store";
+import { useNavigate } from "react-router-dom";
+import { setSongList } from "../features/songSlice";
+import { login } from "../features/memberSlice";
 
-const ModifyMusic = ({show, handleClose}:{show:boolean, handleClose:() => void}) =>{
+const ModifyMusic = ({show, handleClose, selectSong}:{show:boolean, handleClose:() => void, selectSong:Song}) =>{
   
+  console.log("셀렉트송");
+  console.log(selectSong);
   // ==== 스타일 ====
-    
+
   const modalStyle: React.CSSProperties = {
     position: 'fixed',
     top: 0,
@@ -213,57 +221,88 @@ const ModifyMusic = ({show, handleClose}:{show:boolean, handleClose:() => void})
         }
     };
 
-    const moods = initMoods;
-    const genres = initGenres;
-    
-    const [ishovered, setIsHovered] = useState('unhovered');
-    
+    const songs = useSelector((state:RootState) => state.song);
+    const genres = songs.genreList.filter((genre) => genre.genreNo > 0);
+    const moods = songs.moodList.filter((mood) => mood.moodNo > 0);
+    const navi = useNavigate();
 
-    const [song, setSong] = useState(initSong);
-    const [songTitle, setSongTitle] = useState(song.songTitle);
-    const [songDetail, setSongDetail] = useState(song.songDetail === null ? '' : song.songDetail);
-    const [songLicense, setSongLicense] = useState(song.songLicense === null ? '' : song.songLicense);
+    const [ishovered, setIsHovered] = useState('unhovered');
+
+    const [song, setSong] = useState(selectSong);
+    const [songTitle, setSongTitle] = useState(selectSong.songTitle);
+    const [songDetail, setSongDetail] = useState(selectSong.songDetail === null ? '' : selectSong.songDetail);
+    const [songLicense, setSongLicense] = useState(selectSong.songLicense === null ? '' : selectSong.songLicense);
+
+    const dispatch = useDispatch();
+  
+    const [songImageView, setSongImageView] = useState<string | null>();
+
+    // selectSong prop이 변경될 때마다 상태 업데이트
+    useEffect(() => {
     
+      setSong(selectSong);
+      setSongTitle(selectSong.songTitle);
+      setSongDetail(selectSong.songDetail === null ? '' : selectSong.songDetail);
+      setSongLicense(selectSong.songLicense === null ? '' : selectSong.songLicense);
+
+      setSelectedGenre(selectSong.songGenreNo);
+      setSelectedMood(selectSong.songMoodNo);
+
+      setSongFileOriginName(selectSong.songFile.songFileOriginName);
+
+      setSongImageView(serverImagePath+selectSong.songImage.songImagePathName+selectSong.songImage.songImageName);
+
+    }, [selectSong]);  // 의존성 배열에 selectSong 추가
+
+
+
+
     // 장르클릭 핸들러 
-    const [selectedGenre, setSelectedGenre] = useState(song.songGenreNo);
+    const [selectedGenre, setSelectedGenre] = useState(selectSong.songGenreNo);
     
     const genreClickHandler = (genre: SetStateAction<number>) =>{
       setSelectedGenre(genre)
     };
     
     // 분위기 클릭 핸들러
-    const [selectedMood, setSelectedMood] = useState(song.songMoodNo);
+    const [selectedMood, setSelectedMood] = useState(selectSong.songMoodNo);
     
     const moodClickHandler = (mood: SetStateAction<number>) =>{
       setSelectedMood(mood)
     };
     
     // 파일 이미지 클릭 핸들러
-    const [songImage, setSongImage] = useState<string | null>(null);
+    const [songImage, setSongImage] = useState<File|string>('');
+
     const handleFileChange = (event:React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
         if (file) {
           const reader = new FileReader();
           reader.onloadend = () => {
-            setSongImage(reader.result as string);  // 파일의 데이터 URL을 songImage 상태에 설정
+            setSongImageView(reader.result as string);  // 파일의 데이터 URL을 songImage 상태에 설정
           };
           reader.readAsDataURL(file); // 파일을 읽어 데이터 URL로 변환
+
+          setSongImage(file);
         }
       }
 
     // 음원 파일 클릭 핸들러
-    const [songFileOriginName, setSongFileOriginName] = useState<string|undefined>(song.songFile.songFileOriginName);
+
+    const [songFileOriginName, setSongFileOriginName] = useState<string>(selectSong.songFile.songFileOriginName);
+    const [songFile, setSongFile] = useState<File|string>('');
+    
     const handleSongFileChange = (event:React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
         if(file) {
           setSongFileOriginName(file.name);
-          const reader = new FileReader();
-          reader.onloadend = () => {
-            // setSongFileOriginName(reader.result as string);
-          }
-          reader.readAsDataURL(file);
+          setSongFile(file);
         }
     }
+
+    const serverImagePath = "http://localhost:8087/soundcast/resource/";
+
+    const member = useSelector((state:RootState) => state.member);
 
     const updateSong = ()=> {
       
@@ -274,29 +313,36 @@ const ModifyMusic = ({show, handleClose}:{show:boolean, handleClose:() => void})
         songLicense,
         songGenreNo : selectedGenre,
         songMoodNo : selectedMood,
-        //songImageNo, songImageNo의 songImageName을 업데이트 해야함.
-        songFile:{
-          songFileNo : 1,
-          songFilePathNo:1, 
-          songFilePathName : '/images',
-          songFileOriginName : '우주여행.mp3',
-          songFileChangeName : 'random'
-        },
-        
-      }
-      
+      }      
       setSong(renewSong);
+      
+      const requestBody = new FormData();
+      const songInfo = new Blob([JSON.stringify(renewSong)], {type : 'application/json'})
+      
+      requestBody.append("songInfo", songInfo);
+      requestBody.append("songFile", songFile);
+      requestBody.append("songImage", songImage);
 
       //back으로 update된 song 전송 하는 코드 추가 
       console.log(renewSong)
+      console.log(requestBody.get("songinfo"));
+      console.log(requestBody.get("file"));
 
-      axios.put(`http://localhost:8087/soundcast/song/update/${song.songNo}`, renewSong)
-        .then((response) => alert("수정되었습니다.") )
+      CustomAxios.put(`http://localhost:8087/soundcast/song/update/${selectSong.songNo}`, requestBody)
+        .then((response) => {
+          dispatch(setSongList(
+            songs.list.map((item) => 
+              item.songNo === selectSong.songNo ? renewSong : item
+          )));
+          
+          setSongImageView(null);
+          alert(response.data);
+          handleClose();
+        })
         .catch(err => console.log(err))
-
-
+    
+      navi("/member/mypage");
     }
-
 
     return (
         <div style={showHideClassName} onClick={handleBackgroundClick}>
@@ -330,7 +376,8 @@ const ModifyMusic = ({show, handleClose}:{show:boolean, handleClose:() => void})
                   height:"100%", 
                   objectFit:"cover"
                 }}
-                src={songImage === null ? "/images/default/song_default.png" : songImage} 
+                src={songImageView === null ? "http://localhost:8087/soundcast/resource/public/song/song-image-default.png" 
+                  : songImageView} 
                 alt="Preview" />
               <input 
                 type="file" 
@@ -372,7 +419,7 @@ const ModifyMusic = ({show, handleClose}:{show:boolean, handleClose:() => void})
               <input 
                 type="file"
                 id="song-file-upload"
-                accept="mp3/*"
+                accept="audio/*"
                 onChange={handleSongFileChange}
                 className="song-file-input"
                 style={{
@@ -413,7 +460,7 @@ const ModifyMusic = ({show, handleClose}:{show:boolean, handleClose:() => void})
           <div style={formGroupStyle}>
             <label style={labelStyle}>제작자</label>
             <input type="text" 
-              value="박다온" 
+              value={selectSong.memberNickname} 
               readOnly 
               style={textInputStyle}
               />

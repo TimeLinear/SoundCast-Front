@@ -85,10 +85,8 @@ const MemberComments = ({selectMember, isSubmitting, setIsSubmitting ,deletingCo
             console.log(error);
         }
     }else{
-        alert("로그인이 필요한 메뉴입니다.")
-
+        alert("로그인이 필요한 메뉴입니다.");
     }
-    
     console.log(isSubmitting);
 };
 

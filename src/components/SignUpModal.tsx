@@ -4,7 +4,6 @@ import axios from '../utils/CustomAxios';
 import { getCookie, setSessionCookie } from '../utils/Cookie';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../features/memberSlice';
-import GoogleLoginForm from './GoogleLoginForm';
 import { RootState } from '../store/store';
 import { useState } from 'react';
 

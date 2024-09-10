@@ -2,30 +2,23 @@
 import './App.css';
 import Header from './components/Header';
 
-import { createContext, useEffect, useState } from 'react';
-import { Provider, useDispatch, useSelector } from 'react-redux';
-import store, { RootState } from './store/store';
-import { Member } from './type/memberType';
-import { getCookie } from './utils/Cookie';
-import axios from './utils/CustomAxios';
-import { login } from './features/memberSlice';
+import { createContext} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from './store/store';
 import PlaceDevider from './components/PlaceDevider';
-
-
-import UserPage from './pages/UserPage';
-import SearchList from './pages/SearchList';
-import { Route, Routes } from 'react-router-dom';
-import Footer from './components/Footer';
-import MyPageBanner from './pages/MyPageBanner';
-import SearchPage from './pages/SearchPage';
+import MainPage from './pages/MainPage';
 import MusicDetail from './pages/MusicDetail';
+import Footer from './components/Footer';
+import SearchPage from './pages/SearchPage';
+import UserPage from './pages/UserPage';
+import { Route, Routes } from 'react-router-dom';
+import Commnuity from './pages/Commnuity';
+import Introduce from './pages/Introduce';
+import Mypage from './pages/Mypage'
 
-
-export let Context = createContext({}); //Context == state 보관소
 
 function App() {
   
-  const dispatch = useDispatch();
 
   const member = useSelector((state:RootState) => state.member);
 
@@ -41,47 +34,20 @@ function App() {
 
   return (
     <div className="App">
-          <Header/>
-      <PlaceDevider/>
-      
+      <Header />
+      <PlaceDevider />
+      <Routes>
 
-      <Routes>    
-      {/* 검색어가 없을 경우 null일때  MainBanner를 표시 // 있으면 사라짐 >> 삼항 연산자?*/}
-        <Route path='/' element={
-          <>  
-            {/* <MainBanner/>
-            <GenreSearch/>
-            <SearchBar/>
-            <SearchList/> */}
-          </>
-        }/>
-        <Route path='/search' element={
-          <>
-            {/* <GenreSearch/>
-            <SearchBar/>
-            <SearchList /> */}
-          </>
-          }/>
-        <Route path='/myPage' element={
-          <>
-            <MyPageBanner />
-            
-          </>
-          
-        }/>
+        <Route path='/' element={<MainPage />} />
+        <Route path='/search' element={<SearchPage />} />
+        <Route path='/song/detail/:musicNo' element={<MusicDetail/>} />
+        <Route path='/member/mypage' element={<Mypage />} />
+        <Route path='/member/memberInfo/:memberNo' element={<UserPage/>}/>
 
-        <Route path='/member/memberInfo/:memberNo' element={
-          <>
-            <UserPage />
-          </>
-        }/>
-
-
-      <Route path='/search' element={<SearchPage />} />
-      <Route path='/music/detail' element={<MusicDetail />} />
-
+        <Route path='/community' element={<Commnuity />}/>
+        <Route path='/introduce/:section' element={<Introduce />}/>
       </Routes>
-        <Footer/>
+      <Footer />
     </div>
   );
 }
