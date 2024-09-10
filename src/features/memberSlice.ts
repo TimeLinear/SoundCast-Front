@@ -58,7 +58,7 @@ let memberSlice = createSlice({
                 introduce: data.memberIntroduce,
                 follow: {
                     follower: data.follower,
-                    following: data.following?.map((following: { memberNo: string, memberNickname: string, profileImage: { profileImagePath: string } }) => ({
+                    following: data.following?.map((following: { memberNo: number, memberNickname: string, profileImage: { profileImagePath: string } }) => ({
                         memberNo: following.memberNo,
                         nickName: following.memberNickname,
                         profile: following.profileImage.profileImagePath

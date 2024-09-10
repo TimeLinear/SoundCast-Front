@@ -69,7 +69,7 @@ const MyPageSong = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activ
     const serverImagePath = "http://localhost:8087/soundcast/resource/";
 
     return(
-        <div className="mysong" style={{ border: "1px solid lightgrey", display: "flex", flexWrap: "wrap"}}>
+        <div className="mysong" style={{ minWidth: "1300px", height: "80vw", border: "1px solid lightgrey", display: "flex", flexWrap: "wrap"}}>
 
         {currentItems.map((Song,index) => (
 
