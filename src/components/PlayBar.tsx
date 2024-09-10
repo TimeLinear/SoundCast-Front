@@ -209,7 +209,7 @@ function Player(props:Props){
                     onClick={()=> {if(songs.currentSong.songLicense!==null){licenseCopy(songs.currentSong.songLicense)}}}
                     style={{width:"25px", height:"25px"}}>
                     {songs.currentSong.songLicense !== null ? 
-                        (<img src="images/copy-Icon-black.png" style={{height:"100%", width:"100%"}}/>)
+                        (<img src="/images/song/copy-Icon-black.png" style={{height:"100%", width:"100%"}}/>)
                         : null
                     }
             </div>

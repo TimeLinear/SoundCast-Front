@@ -37,9 +37,6 @@ const UserPage = () => {
         setShowFollingModal(false);
     }
 
-
-
-
     //팔로우 임시
     console.log("팔로우변수체크");
     const followingCheck = member.follow.following.filter((following) => following.memberNo === NumbMemberNo) ? false : true;

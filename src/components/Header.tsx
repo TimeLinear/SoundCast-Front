@@ -37,7 +37,7 @@ function Header() {
 
   }, []);
 
-
+  
   useEffect(() => {
     let cookie = getCookie("accessToken");
 

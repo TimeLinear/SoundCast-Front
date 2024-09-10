@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { CSSProperties, MouseEvent, useEffect, useState } from "react";
-import { setPlaySong } from "../features/songSlice";
+import { setPlaySong, setSongList  } from "../features/songSlice";
 import { Song } from "../type/SongType";
 import Pagination from "./Pagination";
 import { useNavigate } from "react-router-dom";
