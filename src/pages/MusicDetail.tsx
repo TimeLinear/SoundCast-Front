@@ -141,7 +141,7 @@ const MusicDetail = () => {
                 <div style={musicDetailContainer}>
                     <div style={{ width: "1152px", minWidth: "590px" }}>
                         <div style={{ ...commonFlexStyle, justifyContent: "flex-start", marginBottom: "30px" }}>
-                            <h1 style={OfficialTitleStyle}>{currSong.songPlaceNo === 1 ? "Official" : "Unofficial"}</h1>
+                            <h1 style={OfficialTitleStyle}>{currSong.songPlaceNo === 0 ? "Official" : "Unofficial"}</h1>
                         </div>
                         <div style={{ ...commonFlexStyle, flexShrink: 0 }}>
                             <div style={{ ...commonFlexStyle, flexDirection: "column", boxSizing: "border-box", width: "50%" }}>

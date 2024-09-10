@@ -369,13 +369,15 @@ const ModifyMusic = ({show, handleClose, selectSong}:{show:boolean, handleClose:
               <label htmlFor="file-input" 
                 className="image-label"
                 style={{
-                  cursor:"pointer"
+                  cursor:"pointer",
+                  width: "100%",
+                  height: "100%"
                 }} >
               <img className="image-custom"
                 style={{
                   width:"100%",
                   height:"100%", 
-                  objectFit:"cover"
+                  objectFit:"contain"
                 }}
                 src={songImageView === null ? "http://localhost:8087/soundcast/resource/public/song/song-image-default.png" 
                   : songImageView} 
