@@ -7,6 +7,7 @@ import { RootState } from "../store/store";
 import SongItem from "../components/SongItem";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import useSearchSong from "../hook/useSearchSong";
 
 function SearchList() {
 
@@ -20,17 +21,7 @@ function SearchList() {
     //선택한 요소
     const [activeSongNo, setActiveSongNo] = useState<number | null>(null);
     const navi = useNavigate();
-
-    const searchSong = () => {
-        axios.get(`http://localhost:8087/soundcast/song/search`, { params: search })
-            .then((response) => {
-                //키워드로 db에 저장된 노래 불러와 리스트 전역에 저장
-                console.log(response.data);
-                dispatch(setSongList(response.data));
-            })
-            .catch((err) => console.log(err))
-        navi("/search");
-    }
+    const searchSong = useSearchSong;
 
     useEffect(() => {
         if (activeSongNo !== null) {
@@ -44,19 +35,6 @@ function SearchList() {
         song,
         searchSong
     }
-
-    useEffect(() => {
-        axios.get(`http://localhost:8087/soundcast/song/search`, { params: search })
-            .then((response) => {
-                //키워드로 db에 저장된 노래 불러와 리스트 전역에 저장
-                console.log(response.data);
-                dispatch(setSongList(response.data));
-                console.log(search)
-            })
-            .catch((err) => console.log(err))
-
-            console.log(search)
-    }, [search.placeNo])
 
     const initTitle = '최신 등록 Top 20';
     const [searchTitle, setSearchTitle] = useState<string>(initTitle); 
@@ -84,7 +62,7 @@ function SearchList() {
 
         setSearchTitle(title + " 로 검색한 결과 입니다.")
         
-    },[search.keyword, search.genre, search.mood])
+    },[])
 
 
 

@@ -3,18 +3,20 @@ import { SearchProps } from "./GenreSearch";
 import { useDispatch, useSelector } from "react-redux";
 import { setMood } from "../features/searchSlice";
 import { RootState } from "../store/store";
+import useSearchSong from "../hook/useSearchSong";
+import { useNavigate } from "react-router-dom";
 
 function MoodSearch(props:SearchProps){
 
-    const {handleMouseOver, handleMouseOut, searchGenreNo, onLeaveSearchs, searchSongs} = props
+    const {handleMouseOver, handleMouseOut, searchGenreNo, onLeaveSearchs} = props
 
     const moodItemFontStyle:CSSProperties = {fontFamily:"Inter", fontStyle:"normal", fontSize:"16px", lineHeight: "19px", fontWeight:"700", color:"#000000"};
     const moodCommonStyle:CSSProperties = {display: "flex", justifyContent: "center", alignItems:"center", width: "130px", height:"40px", marginRight:"10px", boxSizing: "border-box"};
 
     const dispatch = useDispatch();
-
+    const navi = useNavigate();
     const song = useSelector((state:RootState) => state.song); 
-    
+    const searchSongs = useSearchSong();
     //--------------------------------
     const [searchMoodNo, setSearchMoodNo] = useState<number>(-1);
 
@@ -44,7 +46,7 @@ function MoodSearch(props:SearchProps){
           song.moodList.map( mood => (
             <div id='mood' key={mood.moodNo}
               style={{...moodCommonStyle}} 
-              onClick={searchSongs}
+              onClick={()=>{searchSongs(); navi("/search");}}
               onMouseEnter={(e) => {onHoverMood(e, mood.moodNo)}} onMouseLeave={(e) => onLeaveMood(e)}>
               <span style={searchMoodNo === mood.moodNo ? {...moodItemFontStyle, color:"#FFFFFF"} : moodItemFontStyle}>{mood.moodName}</span>
             </div>
