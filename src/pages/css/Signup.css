@@ -23,20 +23,24 @@
   background: #1B0140;
   border-radius: 10px;
   padding: 20px;
-  width: 570px;
-  height: 640px;
+  width: 750px;
+  height: 600px;
   text-align: center;
   position: relative;
   box-sizing: border-box;
+  
 }
 
 .signup-serve{
-  background: #F0ECFD;
+  backdrop-filter: blur(2px);
   border-radius: 10px;
   width: 490px; 
-  height: 560px;
+  height: 480px;
   margin: auto;
   position: relative;
+  z-index: 10;
+  box-shadow: 0 0 10px #9028da;
+  border: 1px solid white;
 }
 
 .close-button {
@@ -51,15 +55,16 @@
 }
 
 .agree{
+  box-shadow: 0 0 10px #9028da;
   display: flex; 
   align-items: center;
   flex-direction: column;
-  background-color: #F0ECFD;
   border-radius: 10px;
-  border: 1px solid black;
+  border: 1px solid white;
   width: 90%;
   padding: 10px;
   margin: 10px auto; 
+  color: white;
 }
 
 .allagree input[type='checkbox'] {

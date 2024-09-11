@@ -175,7 +175,7 @@ const ModifyMyPageModal = ({ show, Close }: { show: boolean; Close: () => void }
                         backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat"
                     }}>
                         <div style={{ margin: "0", display: "flex", position: "absolute", right: "15px", bottom: "15px", cursor: "pointer" }}>
-                            <img src="images/modify-banner.png" style={{ width: "auto" }} />
+                            <img src="../modify-banner.png" style={{ width: "auto" }} />
                             <p style={{ color: "white", margin: "0" }}>배경화면 수정</p>
                             <input type="file" accept="image/*" style={{ opacity: 0, position: "absolute", left: 0, right: 0, top: 0, bottom: 0, cursor: "pointer" }} onChange={handleBackgroundChange} />
                         </div>

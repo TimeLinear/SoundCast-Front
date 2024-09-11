@@ -12,6 +12,12 @@ const SignUpModal = ({showSignUp, openSignUp, closeSignUp } : {showSignUp:boolea
     const showHideClassName = showSignUp ? "modal display-block" : "modal display-none";
     const dispatch= useDispatch();
     const member = useSelector((state:RootState)=>state.member );
+
+    const handleBackgroundClick = (event:MouseEvent) => {
+        if (event.target === event.currentTarget) {
+            closeSignUp();
+        }
+    };
     
     //이용약관 체크박스 
     const [isAllAgreed, setIsAllAgreed] = useState(false);
@@ -93,11 +99,11 @@ const SignUpModal = ({showSignUp, openSignUp, closeSignUp } : {showSignUp:boolea
     const serverImagePath = "http://localhost:8087/soundcast/resource/";
 
     return (
-        <div className={showHideClassName}>
+        <div className={showHideClassName} onClick={closeSignUp}>
             <div className="signup-main">
             <img src={"../modal-back.jpg"} className="background-image" alt="Modal Background" style={{borderRadius:"10px"}} />
                 <button className="close-button" onClick={closeSignUp}>X</button>
-                <div className='signup-serve'>
+                <div className='signup-serve' style={{marginTop:"30px"}}>
                     <h2 className='h2' style={{ color: 'white' }}>이용약관</h2>
                     <p style={{ color: 'white' }}>SoundCast 약관 동의가 필요해요.</p>
                     <div className='agree' >

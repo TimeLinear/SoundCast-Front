@@ -78,7 +78,7 @@ const FollowingModal = ({ show, Close }: { show: boolean, Close: () => void }) =
                     {/* 검색바와 정렬기준 */}
                     <div style={{ display: "flex" }}>
                         <div className="search" style={{ marginLeft: "15px", width: "575px", height: "40px", display: "flex", backgroundColor: "white", borderRadius: "20px" }}>
-                            <img src="images/fw-search-icon.png" style={{ marginLeft: "15px", marginTop: "10px", width: "20px", height: "20px" }}></img>
+                            <img src="../fw-search-icon.png" style={{ marginLeft: "15px", marginTop: "10px", width: "20px", height: "20px" }}></img>
                             <input type="text" style={{ marginLeft: "15px", width:"575px" ,fontWeight: "bold",border:"none",outline:"none",borderRadius:"20px" }} placeholder="Search following" onChange={onChange}></input>
                         </div>
                     </div>

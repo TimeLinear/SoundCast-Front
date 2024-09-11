@@ -79,7 +79,7 @@ const MyPageSong = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activ
             <div style={{ margin: "20px 2.39%", width: "194px", height: "220px", display: "flex", flexDirection: "column" }} key={index}>
 
                 <div className="hoverImage" style={{ width: "100%", height: "154px", boxSizing: "border-box", flexGrow: "1", position:"relative" }}>
-                    <img className="modifyImage" src={serverImagePath+"public/member/modifyInfo.png"} style={{position:"absolute",width:"20px",height:"20px",top:"10px",left:"10px", borderRadius:"10px"}} onClick={()=>modifySongHandler(Song)} />
+                    <img className="modifyImage" src={serverImagePath+"public/member/modifyInfo.png"} style={{position:"absolute",width:"20px",height:"20px",top:"10px",left:"10px",borderRadius:"5px",border:"1px solid white",background:"white"}} onClick={()=>modifySongHandler(Song)} />
                     <img src={Song.songImage.songImageNo !== 0 ? serverImagePath+Song.songImage.songImagePathName+Song.songImage.songImageName : serverImagePath+'images/song/song-image.png'} style={{ width: "100%", height: "100%", objectFit: "cover", borderTopLeftRadius: "7px", borderTopRightRadius: "7px" }} />
                 </div>
                     {/* {showModifySong ? <ModifyMusic show={showModifySong} handleClose={modifySongCloseHandler} selectSong={Song} /> : null} */}

@@ -98,7 +98,7 @@ function GenreSearch ({searchGenre, searchMood}:{searchGenre:number, searchMood:
               key={genre.genreNo}
               onMouseEnter={()=>{setSearchGenreNo(genre.genreNo)}}
               onClick={searchSongs}
-              style={searchGenreNo === genre.genreNo ? genreItemStyle : genreCommonStyle}>
+              style={searchGenreNo === genre.genreNo ? genreItemStyle : genreCommonStyle} >
             <span style={searchGenreNo === genre.genreNo ? {...genreItemFontStyle, color:"#FFFFFF"} : genreItemFontStyle}>{genre.genreName}</span>
           </div>
           ))  
