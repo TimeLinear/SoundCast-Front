@@ -1,20 +1,17 @@
 import { CSSProperties, MouseEvent, useEffect, useState } from "react";
-import {Genre, initGenres} from "../type/SongType";
 import MoodSearch from "./MoodSearch";
 import { useDispatch, useSelector } from "react-redux";
 import { setGenre, setKeyword, setMood } from "../features/searchSlice";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "../store/store";
-import { setSongList } from "../features/songSlice";
+import useSearchSong from "../hook/useSearchSong";
 
 
 export interface SearchProps {
   handleMouseOver: (e:MouseEvent) => void,
   handleMouseOut: (e:MouseEvent) => void,
   onLeaveSearchs: () => void,
-  searchGenreNo: number,
-  searchSongs: ()=>void
+  searchGenreNo: number
 }
 
 function GenreSearch ({searchGenre, searchMood}:{searchGenre:number, searchMood:number}){
@@ -27,7 +24,6 @@ function GenreSearch ({searchGenre, searchMood}:{searchGenre:number, searchMood:
   
   const dispatch = useDispatch();
   const navi = useNavigate();
-  const search = useSelector((state:RootState) => state.search);
   
   const song = useSelector((state:RootState) => state.song);
   const [searchGenreNo, setSearchGenreNo] = useState(-1);
@@ -61,28 +57,16 @@ function GenreSearch ({searchGenre, searchMood}:{searchGenre:number, searchMood:
   useEffect(()=>{
     dispatch(setGenre(searchGenreNo));
   },[searchGenreNo])
- 
-  const searchSongs = () => {
-    console.log(search.genre)
-    axios.get(`http://localhost:8087/soundcast/song/search`, 
-      {params : {...search, genre:searchGenreNo} })
-      .then((response) => {
-          //키워드로 db에 저장된 노래 불러와 리스트 전역에 저장
-          console.log(response.data);
-          dispatch(setSongList(response.data));
-        })
-      .catch((err)=>console.log(err));
-
-    navi("/search");
-  }
+  
+  //검색함수 수정 (24-09-11)
+  const searchSongs = useSearchSong();
   //--------------------------  
    
   const props:SearchProps = {
     handleMouseOver,
     handleMouseOut,
     onLeaveSearchs,
-    searchGenreNo,
-    searchSongs
+    searchGenreNo
   }
   
   return(
@@ -97,7 +81,7 @@ function GenreSearch ({searchGenre, searchMood}:{searchGenre:number, searchMood:
           <div id='genre'
               key={genre.genreNo}
               onMouseEnter={()=>{setSearchGenreNo(genre.genreNo)}}
-              onClick={searchSongs}
+              onClick={()=>{searchSongs(); navi("/search")}}
               style={searchGenreNo === genre.genreNo ? genreItemStyle : genreCommonStyle}>
             <span style={searchGenreNo === genre.genreNo ? {...genreItemFontStyle, color:"#FFFFFF"} : genreItemFontStyle}>{genre.genreName}</span>
           </div>

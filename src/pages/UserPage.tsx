@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { CSSProperties, useEffect, useState } from "react";
-import Player from "./PlayBar";
+import Player from "../components/PlayBar";
 //import { initSongs, Props } from "../type/SongType";
 import { setPlaySong, setSongList } from "../features/songSlice";
 import "./css/UserPage.css";
@@ -36,9 +36,6 @@ const UserPage = () => {
     const followingCloseHandler = () => {
         setShowFollingModal(false);
     }
-
-
-
 
     //팔로우 임시
     console.log("팔로우변수체크");

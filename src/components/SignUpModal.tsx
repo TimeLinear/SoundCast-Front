@@ -1,10 +1,11 @@
-import '../pages/css/SignUp.css';
+import { CredentialResponse } from '@react-oauth/google';
+import '../pages/css/Signup.css';
+import axios from '../utils/CustomAxios';
 import { getCookie, setSessionCookie } from '../utils/Cookie';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../features/memberSlice';
 import { RootState } from '../store/store';
 import { useState } from 'react';
-import axios from '../utils/CustomAxios';
 
 const SignUpModal = ({showSignUp, openSignUp, closeSignUp } : {showSignUp:boolean; openSignUp:()=>void; closeSignUp:()=>void}) => {
   
@@ -40,20 +41,13 @@ const SignUpModal = ({showSignUp, openSignUp, closeSignUp } : {showSignUp:boolea
     };
     const canSignUp = isPrivacyPolicyAgreed && isTermsAgreed;
 
-   
-    
     const Credential = getCookie('Credential');
     const kktCredential = getCookie('ACCESS_TOKEN');
     const naverCredential = getCookie('access_token');
 
-    console.log(naverCredential);
     const checkCre = Credential || kktCredential || naverCredential;
-
     
     const enroll =()=>{
-        console.log("enroll Credential:"+ Credential);
-        console.log("enroll accessToken : "+ kktCredential);
-
         if(!Credential && !naverCredential && kktCredential){
             axios
                 .post("http://localhost:8087/soundcast/auth/enroll/kakao",{
@@ -74,14 +68,12 @@ const SignUpModal = ({showSignUp, openSignUp, closeSignUp } : {showSignUp:boolea
                     Credential
                 })
                 .then(res =>{
-    
                     console.log("google enroll res: "+ res.data.jwtToken);
                     const JwtToken = res.data.jwtToken;
                     setSessionCookie("accessToken",JwtToken);
                     console.log(res);
                     dispatch(login(res.data.member));
                     closeSignUp();
-                   
                 })
                 
                 .catch(error => {
@@ -103,7 +95,6 @@ const SignUpModal = ({showSignUp, openSignUp, closeSignUp } : {showSignUp:boolea
                     closeSignUp();
                 })
         }
-
     }
     
     const serverImagePath = "http://localhost:8087/soundcast/resource/";
@@ -111,17 +102,18 @@ const SignUpModal = ({showSignUp, openSignUp, closeSignUp } : {showSignUp:boolea
     return (
         <div className={showHideClassName}>
             <div className="signup-main">
+            <img src={"../modal-back.jpg"} className="background-image" alt="Modal Background" style={{borderRadius:"10px"}} />
                 <button className="close-button" onClick={closeSignUp}>X</button>
                 <div className='signup-serve'>
-                    <h2 className='h2' style={{ color: 'black' }}>이용약관</h2>
-                    <p style={{ color: '#BBBBBB' }}>SoundCast 약관 동의가 필요해요.</p>
-                    <div className='agree'>
+                    <h2 className='h2' style={{ color: 'white' }}>이용약관</h2>
+                    <p style={{ color: 'white' }}>SoundCast 약관 동의가 필요해요.</p>
+                    <div className='agree' >
                         <h4 className='allagree'><input type='checkbox' checked={isAllAgreed} onChange={handleAllAgreeChange} />전체 동의</h4>
-                        <hr style={{width:"95%", border:"1px solid black"}}/>
+                        <hr style={{width:"95%", border:"1px solid white" }}/>
                         <li className='필수약관'><input type='checkbox' required checked={isPrivacyPolicyAgreed} onChange={handlePrivacyPolicyChange} />개인정보처리방침 약관에동의<a style={{color:'red'}}>(필수)</a></li>
                         <li className='필수약관2'><input type='checkbox' required checked={isTermsAgreed} onChange={handleTermsChange} />이용약관에 동의<a style={{color:'red'}}>(필수)</a></li>
                         <li className='필수약관3'> <input type='checkbox' checked={isEventAgreed} onChange={handleEventChange} />이벤트,혜택 알림 수신 동의(선택)</li>
-                        <div className='heighline'><p>체크하지 않으실 경우<br/> 이벤트,혜택 제공이 제외될 수 있습니다.</p></div>
+                        <div className='heighline'><p style={{color:"white"}}>체크하지 않으실 경우<br/> 이벤트,혜택 제공이 제외될 수 있습니다.</p></div>
                     </div>
                     <div className="signup-buttons">
                    

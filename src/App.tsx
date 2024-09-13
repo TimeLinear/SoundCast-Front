@@ -15,7 +15,7 @@ import { Route, Routes } from 'react-router-dom';
 import Commnuity from './pages/Commnuity';
 import Introduce from './pages/Introduce';
 import Mypage from './pages/Mypage'
-
+  
 
 function App() {
   

@@ -7,6 +7,7 @@ import { RootState } from "../store/store";
 import SongItem from "../components/SongItem";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import useSearchSong from "../hook/useSearchSong";
 
 function SearchList() {
 
@@ -20,17 +21,7 @@ function SearchList() {
     //선택한 요소
     const [activeSongNo, setActiveSongNo] = useState<number | null>(null);
     const navi = useNavigate();
-
-    const searchSong = () => {
-        axios.get(`http://localhost:8087/soundcast/song/search`, { params: search })
-            .then((response) => {
-                //키워드로 db에 저장된 노래 불러와 리스트 전역에 저장
-                console.log(response.data);
-                dispatch(setSongList(response.data));
-            })
-            .catch((err) => console.log(err))
-        navi("/search");
-    }
+    const searchSong = useSearchSong;
 
     useEffect(() => {
         if (activeSongNo !== null) {
@@ -45,28 +36,41 @@ function SearchList() {
         searchSong
     }
 
-    useEffect(() => {
-        axios.get(`http://localhost:8087/soundcast/song/search`, { params: search })
-            .then((response) => {
-                //키워드로 db에 저장된 노래 불러와 리스트 전역에 저장
-                console.log(response.data);
-                dispatch(setSongList(response.data));
-            })
-            .catch((err) => console.log(err))
+    const initTitle = '최신 등록 Top 20';
+    const [searchTitle, setSearchTitle] = useState<string>(initTitle); 
 
-    }, [search.placeNo])
+    useEffect(()=>{
 
+        let title = ''
+        //1. 장르 있는 경우 
+        if(search.genre > 0){
+            let genreTitle = song.genreList.find((elemet =>  elemet.genreNo == search.genre))?.genreName;
+            title += genreTitle+" ";
+        }
+
+        //2. 분위기 있는 경우
+        if(search.mood > 0){
+            let moodTitle = song.moodList.find((element => element.moodNo == search.mood))?.moodName;
+            title += moodTitle+" ";
+        }  
+
+        //3. 키워드 있는 경우 
+        if(search.keyword !== '' && search.keyword !== null){
+            let keywordTitle = search.keyword;
+            title += keywordTitle
+        }
+
+        setSearchTitle(title + " 로 검색한 결과 입니다.")
+        
+    },[])
 
 
 
     return (
         <>
-            <div className='search-list-title' style={{ height: "50px", padding: "0 10%", width: "80%" }}>
-                <p style={{ ...searchListFontStyle, fontSize: "24px" }}>
-                    {0 ? "다운로드 Top 20" : (
-                        (search.genre === 0 ? "" : search.genre + " - ") && (search.mood === 0 ? "" : search.mood + " - ") && (search.keyword === "" ? "" : search.keyword) && (" 로 검색한 결과입니다.")
-                        // search.genre && search.mood && search.keyword ? (search.genre+" - "+search.mood+" - "+search.keyword+ " 로 검색한 결과 입니다.") : 
-                    )}
+            <div className='search-list-title' style={{ height: "70px", padding: "0 10%", width: "80%" }}>
+                <p style={{ ...searchListFontStyle, fontSize: "24px", paddingTop:"20px"}}>
+                    {searchTitle}
                 </p>
             </div>
             <div className='search-list-content' style={{ padding: "0 10%", width: "80%" }}>

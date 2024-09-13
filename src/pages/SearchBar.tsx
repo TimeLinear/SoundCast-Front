@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { RootState } from "../store/store";
 import { setGenre, setKeyword, setMood } from "../features/searchSlice";
 import { setSongList } from "../features/songSlice";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
+import useSearchSong from "../hook/useSearchSong";
 
 function SearchBar({searchKeyword}:{searchKeyword:string}){
   
@@ -19,6 +20,9 @@ function SearchBar({searchKeyword}:{searchKeyword:string}){
   // 입력창에 직접 store의 state를 사용하는 건 지양하는 것이 좋습니다.
   
   const [inputkeyword, setInputKeyword] = useState(searchKeyword);
+  
+  //검색함수 수정 09/11
+  const searchSongs = useSearchSong();
 
   const onInputChange = (e:ChangeEvent<HTMLInputElement>) => {
     const inputStr = e.target.value;
@@ -26,24 +30,36 @@ function SearchBar({searchKeyword}:{searchKeyword:string}){
   }
 
   //------------수정한 부분(08/21)-------------
-  const searchSongs = () => {
-      dispatch(setKeyword(inputkeyword));      
-      console.log(inputkeyword);
+  // const searchSong = () => {
+  //     dispatch(setKeyword(inputkeyword));      
+  //     console.log(inputkeyword);
 
-      // search 객체를 보내서 백엔드 측에서 jackson 라이브러리를 통해 다시 HashMap으로 만드는 작업 시도
-      axios.get(`http://localhost:8087/soundcast/song/search`, {params : search})
-        .then((response) => {
-            //키워드로 db에 저장된 노래 불러와 리스트 전역에 저장
-            console.log(response.data);
-            dispatch(setSongList(response.data));
-          })
-        .catch((err)=>console.log(err));
+  //     // search 객체를 보내서 백엔드 측에서 jackson 라이브러리를 통해 다시 HashMap으로 만드는 작업 시도
+  //     axios.get(`http://localhost:8087/soundcast/song/search`, {params : search})
+  //       .then((response) => {
+  //           //키워드로 db에 저장된 노래 불러와 리스트 전역에 저장
+  //           console.log(response.data);
+  //           dispatch(setSongList(response.data));
+  //         })
+  //       .catch((err)=>console.log(err));
 
-      navi("/search");
+  //     navi("/search");
       
-      setInputKeyword('');
-  }
+  //     setInputKeyword('');
+  // }
   //-----------------------------------------
+
+  // useEffect(()=>{
+    
+  //   searchSongs();
+
+  //   navi("/search");
+      
+  //   setInputKeyword('');
+
+  // },[inputkeyword])
+
+
   const serverImagePath = "http://localhost:8087/soundcast/resource/";
 
   return(
@@ -57,7 +73,7 @@ function SearchBar({searchKeyword}:{searchKeyword:string}){
               type="text"
               value={inputkeyword}
               onChange={onInputChange}
-              onKeyDown={(e) => {if(e.key === 'Enter'){searchSongs()}}}
+              onKeyDown={(e) => {if(e.key === 'Enter'){dispatch(setKeyword(inputkeyword));}}}
               style={{...searchBarFontStyle, border:"0", width:"100%", height:"90%"}} placeholder='Sound CAST의 장르별 음원 검색' />
           </div>
         </div>

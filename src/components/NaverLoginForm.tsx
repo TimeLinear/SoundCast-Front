@@ -23,20 +23,14 @@ const NaverLoginForm = ({onSignupRequest, handleClose}:{onSignupRequest:()=>void
         naverLogin.init();
         
         naverLogin.getLoginStatus((status: boolean) => {
-
         if (status) {
           // 로그인 성공 시 사용자 정보 처리
             const user = naverLogin.user;
             console.log('member Info:', user);
 
             const token = localStorage.getItem('com.naver.nid.access_token');
-            console.log("full_acc",token);
-
             if (token) {
-               
                 const access_token = token.split('.')[1]
-              
-                if (access_token) {
                     axios
                         .post("http://localhost:8087/soundcast/auth/login/naver", {
                             accessToken:access_token
@@ -59,23 +53,18 @@ const NaverLoginForm = ({onSignupRequest, handleClose}:{onSignupRequest:()=>void
                          .catch(error => {
                             console.log(error);
                         })
+                }else {
+                  console.log('Access token is not available.');
                 }
-                
-    
-    
-            } else {
-              console.log('User is not logged in');
-            }
               } else {
-                console.log('Access token is not available.');
+                console.log('User is not logged in');
               }
-
       })
     };
       
-      useEffect(() => {
-        initializeNaverLogin();
-      }, []);
+    useEffect(() => {
+      initializeNaverLogin();
+       }, []);
 
 
     return(
