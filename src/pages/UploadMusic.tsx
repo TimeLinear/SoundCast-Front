@@ -313,7 +313,7 @@ const UploadMusic = ({
     })
     axios.post("http://localhost:8087/soundcast/song/unofficial/upload", formData)
       .then((res) => {
-        // console.log(res);
+        console.log(res);
         if (!res.data) {
           alert("음원 등록에 실패하였습니다");
           navi("/member/mypage");
@@ -334,28 +334,28 @@ const UploadMusic = ({
           songMoodName: res.data.songMoodName,
 
           songImage: {
-            songImageNo: res.data.songImageNo, // 음원 커버 이미지 번호
-            songImagePathNo: res.data.songImagePathNo, // 음원 커버 이미지 경로 번호
-            songImageName: res.data.songImageName, // 음원 커버 이미지 파일명
-            songImagePathName: res.data.songImagePathName // 음원 커버 이미지 경로명
+            songImageNo: res.data.songImage.songImageName, // 음원 커버 이미지 번호
+            songImagePathNo: res.data.songImage.songImagePathNo, // 음원 커버 이미지 경로 번호
+            songImageName: res.data.songImage.songImageName, // 음원 커버 이미지 파일명
+            songImagePathName: res.data.songImage.songImagePathName // 음원 커버 이미지 경로명
           },
 
           songFile: {
-            songFileNo: res.data.songFileNo, // 음원 파일 번호
-            songFilePathNo: res.data.songFilePathNo,
-            songFileSongPathName: res.data.songFileSongPathName,
-            songFileChangeName: res.data.songFileChangeName,
-            songFileOriginName: res.data.songFileOriginName
+            songFileNo: res.data.songFile.songFileNo, // 음원 파일 번호
+            songFilePathNo: res.data.songFile.songFilePathNo,
+            songFileSongPathName: res.data.songFile.songFileSongPathName,
+            songFileChangeName: res.data.songFile.songFileChangeName,
+            songFileOriginName: res.data.songFile.songFileOriginName
           },
 
           // songDuration: res.data.songDuration
         }
+        console.log("추가된 음원 : ");
+        console.log(newSong);
         dispatch(setSongList([...song.list, newSong]));
-        dispatch(setPlaySong(newSong.songNo));
       })
       .finally(() => {
         handleClose();
-        navi("/song/detail/" + song.currentSong.songNo);
       })
   }
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 import { setGenre, setMood } from "../features/searchSlice";
 import { useDispatch, useSelector } from "react-redux";
 import Pagination from "./Pagination";
@@ -9,7 +9,14 @@ import { useNavigate } from "react-router-dom";
 import SongItem from "./SongItem";
 import ModifyMusic from "../pages/ModifyMusic";
 
-const MyPageSong = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activeSongNo: number | null, setActiveSongNo: (no: number) => void, song:{list:Song[], currentSong:Song}, searchSong:()=>void })  =>{
+const MyPageSong = ({ activeSongNo, setActiveSongNo, song, deleteList, setDeleteList } : 
+    { 
+        activeSongNo: number | null, 
+        setActiveSongNo: (no: number) => void, 
+        song:{list:Song[], currentSong:Song}, 
+        deleteList:number[],
+        setDeleteList:(noList:number[]) => void
+    }) => {
    
     const [hoverState, setHoverState] = useState({ songNo: 0, class: "" });
 
@@ -22,7 +29,8 @@ const MyPageSong = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activ
     //모디파이
     const [showModifySong, setShowModifySong] = useState(false);
     const [modifySong, setModifySong] = useState<Song>(initSong);
-    const modifySongHandler = (song:Song) =>{
+    const modifySongHandler = (e:MouseEvent, song:Song) =>{
+        e.stopPropagation();
         setShowModifySong(true);
         setModifySong(song);
     }
@@ -34,7 +42,7 @@ const MyPageSong = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activ
         if (activeSongNo !== null) {
             dispatch(setPlaySong(activeSongNo));
         }
-    }, [activeSongNo]);
+    }, [activeSongNo, song.list]);
 
     const [licenseItem, setLicenseItem] = useState<number>(0);
     const handleLicenseClick = (id: number) => {
@@ -60,6 +68,21 @@ const MyPageSong = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activ
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = song.list.slice(indexOfFirstItem, indexOfLastItem);
 
+    // const [deleteList, setDeleteList] = useState([0]);
+
+    const onCheckBoxChange = (e:ChangeEvent<HTMLInputElement>, songNo:number) => {
+        if (e.target.checked) {
+            setDeleteList([...deleteList, songNo]);
+        } else {
+            setDeleteList(deleteList.filter((no) => no !== songNo))
+        }
+    }
+
+    const onClickSongCard = (songNo:number) => {
+        dispatch(setPlaySong(songNo));
+        navi("/song/detail/" + songNo);
+    }
+
     // console.log(hoverState);
    
 
@@ -73,11 +96,28 @@ const MyPageSong = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activ
 
         {currentItems.map((Song,index) => (
 
-            <div style={{ margin: "20px 2.39%", width: "194px", height: "220px", display: "flex", flexDirection: "column" }} key={index}>
+            <div 
+                key={index}
+                style={{ margin: "20px 2.39%", width: "194px", height: "220px", display: "flex", flexDirection: "column", cursor: "pointer" }}
+                onClick={() => onClickSongCard(Song.songNo)}
+            >
 
                 <div className="hoverImage" style={{ width: "100%", height: "154px", boxSizing: "border-box", flexGrow: "1", position:"relative" }}>
-                    <img className="modifyImage" src={serverImagePath+"public/member/modifyInfo.png"} style={{position:"absolute",width:"20px",height:"20px",top:"10px",left:"10px", borderRadius:"10px"}} onClick={()=>modifySongHandler(Song)} />
-                    <img src={Song.songImage.songImageNo !== 0 ? serverImagePath+Song.songImage.songImagePathName+Song.songImage.songImageName : serverImagePath+'images/song/song-image.png'} style={{ width: "100%", height: "100%", objectFit: "cover", borderTopLeftRadius: "7px", borderTopRightRadius: "7px" }} />
+                    <img 
+                        className="modifyImage" 
+                        src={serverImagePath + "public/member/modifyInfo.png"} 
+                        style={{ position:"absolute",width:"20px",height:"20px",top:"10px",left:"10px", borderRadius:"5px", backgroundColor: "white" }} 
+                        onClick={(e)=>modifySongHandler(e, Song)} 
+                    />
+                    <img 
+                        src={
+                            Song.songImage.songImageNo !== 0 ? 
+                            serverImagePath+Song.songImage.songImagePathName+Song.songImage.songImageName 
+                            : serverImagePath+'images/song/song-image.png'
+                        } 
+                        style={{ width: "100%", height: "100%", objectFit: "cover", borderTopLeftRadius: "7px", borderTopRightRadius: "7px" }} />
+                    <input type="checkbox" style={{position:"absolute", width:"20px", height:"20px", top:"10px", right:"10px"}} 
+                        onChange={(e) => {onCheckBoxChange(e, Song.songNo)}} checked={deleteList.includes(Song.songNo)}/>
                 </div>
                     {/* {showModifySong ? <ModifyMusic show={showModifySong} handleClose={modifySongCloseHandler} selectSong={Song} /> : null} */}
                 <div style={{

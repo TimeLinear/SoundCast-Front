@@ -128,7 +128,6 @@ const MusicDetail = () => {
     const serverResourcePath = "http://localhost:8087/soundcast/resource/"
 
     useEffect(() => {
-        dispatch(setSongList(song.list.filter((songItem) => songItem.songNo !== song.currentSong.songNo)));
         return () => {
             dispatch(setPlaySong(0));
         }
@@ -201,7 +200,12 @@ const MusicDetail = () => {
                             <div style={{ textAlign: "start" }}>
                                 <label style={{ ...commonTextStyle, font: "bold 24px sans-serif" }}>이 아티스트의 다른 음원입니다.</label>
                             </div>
-                            <SongItem activeSongNo={activeSongNo} setActiveSongNo={setActiveSongNo} song={song} searchSong={searchSong}/>
+                            <SongItem 
+                                activeSongNo={activeSongNo} 
+                                setActiveSongNo={setActiveSongNo} 
+                                song={{...song, list:[...song.list.filter((songItem) => songItem.songNo !== currSong.songNo)]}} 
+                                searchSong={searchSong}
+                            />
                         </div>
                     </div>
                 </div>

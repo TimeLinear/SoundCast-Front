@@ -67,13 +67,12 @@ const MyPageBanner = () => {
         }
     },[activeSongNo])
     
-    const props:Props = {
+    const props = {
         activeSongNo,
         setActiveSongNo,
         song,
-        searchSong: function (): void {
-            throw new Error("Function not implemented.");
-        }
+        deleteList:[],
+        setDeleteList:() => {}
     }
 
     const insertSongHandler = () =>{

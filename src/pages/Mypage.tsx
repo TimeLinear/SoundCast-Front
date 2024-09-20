@@ -64,14 +64,15 @@ const MyPageBanner = () => {
             dispatch(setPlaySong(activeSongNo));
         }
     },[activeSongNo])
+
+    const [deleteList, setDeleteList] = useState<number[]>([]);
     
-    const props:Props = {
+    const props = {
         activeSongNo,
         setActiveSongNo,
         song,
-        searchSong: function (): void {
-            throw new Error("Function not implemented.");
-        }
+        deleteList,
+        setDeleteList
     }
 
     const insertSongHandler = () =>{
@@ -85,6 +86,31 @@ const MyPageBanner = () => {
 
     }, [member]);
 
+    const onClickDelete = () => {
+        if (!deleteList.length) return;
+
+        axios.delete(`http://localhost:8087/soundcast/song/delete`, {
+            params:{
+                deleteListStr : deleteList.join(",")
+            }
+        })
+        .then((res) => {
+            if(!res.data) {
+                alert("삭제에 실패하였습니다");
+                return;
+            }
+
+            dispatch(setSongList([...song.list.filter((song) => !deleteList.includes(song.songNo))]));
+            alert("삭제되었습니다.");
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+        .finally(() => {
+            
+        })
+    }
+
 
     const serverImagePath = "http://localhost:8087/soundcast/resource/";
 
@@ -93,7 +119,7 @@ const MyPageBanner = () => {
     return (
         <>
             <div className='banner-box' style={{ width: "100%", height: "270px", position: "relative", display: "flex", alignItems: "center" }}>
-                <img src={member.banner ? serverImagePath+member.banner : serverImagePath+"images/member/banner/default-banner.png"} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                <img src={member.banner ? serverImagePath + member.banner : serverImagePath+"images/member/banner/default-banner.png"} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             </div>
             
             <div className='userinfo' style={{ boxSizing:"border-box", alignSelf: "center", width: "1280px", display: "flex", position:"relative", justifyContent: "center", flexDirection: "column", margin: "0 auto" }}>
@@ -142,8 +168,12 @@ const MyPageBanner = () => {
 
                     <div key={"comment"}  className={`rest ${isShow === 'comment' ? 'selectSac' : ''}`}>
                         {isShow === "song" &&
-                           <div style={{ minWidth: "1300px", height: "50px", backgroundColor: "#1C003B", display: "flex", alignItems: "center", borderTopRightRadius: "7px", justifyContent: "space-between", width: "100%" }}>
-                                <button style={{ fontWeight: "bolder", fontSize: "17px", marginRight:"23px",  marginLeft: "auto", width:"90px" ,cursor: "pointer",borderRadius:"7px",backgroundColor:"white"}} onClick={insertSongHandler}>업로드</button>
+                           <div style={{ minWidth: "1280px", height: "50px", backgroundColor: "#1C003B", display: "flex", alignItems: "center", borderTopRightRadius: "7px", justifyContent: "flex-end", width: "100%" }}>
+                                <button style={{ fontWeight: "bolder", fontSize: "17px", marginRight:"10px",  marginLeft: "auto", width:"90px" ,cursor: "pointer",borderRadius:"7px",backgroundColor:"white"}} onClick={insertSongHandler}>업로드</button>
+                                <button style={{ fontWeight: "bolder", fontSize: "17px", marginRight:"15px", width:"90px" ,cursor: "pointer",borderRadius:"7px",backgroundColor:"white"}}
+                                    onClick={onClickDelete}>
+                                    삭제
+                                </button>
                             </div>
                         }
                         <UploadMusic show={showUploadModal} handleClose={insetHandleClose} member={member}/>
