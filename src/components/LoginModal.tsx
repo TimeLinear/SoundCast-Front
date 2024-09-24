@@ -5,6 +5,7 @@ import GoogleLoginForm from './GoogleLoginForm';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import KakaoLoginForm from './KakaoLoginForm';
+import NaverLoginForm from './NaverLoginForm';
 
 const LoginModal = ({show, handleClose, onSignupRequest}:{show:boolean, handleClose:() => void, onSignupRequest:()=>void} ) => {
     const showHideClassName = show ? "modal display-block" : "modal display-none";
@@ -41,8 +42,9 @@ const LoginModal = ({show, handleClose, onSignupRequest}:{show:boolean, handleCl
                 <h2 className="h2" style={{ color: 'white' }}>로그인</h2>
                 <p style={{ color: 'white' }}>지금 바로 서비스를 이용해 보세요!</p>
                 <div className="login-buttons">
-                    <GoogleLoginForm onSignupRequest={handleSignupRequest} handleClose={handleClose} />
-                    <KakaoLoginForm onSignupRequest={handleSignupRequest} handleClose={handleClose} />
+                    <GoogleLoginForm onSignupRequest={handleSignupRequest} handleClose={handleClose}/>
+                    <KakaoLoginForm onSignupRequest={handleSignupRequest} handleClose={handleClose}/>
+                    <NaverLoginForm onSignupRequest={handleSignupRequest} handleClose={handleClose}/>
                 </div>
             </div>
         </div>

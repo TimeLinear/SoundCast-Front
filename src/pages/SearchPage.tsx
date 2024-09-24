@@ -11,9 +11,6 @@ function SearchPage(){
   const search = useSelector((state:RootState) => state.search);
   const song = useSelector((state:RootState) => state.song)
 
-  useEffect(() => {
-
-  }, [song.list])
 
   return ( 
       <>

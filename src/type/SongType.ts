@@ -122,7 +122,7 @@ export type Props = {
 	activeSongNo : number|null,
     setActiveSongNo : Dispatch<SetStateAction<number|null>>,
 	song : {list: Song[], currentSong:Song},
-	searchSong : () => void,
+	searchSong : () => void
 };
 
 export type Genre = {

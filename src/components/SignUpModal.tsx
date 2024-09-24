@@ -41,17 +41,14 @@ const SignUpModal = ({showSignUp, openSignUp, closeSignUp } : {showSignUp:boolea
     };
     const canSignUp = isPrivacyPolicyAgreed && isTermsAgreed;
 
-   
-    
     const Credential = getCookie('Credential');
     const kktCredential = getCookie('ACCESS_TOKEN');
+    const naverCredential = getCookie('access_token');
 
-    const checkCre = Credential || kktCredential;
+    const checkCre = Credential || kktCredential || naverCredential;
+    
     const enroll =()=>{
-        console.log("enroll Credential:"+ Credential);
-        console.log("enroll accessToken : "+ kktCredential);
-
-        if(!Credential && kktCredential){
+        if(!Credential && !naverCredential && kktCredential){
             axios
                 .post("http://localhost:8087/soundcast/auth/enroll/kakao",{
                     accessToken: kktCredential
@@ -65,29 +62,39 @@ const SignUpModal = ({showSignUp, openSignUp, closeSignUp } : {showSignUp:boolea
                     dispatch(login(res.data.member));
                     closeSignUp();
                 })     
-        } else if(Credential){
+        } else if(!naverCredential && Credential){
             axios
                 .post("http://localhost:8087/soundcast/auth/enroll/google", {
                     Credential
                 })
                 .then(res =>{
-    
                     console.log("google enroll res: "+ res.data.jwtToken);
                     const JwtToken = res.data.jwtToken;
                     setSessionCookie("accessToken",JwtToken);
                     console.log(res);
                     dispatch(login(res.data.member));
                     closeSignUp();
-                   
                 })
                 
                 .catch(error => {
                     console.log(error);
                 })
 
+        } else if(naverCredential){
+            axios
+                .post("http://localhost:8087/soundcast/auth/enroll/naver", {
+                    naverCredential
+                })
+                .then(res => {
+                    console.log("네이버nroll : " +res);
+                    const JwtToken = res.data.jwtToken;
+                    console.log("네이버jwttoken : " + JwtToken);
+                    setSessionCookie("accessToken",JwtToken);
+                    
+                    dispatch(login(res.data.member));
+                    closeSignUp();
+                })
         }
-
-
     }
     
     const serverImagePath = "http://localhost:8087/soundcast/resource/";
@@ -126,6 +133,19 @@ const SignUpModal = ({showSignUp, openSignUp, closeSignUp } : {showSignUp:boolea
                         <img 
                             src={serverImagePath+"public/member/kakao_Login.png"}
                             alt="Kakao Icon" 
+                            onClick={() => {
+                                if (canSignUp) {
+                                    enroll();
+                                }
+                            }} 
+                        />
+                    )}
+
+                    {checkCre === naverCredential &&(
+                        <img
+                            src={serverImagePath+"public/member/naver_Login.png"}
+                            alt="Kakao Icon" 
+                            style={{height:'45px'}}
                             onClick={() => {
                                 if (canSignUp) {
                                     enroll();
