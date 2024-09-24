@@ -50,23 +50,23 @@ let memberSlice = createSlice({
             console.log("헤더서 로그인해서 보낸 데이터");
             console.log(data);
             return {
-                memberNo: data.memberNo,
-                profile: data.profileImage.profileImagePath,
-                nickName: data.memberNickname,
-                email: data.memberEmail,
-                banner: data.memberBanner.memberBannerPath,
-                introduce: data.memberIntroduce,
-                follow: {
-                    follower: data.follower,
-                    following: data.following?.map((following: { memberNo: string, memberNickname: string, profileImage: { profileImagePath: string } }) => ({
-                        memberNo: following.memberNo,
-                        nickName: following.memberNickname,
-                        profile: following.profileImage.profileImagePath
-                    })) || []
+                memberNo:data.memberNo,
+                profile:data.profileImage.profileImagePath,
+                nickName:data.memberNickname,
+                email:data.memberEmail,
+                banner:data.memberBanner.memberBannerPath,
+                introduce:data.memberIntroduce,
+                follow:{
+                    follower:data.follower,
+                    following:data.following?.map((following: {memberNo:string, memberNickname:string, profileImage:{profileImagePath:string}}) => ({
+                        memberNo:following.memberNo,
+                        nickName:following.memberNickname,
+                        profile:following.profileImage.profileImagePath
+                    })) ||[]
                 },
-
+                
                 comment: data.commentList?.map((comment: any) => ({
-                    commentNo: comment.comment.commentNo,
+                    commentNo : comment.comment.commentNo,
                     writerNo: comment.comment.commentWriterMemberNo,
                     content: comment.comment.commentText,
                     writerInfo: {

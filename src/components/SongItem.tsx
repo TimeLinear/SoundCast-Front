@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { CSSProperties, MouseEvent, useEffect, useState } from "react";
-import { setPlaySong } from "../features/songSlice";
+import { setPlaySong, setSongList  } from "../features/songSlice";
 import { Song } from "../type/SongType";
 import Pagination from "./Pagination";
 import { useNavigate } from "react-router-dom";
@@ -28,9 +28,6 @@ const SongItem = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activeS
         const songTypeNo = (e.target as HTMLDivElement).dataset.typeno;
 
         setHoverState({ songNo: Number(songNo), class: classname })
-
-        if (classname === 'genre-box') { dispatch(setGenre(Number(songTypeNo))) }
-        else if (classname === 'mood-box') { dispatch(setMood(Number(songTypeNo))) }
     };
 
     const search = useSelector((state: RootState) => state.search)
@@ -38,9 +35,6 @@ const SongItem = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activeS
         setHoverState({ songNo: 0, class: '' })
 
         const classname = (e.target as HTMLDivElement).className;
-        console.log(search.genre, search.mood, classname)
-        if (classname === 'genre-box') { dispatch(setGenre(-1)) }
-        else if (classname === 'mood-box') { dispatch(setMood(-1)) }
     };
 
     const dispatch = useDispatch();
@@ -86,7 +80,7 @@ const SongItem = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activeS
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = song.list.slice(indexOfFirstItem, indexOfLastItem);
 
-    // console.log(hoverState);
+    // console.log(currentItems);
 
 
     //수정 (검색함수 props에 추가, 이미지 경로 지정, 아티스트명 클릭시 아티스트 페이지로 이동, 장르, 분위기 data-songno 수정 클릭 이벤트 부여)
@@ -132,13 +126,14 @@ const SongItem = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activeS
                         <div key={Song.songNo}>
                             <div className='search-list' style={{ ...searchListBoxStyle }}>
                                 <div className='play-icon' style={{ ...iconBoxSizeStyle, width: "50px", height: "50px" }} >
-                                    <img src={url + (Song.songNo === activeSongNo ? "public/song/Pause_circle.png" : "public/song/Play_circle.png")}
+                                    <img src={url + (Song.songNo === activeSongNo ? "public/song/pause-button-icon-white.png" : "public/song/play_button.png")}
                                         style={{ height: "100%", width: "100%" }}
                                         onClick={() => handleIconClick(Song.songNo)} />
                                 </div>
                                 {/* 이미지 있는 경우 해당 이미지 보여주기, 없는 경우 default image */}
                                 <div className='song-image' style={{ width: "50px", height: "50px" }}>
-                                    <img src={url + Song.songImage.songImagePathName + Song.songImage.songImageName} style={{ height: "100%", width: "100%" }} />
+                                    <img src={url + ( Song.songImage ? Song.songImage.songImagePathName + Song.songImage.songImageName : "public/song/song-image.png")} 
+                                        style={{ height: "100%", width: "100%" }} />
                                 </div>
                                 <div className='song-content' style={{ width: "260px", height: "50px", textAlign: "start", paddingLeft: "20px" }}>
                                     <div className='song-title' style={{ height: "50%" }}>
@@ -148,7 +143,29 @@ const SongItem = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activeS
                                             onClick={() => { dispatch(setPlaySong(Song.songNo)); navi(`/song/detail/${hoverState.songNo}`); }}
                                             data-songno={Song.songNo}
                                             style={hoverState.class === 'song-title' && hoverState.songNo === Song.songNo ?
-                                                { ...searchListFontStyle, color: "magenta", cursor: "pointer" } : { ...searchListFontStyle, color: "#FFFFFF", cursor: "pointer" }}>
+                                                { 
+                                                    ...searchListFontStyle, 
+                                                    color: "magenta", 
+                                                    cursor: "pointer", 
+                                                    display: "inline-block", 
+                                                    height: "100%", 
+                                                    width: "100%", 
+                                                    whiteSpace: "nowrap", 
+                                                    overflow: "hidden", 
+                                                    textOverflow: "ellipsis" 
+                                                } 
+                                                : { 
+                                                    ...searchListFontStyle, 
+                                                    color: "#FFFFFF", 
+                                                    cursor: "pointer", 
+                                                    display: "inline-block", 
+                                                    height: "100%", 
+                                                    width: "100%", 
+                                                    whiteSpace: "nowrap", 
+                                                    overflow: "hidden", 
+                                                    textOverflow: "ellipsis" 
+                                            }}
+                                        >
                                             {Song.songTitle}
                                         </span>
                                     </div>
@@ -168,13 +185,13 @@ const SongItem = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activeS
 
                                 {/* 재생중일 때 나타나는 헤드폰 아이콘 */}
                                 <div className='headphone-icon' style={{ ...iconBoxSizeStyle, margin: "0 30px" }}>
-                                    {activeSongNo === Song.songNo && (<img src={url + "public/song/headphone_icon.png"} style={{ height: "100%", width: "100%", cursor: "default" }} />)}
+                                    {activeSongNo === Song.songNo && (<img src={url + "public/song/headphone-icon.png"} style={{ height: "100%", width: "100%", cursor: "default" }} />)}
                                 </div>
 
                                 <div className='genre-box'
                                     onMouseEnter={mouseEnterEventHandler}
                                     onMouseLeave={mouseLeaveEventHandler}
-                                    onClick={searchSong}
+                                    onClick={() => {dispatch(setGenre(Song.songGenreNo)); searchSong()}}
                                     data-songno={Song.songNo}
                                     data-typeno={Song.songGenreNo}
                                     style={hoverState.class === 'genre-box' && hoverState.songNo === Song.songNo ? { ...itemBoxStyle, ...selectedCategoryStyle } : { ...itemBoxStyle }}>
@@ -185,7 +202,7 @@ const SongItem = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activeS
                                     onMouseLeave={mouseLeaveEventHandler}
                                     data-songno={Song.songNo}
                                     data-typeno={Song.songMoodNo}
-                                    onClick={searchSong}
+                                    onClick={() => {dispatch(setMood(Song.songMoodNo)); searchSong()}}
                                     style={hoverState.class === 'mood-box' && hoverState.songNo === Song.songNo ? { ...itemBoxStyle, ...selectedCategoryStyle } : { ...itemBoxStyle }}>
                                     <span style={{ ...searchListFontStyle }}>{Song.songMoodName}</span>
                                 </div>
@@ -193,13 +210,13 @@ const SongItem = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activeS
                                 {/* 라이센스가 있을 경우 나타나는 아이콘 */}
                                 <div className='license-icon' style={{ ...iconBoxSizeStyle, cursor: "default" }}>
                                     {Song.songLicense !== null &&
-                                        (<img src={url + "public/song/license_icon.png"} style={{ height: "100%", width: "100%", cursor: "default" }} />)
+                                        (<img src={url + "public/song/license-icon.png"} style={{ height: "100%", width: "100%", cursor: "default" }} />)
                                     }
                                 </div>
 
                                 <div className='play-time-box' style={{ display: "flex", alignItems: "center", height: "38px" }}>
                                     <div className='clock-icon' style={{ ...iconBoxSizeStyle, marginRight: "10px" }}>
-                                        <img src={url + "public/song/clock_icon.png"} style={{ height: "100%", width: "100%", cursor: "default" }} />
+                                        <img src={url + "public/song/clock-icon.png"} style={{ height: "100%", width: "100%", cursor: "default" }} />
                                     </div>
                                     <div className='play-time'>
                                         <span style={{ ...searchListFontStyle, color: "white" }}>{Song.songDuration ? Song.songDuration : ''}</span>
@@ -230,7 +247,7 @@ const SongItem = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activeS
                                 {/* 클릭했을 경우 라이센스를 표기하는 아래 박스가 표시됨 */}
                                 <div className='open-icon' style={{ ...iconBoxSizeStyle }} >
                                     {Song.songLicense !== null &&
-                                        (<img src={url + (licenseItem === Song.songNo ? "public/song/open_icon_now.png" : "public/song/open_icon.png")}
+                                        (<img src={url + (licenseItem === Song.songNo ? "public/song/open-icon-now.png" : "public/song/open-icon.png")}
                                             style={{ height: "100%", width: "100%" }}
                                             onClick={() => { handleLicenseClick(Song.songNo) }} />)
                                     }
@@ -244,7 +261,7 @@ const SongItem = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activeS
                                         <div className='license-copy-icon'
                                             onClick={() => { if (Song.songLicense !== null) { licenseCopy(Song.songLicense) } }}
                                             style={{ ...itemBoxStyle, background: "#1C003B", width: "10%", height: "65%" }} >
-                                            <img src={url + "public/song/copy_Icon_white.png"} />
+                                            <img src={url + "public/song/copy-Icon-white.png"} />
                                         </div>
                                     </div>
                                 </div>)

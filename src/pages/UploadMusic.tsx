@@ -219,7 +219,7 @@ const UploadMusic = ({
     marginBottom: '20px',
   };
 
-  // ====
+  // ==== 여기까지 스타일 변수 ====
 
   const showHideClassName = show ? { ...modalStyle, ...displayBlockStyle } : { ...modalStyle, ...displayNoneStyle };
 
@@ -350,8 +350,6 @@ const UploadMusic = ({
 
           // songDuration: res.data.songDuration
         }
-        console.log("추가된 음원 : ");
-        console.log(newSong);
         dispatch(setSongList([...song.list, newSong]));
       })
       .finally(() => {

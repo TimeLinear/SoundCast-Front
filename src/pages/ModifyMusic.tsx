@@ -327,16 +327,18 @@ const ModifyMusic = ({show, handleClose, selectSong}:{show:boolean, handleClose:
       console.log(requestBody.get("songinfo"));
       console.log(requestBody.get("file"));
 
+
       CustomAxios.put(`http://localhost:8087/soundcast/song/update/${selectSong.songNo}`, requestBody)
         .then((response) => {
-          dispatch(setSongList(
-            songs.list.map((item) => 
-              item.songNo === selectSong.songNo ? renewSong : item
-          )));
+          console.log(response.data);
+
+          // update 수정 - 2024-08-30
+          dispatch(setSongList(response.data));
           
           setSongImageView(null);
-          alert(response.data);
+          alert("수정 성공!");
           handleClose();
+        
         })
         .catch(err => console.log(err))
     
@@ -367,13 +369,15 @@ const ModifyMusic = ({show, handleClose, selectSong}:{show:boolean, handleClose:
               <label htmlFor="file-input" 
                 className="image-label"
                 style={{
-                  cursor:"pointer"
+                  cursor:"pointer",
+                  width: "100%",
+                  height: "100%"
                 }} >
               <img className="image-custom"
                 style={{
                   width:"100%",
                   height:"100%", 
-                  objectFit:"cover"
+                  objectFit:"contain"
                 }}
                 src={songImageView === null ? "http://localhost:8087/soundcast/resource/public/song/song-image-default.png" 
                   : songImageView} 

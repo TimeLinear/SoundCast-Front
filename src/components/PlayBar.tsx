@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { Props, Song } from "../type/SongType";
 import { RootState } from "../store/store";
-import { ChangeEvent, DragEvent, useRef, useState } from "react";
+import { ChangeEvent, DragEvent, useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import axios from "../utils/CustomAxios";
 
@@ -108,6 +108,11 @@ function Player(props:Props){
         }
     }
 
+    useEffect(() => {
+
+    }, [songs.currentSong]);
+
+    const serverImagePath = "http://localhost:8087/soundcast/resource/";
 
     return (
 
@@ -127,14 +132,18 @@ function Player(props:Props){
             />
 
             <div className='play-icon' style={{width:"45px", height:"45px", paddingRight: "25px"}}>
-                <img src={activeSongNo === songs.currentSong.songNo ? "images/pause-button-icon-black.png" : "images/play-icon-black.png"} 
+                <img src={serverImagePath + (activeSongNo === songs.currentSong.songNo ? "public/song/pause-button-icon-black.png" : "public/song/play-icon-black.png")} 
                     style={{height:"100%", width:"100%"}}
                     onClick={()=>setActiveSongNo(activeSongNo === songs.currentSong.songNo ? 0 : songs.currentSong.songNo)} />
             </div>
             
             {/* 이미지 있는 경우 해당 이미지 보여주기, 없는 경우 default image */}
             <div className='song-image' style={{width:"50px", height:"50px", paddingRight: "25px"}}>
-                <img src='images/song-image.png' style={{height:"100%", width:"100%", borderRadius:"2px"}}/>
+                <img 
+                src={serverImagePath + (currentSong.songImage.songImageName ? 
+                currentSong.songImage.songImagePathName + currentSong.songImage.songImageName 
+                : 'public/song/song-image.png')} 
+                style={{height:"100%", width:"100%", borderRadius:"2px"}}/>
             </div>
             
             <div className='song-content' style={{width:"300px", height:"50px", paddingRight: "25px"}}>
@@ -170,7 +179,7 @@ function Player(props:Props){
             <div className="volume-box" style={{...playerBoxStyle, width:"15%", paddingRight: "25px"}}>
                 <div className="volume-icon" style={{width:"25px", height:"25px"}}>
                     <img 
-                        src="images/audio-control-icon-black.png"
+                        src={serverImagePath + "public/song/audio-control-icon-black.png"}
                         onMouseEnter={() => setPlayerState(prev => ({ ...prev, showVolumeBar: true }))}
                         onMouseLeave={() => setPlayerState(prev => ({ ...prev, showVolumeBar: false }))}
                         style={{height:"100%", width:"100%"}}/>
@@ -195,7 +204,7 @@ function Player(props:Props){
             </div>
 
             <div className='download-icon' style={{width:"25px", height:"25px", paddingRight: "25px"}}>
-                <img src="images/download-icon-black.png" 
+                <img src={serverImagePath + "public/song/download-icon-black.png"} 
                     style={{height:"100%", width:"100%"}}
                     onClick={()=>handleDownload(currentSong)}/>
             </div>
@@ -204,7 +213,7 @@ function Player(props:Props){
                     onClick={()=> {if(songs.currentSong.songLicense!==null){licenseCopy(songs.currentSong.songLicense)}}}
                     style={{width:"25px", height:"25px"}}>
                     {songs.currentSong.songLicense !== null ? 
-                        (<img src="images/copy-Icon-black.png" style={{height:"100%", width:"100%"}}/>)
+                        (<img src={serverImagePath + "public/song/copy-Icon-black.png"} style={{height:"100%", width:"100%"}}/>)
                         : null
                     }
             </div>

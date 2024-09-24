@@ -1,5 +1,5 @@
 import { CSSProperties, useEffect, useState } from "react";
-import { Props } from "../type/SongType";
+import { Props, Song } from "../type/SongType";
 import Player from "../components/PlayBar";
 import SongItem from "../components/SongItem";
 import MusicReportModal from "./MusicReportModal";
@@ -22,12 +22,10 @@ const MusicDetail = () => {
     const currSong = song.currentSong;
 
     const search = useSelector((state:RootState)=>state.search);
+    const member = useSelector((state:RootState) => state.member);
     const dispatch = useDispatch();
     const navi = useNavigate();
     const searchSong = () => {
-        dispatch(setKeyword(currSong.songMemberNo.toString()));
-        dispatch(setMood(0));
-        dispatch(setGenre(0));
         axios.get(`http://localhost:8087/soundcast/song/search`, {params : search})
           .then((response) => {
               //키워드로 db에 저장된 노래 불러와 리스트 전역에 저장
@@ -37,13 +35,13 @@ const MusicDetail = () => {
           .catch((err)=>console.log(err));
   
         navi("/search");
-    }
+    };
+
     const props:Props = {
         activeSongNo,
         setActiveSongNo,
-        song,
+        song: {...song, list: song.list.filter((songItem) => songItem.songNo !== currSong.songNo)},
         searchSong
-      
     };
 
     const onClickReportButton = () => {
@@ -128,11 +126,56 @@ const MusicDetail = () => {
     const serverResourcePath = "http://localhost:8087/soundcast/resource/"
 
     useEffect(() => {
+        axios.get(`http://localhost:8087/soundcast/song/memberSongList/${currSong.songMemberNo}`)
+            .then((response) => {
+                //키워드로 db에 저장된 노래 불러와 리스트 전역에 저장
+                console.log(response.data);
+                dispatch(setSongList(response.data));
+            })
+            .catch((err) => console.log(err));
         return () => {
             dispatch(setPlaySong(0));
         }
     }, [])
 
+    const handleDownload = (song: Song) => {
+
+        try {
+            axios.get(`http://localhost:8087/soundcast/song/download/${song.songNo}`, { params: { memberNo: member.memberNo }, responseType: 'blob' })
+                .then((response) => {
+                    const url = window.URL.createObjectURL(new Blob([response.data]));
+                    const link = document.createElement('a');
+                    link.href = url;
+
+                    link.setAttribute('download', song.songFile.songFileOriginName);
+
+                    document.body.appendChild(link);
+                    link.click();
+
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(url);
+                    alert("다운로드 완료!")
+                })
+                .catch(err => {
+                    alert("다운로드가 실패하였습니다.");
+                    console.log(err)
+                })
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    const [isPlaying, setIsPlaying] = useState(false);
+
+    const togglePlaying = () => {
+        if(!isPlaying) {
+            setActiveSongNo(currSong.songNo);      
+        } else {
+            setActiveSongNo(null);
+        }
+        setIsPlaying(!isPlaying);
+    }
 
     return (
         <>
@@ -140,7 +183,7 @@ const MusicDetail = () => {
                 <div style={musicDetailContainer}>
                     <div style={{ width: "1152px", minWidth: "590px" }}>
                         <div style={{ ...commonFlexStyle, justifyContent: "flex-start", marginBottom: "30px" }}>
-                            <h1 style={OfficialTitleStyle}>{currSong.songPlaceNo === 1 ? "Official" : "Unofficial"}</h1>
+                            <h1 style={OfficialTitleStyle}>{currSong.songPlaceNo === 0 ? "Official" : "Unofficial"}</h1>
                         </div>
                         <div style={{ ...commonFlexStyle, flexShrink: 0 }}>
                             <div style={{ ...commonFlexStyle, flexDirection: "column", boxSizing: "border-box", width: "50%" }}>
@@ -151,13 +194,18 @@ const MusicDetail = () => {
                                             : "public/song/song-image.png")} alt="음원 커버 이미지" />
                                 </div>
                                 <div style={{ ...commonFlexStyle, justifyContent: "flex-start", alignItems: "center", margin: "10px 0", padding: "0 5px", width: "420px" }}>
-                                    <img style={{ width: "70px", margin: "0 5px" }} src="/images/song/play_button.png" alt="재생 버튼" />
+                                    <img 
+                                        style={{ width: "70px", height: "70px", margin: "0 5px", cursor: "pointer" }} 
+                                        src={ serverResourcePath + (isPlaying ? "public/song/Pause_button.png" : "public/song/play_button.png")}
+                                        onClick={togglePlaying}
+                                        alt="재생 버튼" 
+                                    />
                                     <span style={{ ...commonTextStyle, margin: "0 10px", font: "bold 20px sans-serif" }}>1:58</span>
                                     <div style={{ flexGrow: "1" }}></div>
                                     <img style={{ width: "25px", margin: "0 10px" }} src={serverResourcePath + "public/song/share_icon.png"} alt="공유 버튼" />
                                 </div>
                                 <div style={{ ...commonFlexStyle, justifyContent: "center", width: "420px", margin: "20px auto 20px 0" }}>
-                                    <button style={downloadButtonStyle}>다운로드</button>
+                                    <button style={{...downloadButtonStyle, cursor: "pointer"}} onClick={() => {handleDownload(currSong)}}>다운로드</button>
                                 </div>
                             </div>
                             <div style={{ ...commonFlexStyle, boxSizing: "border-box", width: "50%", flexDirection: "column" }}>
@@ -169,10 +217,12 @@ const MusicDetail = () => {
                                 </div>
                                 <div 
                                     style={{ textAlign: "start", margin: "15px 0" }}
-                                    onMouseEnter={mouseEnterEventHandler}
-                                    onMouseLeave={mouseLeaveEventHandler}
                                     onClick={() => { navi(`/member/memberInfo/${currSong.songMemberNo}`) }}>
-                                    <h3 style={{ ...commonTextStyle, fontSize: "30px", cursor: "pointer", color: isArtistHover ? "magenta" : "white" }}>
+                                    <h3 
+                                        style={{ ...commonTextStyle, display: "inline-block", fontSize: "30px", cursor: "pointer", color: isArtistHover ? "magenta" : "white" }}
+                                        onMouseEnter={mouseEnterEventHandler}
+                                        onMouseLeave={mouseLeaveEventHandler}
+                                    >
                                         {currSong.memberNickname}
                                     </h3>
                                 </div>
@@ -200,11 +250,7 @@ const MusicDetail = () => {
                             <div style={{ textAlign: "start" }}>
                                 <label style={{ ...commonTextStyle, font: "bold 24px sans-serif" }}>이 아티스트의 다른 음원입니다.</label>
                             </div>
-                            <SongItem 
-                                activeSongNo={activeSongNo} 
-                                setActiveSongNo={setActiveSongNo} 
-                                song={{...song, list:[...song.list.filter((songItem) => songItem.songNo !== currSong.songNo)]}} 
-                                searchSong={searchSong}
+                            <SongItem {...props}
                             />
                         </div>
                     </div>

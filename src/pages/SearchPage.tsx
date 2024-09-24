@@ -4,11 +4,16 @@ import SearchList from "./SearchList";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { useParams } from "react-router-dom";
+import { useEffect } from "react";
 
 function SearchPage(){
 
   const search = useSelector((state:RootState) => state.search);
   const song = useSelector((state:RootState) => state.song)
+
+  useEffect(() => {
+
+  }, [song.list])
 
   return ( 
       <>
