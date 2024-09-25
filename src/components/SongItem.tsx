@@ -219,7 +219,13 @@ const SongItem = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activeS
                                         <img src={url + "public/song/clock-icon.png"} style={{ height: "100%", width: "100%", cursor: "default" }} />
                                     </div>
                                     <div className='play-time'>
-                                        <span style={{ ...searchListFontStyle, color: "white" }}>{Song.songDuration ? Song.songDuration : ''}</span>
+                                        <span style={{ ...searchListFontStyle, color: "white" }}>
+                                            {
+                                                Song.songDuration ? String(Math.floor((Song.songDuration / 60) % 60)).padStart(2, '0') 
+                                                    + ' : ' +  String(Math.floor(Song.songDuration % 60)).padStart(2, '0')
+                                                : ''
+                                            }
+                                        </span>
                                     </div>
                                 </div>
 

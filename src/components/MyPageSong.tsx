@@ -95,7 +95,7 @@ const MyPageSong = ({ activeSongNo, setActiveSongNo, song, deleteList, setDelete
     console.log(currentItems);
 
     return(
-        <div className="mysong" style={{ minWidth: "1300px", height: "80vw", border: "1px solid lightgrey", display: "flex", flexWrap: "wrap"}}>
+        <div className="mysong" style={{ minWidth: "1300px", minHeight: "60vh", border: "1px solid lightgrey", display: "flex", flexWrap: "wrap"}}>
 
         {currentItems.map((Song,index) => (
 

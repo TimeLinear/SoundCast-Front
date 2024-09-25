@@ -217,7 +217,13 @@ const MusicDetail = () => {
                                         onClick={togglePlaying}
                                         alt="재생 버튼" 
                                     />
-                                    <span style={{ ...commonTextStyle, margin: "0 10px", font: "bold 20px sans-serif" }}>1:58</span>
+                                    <span style={{ ...commonTextStyle, margin: "0 10px", font: "bold 20px sans-serif" }}>
+                                        {
+                                            currSong.songDuration ? String(Math.floor((currSong.songDuration / 60) % 60)).padStart(2, '0') 
+                                                + ' : ' +  String(Math.floor(currSong.songDuration % 60)).padStart(2, '0')
+                                            : ''
+                                        }
+                                    </span>
                                     <div style={{ flexGrow: "1" }}></div>
                                     <img style={{ width: "25px", margin: "0 10px" }} src={serverResourcePath + "public/song/share_icon.png"} alt="공유 버튼" />
                                 </div>

@@ -67,7 +67,7 @@ const MyPageComment = () =>{
                 <button style={{ fontWeight: "bolder", fontSize: "17px", marginRight:"23px",width:"90px" ,cursor: "pointer",borderRadius:"7px",backgroundColor:"white"}} onClick={commentDeleteHandler}>삭제</button>
             </div>
 
-            <div className="commentBox" style={{  width: "1300px", backgroundColor: "#FFFFFF", }}>
+            <div className="commentBox" style={{  width: "1300px", minHeight: "60vh", backgroundColor: "#FFFFFF", }}>
               {member.comment.length > 0 ? (
                 member.comment.map((reply) => (
                             <div className="writedComment" key={reply.commentNo}  style={{ width: "100%", display: "flex", alignItems: "center", marginTop: "10px" }}>

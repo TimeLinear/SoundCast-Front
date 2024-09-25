@@ -8,6 +8,7 @@ export type Song = {
 	// songImageNo: number; // 음원 커버 이미지 번호
 	songTitle: string; // 음원명(유저가 입력)
 	songLicense : string|null; // 음원 출처(유저가 입력)
+	// 2024-09-25 추가
 	songDetail: string|null; // 음원 상세(유저가 입력)
 	songPlaceNo: 0 | 1;
 
