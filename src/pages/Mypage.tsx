@@ -10,14 +10,15 @@ import { Props } from "../type/SongType";
 import { setPlaySong, setSongList } from "../features/songSlice";
 import MyPageSong from "../components/MyPageSong";
 import UploadMusic from "./UploadMusic";
+import { useNavigate } from "react-router-dom";
 
 
 const MyPageBanner = () => {
     const member = useSelector((state: RootState) => state.member);
     const song = useSelector((state:RootState)=>state.song);
     const dispatch = useDispatch();
-    console.log("팔로잉배열")
-    console.log(member.follow.following)
+    const navi = useNavigate();
+
     const [isShow, setIsShow] = useState('song');
     const [showFollingModal, setShowFollingModal] = useState(false);
     const [showModifyModal,setShowModifyModal] = useState(false);
@@ -38,14 +39,17 @@ const MyPageBanner = () => {
     const modifyCloseHandler = () => {
         setShowModifyModal(false);
     }
-
-   
-    
     
     //음원
     const [activeSongNo, setActiveSongNo] = useState<number|null>(null);
     console.log(member.memberNo);
     useEffect(()=>{
+
+        if(!member.memberNo) {
+            alert("로그인해야 이용할 수 있는 서비스입니다.");
+            navi("/");
+            return;
+        }
       
         axios.get(`http://localhost:8087/soundcast/song/memberSongList/${member.memberNo}`)
             .then((response) => {

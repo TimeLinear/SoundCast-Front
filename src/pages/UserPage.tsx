@@ -108,6 +108,7 @@ const UserPage = () => {
             .get(`http://localhost:8087/soundcast/member/memberInfo/${memberNo}`)
             .then(response => {
                 if (response.data === "" || response.data === null) {
+                    alert("없는 회원입니다.");
                     navi("/");
                 }
                 setSelectMember({

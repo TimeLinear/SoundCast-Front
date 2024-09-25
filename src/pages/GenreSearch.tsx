@@ -74,9 +74,7 @@ function GenreSearch ({searchGenre, searchMood}:{searchGenre:number, searchMood:
     dispatch(setKeyword(""));
     dispatch(setGenre(genreNo));
     dispatch(setMood(0));
-    setTimeout(() => {
-      navi("/search");
-    }, 500);
+    navi("/search");
   }
 
   useEffect(() => {

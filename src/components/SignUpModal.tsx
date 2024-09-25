@@ -102,7 +102,7 @@ const SignUpModal = ({showSignUp, openSignUp, closeSignUp } : {showSignUp:boolea
     return (
         <div className={showHideClassName}>
             <div className="signup-main">
-            <img src={"../modal-back.jpg"} className="background-image" alt="Modal Background" style={{borderRadius:"10px"}} />
+            <img src={serverImagePath + "public/main/modal-back.jpg"} className="background-image" alt="Modal Background" style={{borderRadius:"10px"}} />
                 <button className="close-button" onClick={closeSignUp}>X</button>
                 <div className='signup-serve'>
                     <h2 className='h2' style={{ color: 'white' }}>이용약관</h2>
@@ -143,8 +143,8 @@ const SignUpModal = ({showSignUp, openSignUp, closeSignUp } : {showSignUp:boolea
 
                     {checkCre === naverCredential &&(
                         <img
-                            src={serverImagePath+"public/member/naver_Login.png"}
-                            alt="Kakao Icon" 
+                            src={serverImagePath + "public/member/naver_Login.png"}
+                            alt="Naver Icon" 
                             style={{height:'45px'}}
                             onClick={() => {
                                 if (canSignUp) {

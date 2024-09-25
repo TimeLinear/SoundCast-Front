@@ -105,10 +105,10 @@ function Header() {
     e.stopPropagation(); // 이벤트 전파 방지
     if (!dropShow) {
       setDropShow(true);
-      setTimeout(() => setAnimateDropdown(true), 10); // 애니메이션 시작
+      setAnimateDropdown(true)
     } else {
       setAnimateDropdown(false);
-      setTimeout(() => setDropShow(false), 300); // 애니메이션 종료 후 드롭다운 숨김
+      setDropShow(false)
     }
   }
 

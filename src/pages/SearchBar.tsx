@@ -69,8 +69,8 @@ function SearchBar({searchKeyword}:{searchKeyword:string}){
   return(
       <div className='search-bar' style={{...searchBarStyle, boxSizing:"border-box"}}>
         <div className='search-bar-body' style={{...searchBarBodyStyle, boxSizing:"border-box"}}>
-          <div className='search-icon-box' style={{height: "35px"}}>
-            <img src={serverImagePath+'public/main/search-icon.png'} style={{height: "100%"}}/>
+          <div className='search-icon-box' style={{width: "35px", height: "35px", cursor: "pointer"}} onClick={() => {dispatch(setKeyword(inputkeyword))}}>
+            <img src={serverImagePath+'public/main/search-icon.png'} style={{width: "100%", height: "100%"}}/>
           </div>
           <div className='search-bar-input' style={{width:"85%", height:"90%"}}>
             <input

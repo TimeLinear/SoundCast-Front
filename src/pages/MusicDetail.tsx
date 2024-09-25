@@ -5,7 +5,7 @@ import SongItem from "../components/SongItem";
 import MusicReportModal from "./MusicReportModal";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "../utils/CustomAxios";
 import { setPlaySong, setSongList } from "../features/songSlice";
 import { setGenre, setKeyword, setMood } from "../features/searchSlice";
@@ -17,9 +17,11 @@ const MusicDetail = () => {
     // 신고 모달창 on/off
     const [showReportModal, setShowReportModal] = useState<boolean>(false);
 
+    const {musicNo} = useParams();
+
     const song = useSelector((state:RootState) => state.song);
 
-    const currSong = song.currentSong;
+    const [currSong, setCurrSong] = useState(song.currentSong);
 
     const search = useSelector((state:RootState)=>state.search);
     const member = useSelector((state:RootState) => state.member);
@@ -133,6 +135,21 @@ const MusicDetail = () => {
                 dispatch(setSongList(response.data));
             })
             .catch((err) => console.log(err));
+
+        if(!currSong.songNo) {
+            axios.get(`http://localhost:8087/soundcast/song/detail/${musicNo}`)
+                .then(res => {
+                    if(!res.data) {
+                        alert("유효하지 않은 음원 번호입니다.");
+                        navi("/");
+                        return;
+                    }
+                    setCurrSong(res.data);
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
         return () => {
             dispatch(setPlaySong(0));
         }
