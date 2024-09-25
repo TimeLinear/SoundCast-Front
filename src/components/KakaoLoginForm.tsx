@@ -22,17 +22,6 @@ export default function KakaoLoginForm({onSignupRequest, handleClose}:{onSignupR
 
         const ACCESS_TOKEN = data.response.access_token;
 
-        // axios.get("https://kapi.kakao.com/v2/user/me" , {
-        //     headers : {Authorization : `Bearer ${ACCESS_TOKEN}`}
-        // }).then((res)=>{
-        //     console.log(res);
-        //     const {properties} = res.data
-        //     const user = {
-        //         nickName : properties.nickname,
-        //         profile : properties.profile_image
-        //     }
-        //     setUser(user);
-        // })
         axios 
             .post("http://localhost:8087/soundcast/auth/login/kakao",{
                 accessToken:ACCESS_TOKEN
@@ -44,7 +33,6 @@ export default function KakaoLoginForm({onSignupRequest, handleClose}:{onSignupR
                     
                     onSignupRequest();
                    }
-
 
                 console.log("-------------------------")
                 console.log(ACCESS_TOKEN);

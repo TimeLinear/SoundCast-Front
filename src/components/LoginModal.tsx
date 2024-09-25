@@ -35,7 +35,7 @@ const LoginModal = ({show, handleClose, onSignupRequest}:{show:boolean, handleCl
         {/* 모달 배경 이미지 */}
         
         <div className="modal-main">
-        <img src={"../modal-back.jpg"} className="background-image" alt="Modal Background" style={{borderRadius:"10px"}} />
+        {/* <img src={"../modal-back.jpg"} className="background-image" alt="Modal Background" style={{borderRadius:"10px"}} /> */}
             <button className="close-button" onClick={handleClose}>X</button>
             <div className="modal-serve" style={{textShadow:""}} >
                 <img src={serverImagePath + "public/main/LoginLogo.png"} alt="Soundcast Logo" className="logo" />

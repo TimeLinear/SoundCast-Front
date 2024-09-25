@@ -31,7 +31,7 @@ const MyPageComment = () =>{
                 // commentToDelete가 존재하는지 확인
                 if (!commentToDelete) {
                     console.warn(`Comment with commentNo ${commentNo} not found`);
-                    return Promise.resolve(); // 해당 댓글이 없으므로 요청을 무시합니다.
+                    return Promise.resolve();
                 }
     
                 return axios.delete(`http://localhost:8087/soundcast/member/comment/delete`, {
