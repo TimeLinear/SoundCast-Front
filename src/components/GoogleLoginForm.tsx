@@ -21,29 +21,20 @@ const GoogleLoginForm = ({onSignupRequest, handleClose}:{onSignupRequest:()=>voi
 
     const googleOnSuccess =(data:CredentialResponse)=>{
         const Credential = data.credential;
-       
         axios
             .post("http://localhost:8087/soundcast/auth/login/google",{
                 Credential
             })
             .then(res => {
-                console.log(Credential);
                if(!res.data.member){
                 new Cookies().set("Credential", res.data.Credential, {maxAge: 60 * 1, path:'/'})
-               
                 onSignupRequest();
                }
-               
                const JwtToken = res.data.jwtToken;
-               console.log(JwtToken);
                setSessionCookie("accessToken",JwtToken);
-               console.log("구글로그인폼res")
-               console.log(res)
                dispatch(login(res.data.member));
 
-
                handleClose();
-
 
             })
             .catch(error => {

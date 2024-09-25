@@ -63,13 +63,11 @@ const UserPage = () => {
                     })
                     .then(response => {
                         console.log(response)
-                        //alert(response.data.msg)
                         dispatch(removeFollowing(NumbMemberNo));
                         setIsFollowing(!isFollowing)
                     })
             }
             else {
-
                 CustomAxios
                     .post(`http://localhost:8087/soundcast/member/follow/${memberNo}`, {
                         followerMno
@@ -109,8 +107,6 @@ const UserPage = () => {
         axios
             .get(`http://localhost:8087/soundcast/member/memberInfo/${memberNo}`)
             .then(response => {
-                console.log(response);
-                console.log(response.data.commentList);
                 if (response.data === "" || response.data === null) {
                     navi("/");
                 }
@@ -158,10 +154,6 @@ const UserPage = () => {
 
 
     const divStyle: React.CSSProperties = selectMember.memberNo === member.memberNo ? { display: "none" } : { display: "flex", position: "absolute", top: "50px", left: "80px" };
-
-    console.log("멤버배너");
-    console.log(selectMember.banner);
-
 
     //음원
 
