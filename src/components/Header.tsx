@@ -12,7 +12,7 @@ import axios from "../utils/CustomAxios";
 import { getCookie } from "../utils/Cookie";
 import "../pages/css/siteMap.css";
 import { setGenreList, setMoodList } from "../features/songSlice";
-import { setPlaceNo } from "../features/searchSlice";
+import { setGenre, setKeyword, setMood, setPlaceNo } from "../features/searchSlice";
 
 
 
@@ -80,6 +80,9 @@ function Header() {
   }
 
   const mainGo = () => {
+    dispatch(setKeyword(""));
+    dispatch(setGenre(0));
+    dispatch(setMood(0));
     navi("/");
   }
 

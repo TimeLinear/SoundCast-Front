@@ -62,7 +62,7 @@ function SearchList() {
 
         setSearchTitle(title ? title + " 로 검색한 결과 입니다." : '');
         
-    },[song.list])
+    },[song.list, search])
 
 
 

@@ -59,6 +59,10 @@ function SearchBar({searchKeyword}:{searchKeyword:string}){
 
   // },[inputkeyword])
 
+  useEffect(() => {
+
+  }, [search.keyword]);
+
 
   const serverImagePath = "http://localhost:8087/soundcast/resource/";
 

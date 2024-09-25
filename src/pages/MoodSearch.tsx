@@ -41,7 +41,7 @@ function MoodSearch(props:SearchProps){
       dispatch(setMood(moodNo));
       setTimeout(() => {
         navi("/search");
-      }, 200);
+      }, 500);
     }
 
     useEffect(() => {

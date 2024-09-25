@@ -76,7 +76,7 @@ function GenreSearch ({searchGenre, searchMood}:{searchGenre:number, searchMood:
     dispatch(setMood(0));
     setTimeout(() => {
       navi("/search");
-    }, 200);
+    }, 500);
   }
 
   useEffect(() => {
