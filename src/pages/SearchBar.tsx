@@ -16,60 +16,24 @@ function SearchBar({searchKeyword}:{searchKeyword:string}){
   
   const navi = useNavigate();
   const dispatch = useDispatch();
-  const search = useSelector((state:RootState)=>state.search);
-  // 입력창에 직접 store의 state를 사용하는 건 지양하는 것이 좋습니다.
   
-  const [inputkeyword, setInputKeyword] = useState(searchKeyword);
+  const [inputkeyword, setInputKeyword] = useState('');
   
-  //검색함수 수정 09/11
-  const searchSongs = useSearchSong();
-
   const onInputChange = (e:ChangeEvent<HTMLInputElement>) => {
     const inputStr = e.target.value;
     setInputKeyword(inputStr);
   }
 
-  //------------수정한 부분(08/21)-------------
-  // const searchSong = () => {
-  //     dispatch(setKeyword(inputkeyword));      
-  //     console.log(inputkeyword);
-
-  //     // search 객체를 보내서 백엔드 측에서 jackson 라이브러리를 통해 다시 HashMap으로 만드는 작업 시도
-  //     axios.get(`http://localhost:8087/soundcast/song/search`, {params : search})
-  //       .then((response) => {
-  //           //키워드로 db에 저장된 노래 불러와 리스트 전역에 저장
-  //           console.log(response.data);
-  //           dispatch(setSongList(response.data));
-  //         })
-  //       .catch((err)=>console.log(err));
-
-  //     navi("/search");
-      
-  //     setInputKeyword('');
-  // }
-  //-----------------------------------------
-
-  // useEffect(()=>{
-    
-  //   searchSongs();
-
-  //   navi("/search");
-      
-  //   setInputKeyword('');
-
-  // },[inputkeyword])
-
-  useEffect(() => {
-
-  }, [search.keyword]);
-
+  const onResetKeyword = () =>{
+    setInputKeyword('');
+  }
 
   const serverImagePath = "http://localhost:8087/soundcast/resource/";
 
   return(
       <div className='search-bar' style={{...searchBarStyle, boxSizing:"border-box"}}>
         <div className='search-bar-body' style={{...searchBarBodyStyle, boxSizing:"border-box"}}>
-          <div className='search-icon-box' style={{width: "35px", height: "35px", cursor: "pointer"}} onClick={() => {dispatch(setKeyword(inputkeyword))}}>
+          <div className='search-icon-box' style={{width: "35px", height: "35px", cursor: "pointer"}} onClick={() => {dispatch(setKeyword(inputkeyword)); navi("/search"); onResetKeyword();}}>
             <img src={serverImagePath+'public/main/search-icon.png'} style={{width: "100%", height: "100%"}}/>
           </div>
           <div className='search-bar-input' style={{width:"85%", height:"90%"}}>
@@ -77,7 +41,7 @@ function SearchBar({searchKeyword}:{searchKeyword:string}){
               type="text"
               value={inputkeyword}
               onChange={onInputChange}
-              onKeyDown={(e) => {if(e.key === 'Enter'){dispatch(setKeyword(inputkeyword));}}}
+              onKeyDown={(e) => {if(e.key === 'Enter'){dispatch(setKeyword(inputkeyword)); navi("/search"); onResetKeyword();}}}
               style={{...searchBarFontStyle, border:"0", width:"100%", height:"90%"}} placeholder='Sound CAST의 장르별 음원 검색' />
           </div>
         </div>

@@ -77,11 +77,6 @@ function GenreSearch ({searchGenre, searchMood}:{searchGenre:number, searchMood:
     navi("/search");
   }
 
-  useEffect(() => {
-    if(search.keyword !== "" || search.genre >= 0 || search.mood >= 0) {
-      searchSongs();
-    }
-  }, [search.genre, search.mood])
   
   return(
     <>
@@ -95,7 +90,7 @@ function GenreSearch ({searchGenre, searchMood}:{searchGenre:number, searchMood:
           <div id='genre'
               key={genre.genreNo}
               onMouseEnter={()=>{setSearchGenreNo(genre.genreNo)}}
-              onClick={()=>{onClickGenre(genre.genreNo)}}
+              onClick={()=>{onClickGenre(genre.genreNo);}}
               style={searchGenreNo === genre.genreNo ? genreItemStyle : genreCommonStyle}>
             <span style={searchGenreNo === genre.genreNo ? {...genreItemFontStyle, color:"#FFFFFF"} : genreItemFontStyle}>{genre.genreName}</span>
           </div>

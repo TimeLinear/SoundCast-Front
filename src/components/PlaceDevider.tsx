@@ -3,15 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setGenre, setKeyword, setMood, setPlaceNo } from "../features/searchSlice";
 import { RootState } from "../store/store";
-import useSearchSong from "../hook/useSearchSong";
 
 const PlaceDevider = () => {
 
     const navi = useNavigate();
     const dispatch = useDispatch();
     const search = useSelector((state:RootState) => (state.search));
-    const searchSongs = useSearchSong();
-
+   
     const [cssItems, setCssItems] = useState([
         {backgroundColor:"#1C003B", color:"white"},
         {backgroundColor:"white", color:"black"}]);
@@ -37,11 +35,6 @@ const PlaceDevider = () => {
         dispatch(setKeyword(''));
         dispatch(setMood(0));
         dispatch(setGenre(0));
-
-        searchSongs();
-
-        console.log(search.genre);
-        console.log(search.mood);
 
     },[trigger])
 

@@ -20,7 +20,6 @@ function SearchList() {
 
     //선택한 요소
     const [activeSongNo, setActiveSongNo] = useState<number | null>(null);
-    const navi = useNavigate();
     const searchSong = useSearchSong;
 
     useEffect(() => {
@@ -62,7 +61,7 @@ function SearchList() {
 
         setSearchTitle(title ? title + " 로 검색한 결과 입니다." : '');
         
-    },[song.list, search])
+    },[search])
 
 
 

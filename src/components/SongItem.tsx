@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { setGenre, setMood } from "../features/searchSlice";
 import axios from "axios";
 
-const SongItem = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activeSongNo: number | null, setActiveSongNo: (no: number) => void, song: { list: Song[], currentSong: Song }, searchSong: () => void }) => {
+const SongItem = ({ activeSongNo, setActiveSongNo, song }: { activeSongNo: number | null, setActiveSongNo: (no: number) => void, song: { list: Song[], currentSong: Song }}) => {
 
     const searchListBoxStyle: CSSProperties = {
         width: "100%", height: "80px", display: "flex", alignItems: "center", justifyContent: "space-evenly",
@@ -80,8 +80,9 @@ const SongItem = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activeS
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = song.list.slice(indexOfFirstItem, indexOfLastItem);
 
-    // console.log(currentItems);
-
+    useEffect(()=>{
+        setCurrentPage(1);
+    },[song.list])
 
     //수정 (검색함수 props에 추가, 이미지 경로 지정, 아티스트명 클릭시 아티스트 페이지로 이동, 장르, 분위기 data-songno 수정 클릭 이벤트 부여)
     const url = "http://localhost:8087/soundcast/resource/";
@@ -191,7 +192,7 @@ const SongItem = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activeS
                                 <div className='genre-box'
                                     onMouseEnter={mouseEnterEventHandler}
                                     onMouseLeave={mouseLeaveEventHandler}
-                                    onClick={() => {dispatch(setGenre(Song.songGenreNo)); searchSong()}}
+                                    onClick={() => {dispatch(setGenre(Song.songGenreNo)); navi("/search");}}
                                     data-songno={Song.songNo}
                                     data-typeno={Song.songGenreNo}
                                     style={hoverState.class === 'genre-box' && hoverState.songNo === Song.songNo ? { ...itemBoxStyle, ...selectedCategoryStyle } : { ...itemBoxStyle }}>
@@ -202,7 +203,7 @@ const SongItem = ({ activeSongNo, setActiveSongNo, song, searchSong }: { activeS
                                     onMouseLeave={mouseLeaveEventHandler}
                                     data-songno={Song.songNo}
                                     data-typeno={Song.songMoodNo}
-                                    onClick={() => {dispatch(setMood(Song.songMoodNo)); searchSong()}}
+                                    onClick={() => {dispatch(setMood(Song.songMoodNo)); navi("/search");}}
                                     style={hoverState.class === 'mood-box' && hoverState.songNo === Song.songNo ? { ...itemBoxStyle, ...selectedCategoryStyle } : { ...itemBoxStyle }}>
                                     <span style={{ ...searchListFontStyle }}>{Song.songMoodName}</span>
                                 </div>

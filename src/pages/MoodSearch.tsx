@@ -16,8 +16,7 @@ function MoodSearch(props:SearchProps){
     const dispatch = useDispatch();
     const navi = useNavigate();
     const song = useSelector((state:RootState) => state.song); 
-    const search = useSelector((state:RootState) => state.search);
-    const searchSongs = useSearchSong();
+
     //--------------------------------
     const [searchMoodNo, setSearchMoodNo] = useState<number>(-1);
 
@@ -31,10 +30,6 @@ function MoodSearch(props:SearchProps){
       setSearchMoodNo(-1);
     }
 
-    // useEffect(()=>{
-    //   dispatch(setMood(searchMoodNo));
-    // },[searchMoodNo])
-
     const onClickMood = (moodNo:number) => {
       dispatch(setKeyword(""));
       dispatch(setGenre(searchGenreNo));
@@ -42,12 +37,6 @@ function MoodSearch(props:SearchProps){
       navi("/search");
     }
 
-    useEffect(() => {
-      if(search.keyword !== "" || search.genre >= 0 || search.mood >= 0) {
-        searchSongs();
-      }
-    }, [search.genre, search.mood])
-  
     return (
       <div id="search-mood" 
         onMouseEnter={handleMouseOver}
