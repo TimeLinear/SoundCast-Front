@@ -5,7 +5,7 @@ import { setPlaySong, setSongList  } from "../features/songSlice";
 import { Song } from "../type/SongType";
 import Pagination from "./Pagination";
 import { useNavigate } from "react-router-dom";
-import { setGenre, setMood } from "../features/searchSlice";
+import { setGenre, setKeyword, setMood } from "../features/searchSlice";
 import axios from "axios";
 
 const SongItem = ({ activeSongNo, setActiveSongNo, song }: { activeSongNo: number | null, setActiveSongNo: (no: number) => void, song: { list: Song[], currentSong: Song }}) => {
@@ -118,6 +118,20 @@ const SongItem = ({ activeSongNo, setActiveSongNo, song }: { activeSongNo: numbe
         }
     }
 
+    const onClickGenre = (genreNo:number) => {
+        dispatch(setGenre(genreNo));
+        dispatch(setMood(0));
+        dispatch(setKeyword(""));
+        navi("/search");
+    };
+
+    const onClickMood = (moodNo:number) => {
+        dispatch(setGenre(0));
+        dispatch(setMood(moodNo));
+        dispatch(setKeyword(""));
+        navi("/search");
+    };
+
     return (
         <div>
             <div style={{ borderRadius: "10px", overflow: "hidden" }}>
@@ -192,7 +206,7 @@ const SongItem = ({ activeSongNo, setActiveSongNo, song }: { activeSongNo: numbe
                                 <div className='genre-box'
                                     onMouseEnter={mouseEnterEventHandler}
                                     onMouseLeave={mouseLeaveEventHandler}
-                                    onClick={() => {dispatch(setGenre(Song.songGenreNo)); navi("/search");}}
+                                    onClick={() => {onClickGenre(Song.songGenreNo)}}
                                     data-songno={Song.songNo}
                                     data-typeno={Song.songGenreNo}
                                     style={hoverState.class === 'genre-box' && hoverState.songNo === Song.songNo ? { ...itemBoxStyle, ...selectedCategoryStyle } : { ...itemBoxStyle }}>
@@ -203,7 +217,7 @@ const SongItem = ({ activeSongNo, setActiveSongNo, song }: { activeSongNo: numbe
                                     onMouseLeave={mouseLeaveEventHandler}
                                     data-songno={Song.songNo}
                                     data-typeno={Song.songMoodNo}
-                                    onClick={() => {dispatch(setMood(Song.songMoodNo)); navi("/search");}}
+                                    onClick={() => {onClickMood(Song.songMoodNo)}}
                                     style={hoverState.class === 'mood-box' && hoverState.songNo === Song.songNo ? { ...itemBoxStyle, ...selectedCategoryStyle } : { ...itemBoxStyle }}>
                                     <span style={{ ...searchListFontStyle }}>{Song.songMoodName}</span>
                                 </div>

@@ -31,8 +31,7 @@ function SearchList() {
     const props: Props = {
         activeSongNo,
         setActiveSongNo,
-        song,
-        searchSong
+        song
     }
 
     const initTitle = '최신 등록 Top 20';

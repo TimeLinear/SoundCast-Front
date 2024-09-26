@@ -81,7 +81,7 @@ function GenreSearch ({searchGenre, searchMood}:{searchGenre:number, searchMood:
   return(
     <>
       <div id='search-genre'
-        onMouseEnter={handleMouseOver}
+        // onMouseEnter={handleMouseOver}
         onMouseLeave={(e) => {handleMouseOut(e); onLeaveSearchs();}}
         style={{...genreCommonStyle, boxSizing: "border-box", width:"100%", height:"65px", background:"#1C003B", borderRadius: "0"}} >
             {/* 여기서 부터 select 결과 출력 */}
@@ -89,7 +89,7 @@ function GenreSearch ({searchGenre, searchMood}:{searchGenre:number, searchMood:
           song.genreList.map( genre => (
           <div id='genre'
               key={genre.genreNo}
-              onMouseEnter={()=>{setSearchGenreNo(genre.genreNo)}}
+              onMouseEnter={(e)=>{setSearchGenreNo(genre.genreNo); handleMouseOver(e);}}
               onClick={()=>{onClickGenre(genre.genreNo);}}
               style={searchGenreNo === genre.genreNo ? genreItemStyle : genreCommonStyle}>
             <span style={searchGenreNo === genre.genreNo ? {...genreItemFontStyle, color:"#FFFFFF"} : genreItemFontStyle}>{genre.genreName}</span>

@@ -182,10 +182,7 @@ const UserPage = () => {
     const props: Props = {
         activeSongNo,
         setActiveSongNo,
-        song,
-        searchSong: function (): void {
-            throw new Error("Function not implemented.");
-        }
+        song
     }
 
     // 스타일

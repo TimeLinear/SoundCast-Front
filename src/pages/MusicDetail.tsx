@@ -8,7 +8,6 @@ import { RootState } from "../store/store";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "../utils/CustomAxios";
 import { setPlaySong, setSongList } from "../features/songSlice";
-import { setGenre, setKeyword, setMood } from "../features/searchSlice";
 
 const MusicDetail = () => {
 
@@ -23,27 +22,14 @@ const MusicDetail = () => {
 
     const [currSong, setCurrSong] = useState(song.currentSong);
 
-    const search = useSelector((state:RootState)=>state.search);
     const member = useSelector((state:RootState) => state.member);
     const dispatch = useDispatch();
     const navi = useNavigate();
-    const searchSong = () => {
-        axios.get(`http://localhost:8087/soundcast/song/search`, {params : search})
-          .then((response) => {
-              //키워드로 db에 저장된 노래 불러와 리스트 전역에 저장
-              console.log(response.data);
-              dispatch(setSongList(response.data));
-            })
-          .catch((err)=>console.log(err));
-  
-        navi("/search");
-    };
 
     const props:Props = {
         activeSongNo,
         setActiveSongNo,
-        song: {...song, list: song.list.filter((songItem) => songItem.songNo !== currSong.songNo)},
-        searchSong
+        song: {...song, list: song.list.filter((songItem) => songItem.songNo !== currSong.songNo)}
     };
 
     const onClickReportButton = () => {
